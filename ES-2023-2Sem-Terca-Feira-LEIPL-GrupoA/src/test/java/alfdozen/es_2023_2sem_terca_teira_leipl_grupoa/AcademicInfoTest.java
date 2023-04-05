@@ -1,4 +1,4 @@
-package AlfDozen.ES_2023_2Sem_Terca_Feira_LEIPL_GrupoA;
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +7,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
+import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
 
 class AcademicInfoTest {
 
@@ -18,8 +21,8 @@ class AcademicInfoTest {
 		assertEquals("T02A", academicInfo.getShift());
 		assertEquals("LEIPL1", academicInfo.getClassGroup());
 		assertEquals(5, academicInfo.getStudentsEnrolled());
-		
-		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (Integer)null);
+
+		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (Integer) null);
 		assertNull(academicInfoNull.getDegree());
 		assertNull(academicInfoNull.getCourse());
 		assertNull(academicInfoNull.getShift());
@@ -29,10 +32,11 @@ class AcademicInfoTest {
 
 	@Test
 	final void testAcademicInfoIntegerEnrolledException() {
-		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class, () -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", -1));
-		assertEquals("The number of students enrolled can't be negative", exceptionNegative.getMessage());
+		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class,
+				() -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", -1));
+		assertEquals(AcademicInfo.NEGATIVE_EXCEPTION, exceptionNegative.getMessage());
 	}
-	
+
 	@Test
 	final void testAcademicInfoStringEnrolled() {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", "5");
@@ -41,22 +45,24 @@ class AcademicInfoTest {
 		assertEquals("T02A", academicInfo.getShift());
 		assertEquals("LEIPL1", academicInfo.getClassGroup());
 		assertEquals(5, academicInfo.getStudentsEnrolled());
-		
-		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (String)null);
+
+		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (String) null);
 		assertNull(academicInfoNull.getDegree());
 		assertNull(academicInfoNull.getCourse());
 		assertNull(academicInfoNull.getShift());
 		assertNull(academicInfoNull.getClassGroup());
 		assertNull(academicInfoNull.getStudentsEnrolled());
 	}
-	
+
 	@Test
 	final void testAcademicInfoStringEnrolledException() {
-		NumberFormatException exceptionNotNumber = assertThrows(NumberFormatException.class, () -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", "a"));
-		assertEquals("The provided string doesn't correspond to a number", exceptionNotNumber.getMessage());
-		
-		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class, () -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", "-1"));
-		assertEquals("The number of students enrolled can't be negative", exceptionNegative.getMessage());
+		NumberFormatException exceptionNotNumber = assertThrows(NumberFormatException.class,
+				() -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", "a"));
+		assertEquals(AcademicInfo.NOT_NUMBER_EXCEPTION, exceptionNotNumber.getMessage());
+
+		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class,
+				() -> new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", "-1"));
+		assertEquals(AcademicInfo.NEGATIVE_EXCEPTION, exceptionNegative.getMessage());
 	}
 
 	@Test
@@ -88,7 +94,7 @@ class AcademicInfoTest {
 		academicInfo.setCourse(null);
 		assertNull(academicInfo.getCourse());
 	}
-	
+
 	@Test
 	final void testGetCourseAbbreviation() {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
@@ -142,15 +148,16 @@ class AcademicInfoTest {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
 		academicInfo.setStudentsEnrolled(10);
 		assertEquals(10, academicInfo.getStudentsEnrolled());
-		academicInfo.setStudentsEnrolled((Integer)null);
+		academicInfo.setStudentsEnrolled((Integer) null);
 		assertNull(academicInfo.getStudentsEnrolled());
 	}
-	
+
 	@Test
 	final void testSetStudentsEnrolledIntegerException() {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
-		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class, () -> academicInfo.setStudentsEnrolled(-1));
-		assertEquals("The number of students enrolled can't be negative", exceptionNegative.getMessage());
+		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class,
+				() -> academicInfo.setStudentsEnrolled(-1));
+		assertEquals(AcademicInfo.NEGATIVE_EXCEPTION, exceptionNegative.getMessage());
 	}
 
 	@Test
@@ -158,18 +165,20 @@ class AcademicInfoTest {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
 		academicInfo.setStudentsEnrolled("10");
 		assertEquals(10, academicInfo.getStudentsEnrolled());
-		academicInfo.setStudentsEnrolled((String)null);
+		academicInfo.setStudentsEnrolled((String) null);
 		assertNull(academicInfo.getStudentsEnrolled());
 	}
-	
+
 	@Test
 	final void testSetStudentsEnrolledStringException() {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
-		IllegalArgumentException exceptionNotNumber = assertThrows(IllegalArgumentException.class, () -> academicInfo.setStudentsEnrolled("abc"));
-		assertEquals("The provided string doesn't correspond to a number", exceptionNotNumber.getMessage());
-		
-		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class, () -> academicInfo.setStudentsEnrolled("-1"));
-		assertEquals("The number of students enrolled can't be negative", exceptionNegative.getMessage());
+		IllegalArgumentException exceptionNotNumber = assertThrows(IllegalArgumentException.class,
+				() -> academicInfo.setStudentsEnrolled("abc"));
+		assertEquals(AcademicInfo.NOT_NUMBER_EXCEPTION, exceptionNotNumber.getMessage());
+
+		IllegalArgumentException exceptionNegative = assertThrows(IllegalArgumentException.class,
+				() -> academicInfo.setStudentsEnrolled("-1"));
+		assertEquals(AcademicInfo.NEGATIVE_EXCEPTION, exceptionNegative.getMessage());
 	}
 
 	@Test
@@ -188,17 +197,21 @@ class AcademicInfoTest {
 		academicInfo.setClassGroup(null);
 		assertFalse(academicInfo.isComplete());
 		academicInfo.setClassGroup("AQP1");
-		academicInfo.setStudentsEnrolled((String)null);
+		academicInfo.setStudentsEnrolled((String) null);
 		assertFalse(academicInfo.isComplete());
 	}
 
 	@Test
 	final void testToString() {
 		AcademicInfo academicInfo = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
-		assertEquals("Degree LEI-PL - Course Engenharia de Software - Shift T02A - Class LEIPL1 - 5 Enrolled Students", academicInfo.toString());
-		
-		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (Integer)null);
-		assertEquals("Degree " + Lecture.FORNULL + " - Course " + Lecture.FORNULL + " - Shift " + Lecture.FORNULL + " - Class " + Lecture.FORNULL + " - " + Lecture.FORNULL + " Enrolled Students", academicInfoNull.toString());
+		assertEquals("Degree LEI-PL - Course Engenharia de Software - Shift T02A - Class LEIPL1 - 5 Enrolled Students",
+				academicInfo.toString());
+
+		AcademicInfo academicInfoNull = new AcademicInfo(null, null, null, null, (Integer) null);
+		assertEquals(
+				"Degree " + Lecture.FOR_NULL + " - Course " + Lecture.FOR_NULL + " - Shift " + Lecture.FOR_NULL
+						+ " - Class " + Lecture.FOR_NULL + " - " + Lecture.FOR_NULL + " Enrolled Students",
+				academicInfoNull.toString());
 	}
 
 }
