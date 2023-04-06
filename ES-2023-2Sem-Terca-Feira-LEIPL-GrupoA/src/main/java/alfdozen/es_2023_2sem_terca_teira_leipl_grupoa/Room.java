@@ -12,7 +12,7 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  * 
  */
 
-public final class Room {
+final class Room {
 
 	static final String NEGATIVE_EXCEPTION = "Room needs to have a positive number capacity";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";

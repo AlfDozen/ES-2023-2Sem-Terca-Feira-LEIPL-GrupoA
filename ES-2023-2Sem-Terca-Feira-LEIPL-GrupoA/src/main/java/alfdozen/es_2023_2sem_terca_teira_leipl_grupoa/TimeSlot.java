@@ -28,14 +28,14 @@ import java.time.format.DateTimeParseException;
  * 
  */
 
-public final class TimeSlot implements Comparable<TimeSlot> {
+final class TimeSlot implements Comparable<TimeSlot> {
 
 	static final String WRONG_DATE_FORMAT = "Wrong date format";
 	static final String WRONG_BEGIN_TIME_FORMAT = "Wrong begin time format";
 	static final String WRONG_END_TIME_FORMAT = "Wrong end time format";
+	static final String[] WEEK_DAY_ARRAY = { "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" };
 	private static final String DATE_FORMAT = "d/M/yyyy";
 	private static final String TIME_FORMAT = "H:m:s";
-	private static final String[] WEEK_DAY_ARRAY = { "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" };
 	private String weekDay;
 	private LocalDate date;
 	private LocalTime timeBegin;
@@ -104,7 +104,7 @@ public final class TimeSlot implements Comparable<TimeSlot> {
 		return weekDay;
 	}
 
-	static String findWeekDay(LocalDate date) {
+	private static String findWeekDay(LocalDate date) {
 		return WEEK_DAY_ARRAY[date.getDayOfWeek().getValue() - 1];
 	}
 

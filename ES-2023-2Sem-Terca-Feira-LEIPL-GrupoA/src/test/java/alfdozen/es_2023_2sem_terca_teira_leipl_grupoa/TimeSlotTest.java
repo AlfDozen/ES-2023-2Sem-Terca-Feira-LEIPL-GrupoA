@@ -106,13 +106,27 @@ class TimeSlotTest {
 	}
 
 	final void testFindWeekDay() {
-		assertEquals("Seg", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 20)));
-		assertEquals("Ter", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 21)));
-		assertEquals("Qua", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 22)));
-		assertEquals("Qui", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 23)));
-		assertEquals("Sex", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 24)));
-		assertEquals("Sáb", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 25)));
-		assertEquals("Dom", TimeSlot.findWeekDay(LocalDate.of(2023, 2, 26)));
+		TimeSlot timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 20), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 21), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 22), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 24), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 25), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 26), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		assertEquals("Seg", timeSlot.getWeekDay());
 	}
 
 	@Test

@@ -12,9 +12,10 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  *         ordered by date, by time of beginning and finally by time of ending.
  *         Null attributes are always considered to be before non-null
  *         attributes.
+ *         
  */
 
-public final class Lecture implements Comparable<Lecture> {
+final class Lecture implements Comparable<Lecture> {
 
 	static final String FOR_NULL = "Unknown";
 	private AcademicInfo academicInfo;

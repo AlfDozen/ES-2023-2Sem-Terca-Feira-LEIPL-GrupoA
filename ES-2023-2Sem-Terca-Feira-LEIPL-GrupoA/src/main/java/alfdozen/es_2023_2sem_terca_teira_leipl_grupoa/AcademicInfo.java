@@ -14,7 +14,7 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  * 
  */
 
-public final class AcademicInfo {
+final class AcademicInfo {
 
 	static final String NEGATIVE_EXCEPTION = "The number of students enrolled can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
