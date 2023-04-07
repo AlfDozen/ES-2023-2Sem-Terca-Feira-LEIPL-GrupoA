@@ -1,62 +1,131 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
-public class Schedule {
+final class Schedule {
+	static final String FOR_NULL = "Unknown";
+	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
+	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
+	private List<Lecture> lectures;
+	private String studentName;
+	private Integer studentNumber;
 
-    private List<Lecture> lectures;
-    private String studentName;
-    private Integer studentNumber;
+	Schedule() {
+		this.studentName = null;
+		this.studentNumber = null;
+		this.lectures = new ArrayList<>();
+	}
 
-     Schedule(String studentName, Integer studentNumber) {
-        this.studentName = studentName;
-        this.studentNumber = studentNumber;
-        this.lectures = new ArrayList<>();
-    }
+	Schedule(List<Lecture> lectures) {
+		this.studentName = null;
+		this.studentNumber = null;
+		setLectures(lectures);
+	}
 
-     List<Lecture> getLectures() {
-        return lectures;
-    }
+	Schedule(List<Lecture> lectures, String studentName, Integer studentNumber) {
+		if (studentNumber != null && studentNumber < 0) {
+			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
+		}
+		this.lectures = lectures;
+		this.studentName = studentName;
+		this.studentNumber = studentNumber;
+	}
 
-     void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-    }
+	Schedule(List<Lecture> lectures, String studentName, String studentNumber) {
+		if (lectures == null) {
+			this.lectures = new ArrayList<>();
+		} else {
+			setLectures(lectures);
+		}
+		this.studentName = studentName;
+		if (studentNumber == null) {
+			this.studentNumber = null;
+			return;
+		}
+		try {
+			this.studentNumber = Integer.parseInt(studentNumber);
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException(NOT_NUMBER_EXCEPTION);
+		}
+		if (this.studentNumber < 0) {
+			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
+		}
+	}
 
-     String getStudentName() {
-        return studentName;
-    }
+	Schedule(String studentName, Integer studentNumber) {
+		this(new ArrayList<>(), studentName, studentNumber);
+	}
 
-     void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
+	Schedule(String studentName, String studentNumber) {
+		this(new ArrayList<>(), studentName, studentNumber);
+	}
 
-     Integer getStudentNumber() {
-        return studentNumber;
-    }
+	List<Lecture> getLectures() {
+		return lectures;
+	}
 
-     void setStudentNumber(Integer studentNumber) {
-        this.studentNumber = studentNumber;
-    }
+	void setLectures(List<Lecture> lectures) {
+		if (lectures == null) {
+			this.lectures = new ArrayList<>();
+		} else {
+			this.lectures = lectures;
+			Collections.sort(this.lectures);
+		}
+	}
 
-     void addLecture(Lecture lecture) {
-        this.lectures.add(lecture);
-        Collections.sort(this.lectures, (l1, l2) -> l1.getTimeSlot().compareTo(l2.getTimeSlot()));
-    }
+	String getStudentName() {
+		if (this.studentName == null) {
+			return this.FOR_NULL;
+		}
+		return studentName;
+	}
 
-     void removeLecture(Lecture lecture) {
-        this.lectures.remove(lecture);
-    }
+	void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Student Name: ").append(studentName).append("\n");
-        sb.append("Student Number: ").append(studentNumber).append("\n");
-        sb.append("Schedule:\n");
-        for (Lecture lecture : lectures) {
-            sb.append(lecture.toString()).append("\n");
-        }
-        return sb.toString();
-    }
+	Integer getStudentNumber() {
+		return studentNumber;
+	}
+
+	void setStudentNumber(Integer studentNumber) {
+		if (studentNumber != null && studentNumber < 0) {
+			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
+		}
+		this.studentNumber = studentNumber;
+	}
+
+	void addLecture(Lecture lecture) {
+		this.lectures.add(lecture);
+		Collections.sort(this.lectures, (l1, l2) -> l1.getTimeSlot().compareTo(l2.getTimeSlot()));
+	}
+
+	void removeLecture(Lecture lecture) {
+		if (!lectures.isEmpty()) {
+			this.lectures.remove(lecture);
+		}
+	}
+
+	@Override
+	public String toString() {
+		String str = "";
+		if (studentName == null) {
+			str += "Unknown Student Name\n";
+		} else {
+			str += "Student Name: " + studentName + "\n";
+		}
+		if (studentNumber == null) {
+			str += "Unknown Student Number\n";
+		} else {
+			str += "Student Number: " + studentNumber + "\n";
+		}
+		str += "Schedule:\n";
+		for (Lecture lecture : lectures) {
+			str += lecture.toString() + "\n";
+		}
+		return str;
+	}
 }
