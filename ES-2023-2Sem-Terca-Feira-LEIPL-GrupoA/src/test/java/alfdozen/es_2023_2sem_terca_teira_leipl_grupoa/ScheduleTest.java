@@ -131,8 +131,18 @@ class ScheduleTest {
 		assertEquals(studentName, schedule.getStudentName());
 		assertEquals(Integer.valueOf(studentNumber), schedule.getStudentNumber());
 	}
+	
+	@Test
+	final void testScheduleConstructorNegativeStudentNumber() {
+	    assertThrows(IllegalArgumentException.class, () -> new Schedule("John Doe", -123));
+	}
 
-	void testaddSortingLectures() {
+	@Test
+	final void testScheduleConstructorInvalidStringStudentNumber() {
+	    assertThrows(NumberFormatException.class, () -> new Schedule("John Doe", "abc"));
+	}
+	@Test
+	final void testaddSortingLectures() {
 		Schedule schedule = new Schedule();
 		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
@@ -150,8 +160,8 @@ class ScheduleTest {
 		assertEquals(lecture2, schedule.getLectures().get(1));
 		assertEquals(lecture3, schedule.getLectures().get(2));
 	}
-
-	void testaddSortingLectures2() {
+	@Test
+	final void testaddSortingLectures2() {
 		Schedule schedule = new Schedule();
 		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2022, 1, 23), LocalTime.of(17, 2, 32), LocalTime.of(11, 23, 4)),
@@ -242,13 +252,68 @@ class ScheduleTest {
 		schedule.setStudentName(name);
 		assertEquals(name, schedule.getStudentName());
 	}
-
+	
 	@Test
-	void testSetStudentNumber() {
+	final void testSetStudentNameNull() {
+	    Schedule schedule = new Schedule();
+	    schedule.setStudentName(null);
+	    assertNull(schedule.getStudentName());
+	}
+	@Test
+	void testSetStudentNumberPositive() {
 		Schedule schedule = new Schedule();
 		Integer number = 12345;
 		schedule.setStudentNumber(number);
 		assertEquals(number, schedule.getStudentNumber());
 	}
+	@Test
+	final void testSetStudentNumberNull() {
+	    Schedule schedule = new Schedule();
+	    schedule.setStudentNumber(null);
+	    assertNull(schedule.getStudentNumber());
+	}
+
+	@Test
+	final void testSetStudentNumberNegative() {
+	    Schedule schedule = new Schedule();
+	    assertThrows(IllegalArgumentException.class, () -> schedule.setStudentNumber(-12345));
+	    assertNull(schedule.getStudentNumber());
+	}
+	@Test
+	final void testToString() {
+	    Schedule schedule = new Schedule();
+	    String expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+
+	    schedule = new Schedule(null, null, (Integer) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+
+	    schedule = new Schedule(new ArrayList<Lecture>(), null, (Integer) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+	    
+	    schedule = new Schedule(null, null, (String) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+
+	    schedule = new Schedule(new ArrayList<Lecture>(), null, (String) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+
+	    Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+	            new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+	            new Room("ES23", 20));
+	    List<Lecture> lectures = new ArrayList<>();
+	    lectures.add(lecture);
+	    schedule = new Schedule(lectures, "John Doe", 12345);
+	    expected = "Student Name: John Doe\nStudent Number: 12345\nSchedule:\n23/02/2023 - 03:02:32-11:23:04 - Engenharia de Software - T02A - Room ES23\n";
+	    assertEquals(expected, schedule.toString());
+	}
+
+
+
+
+
 
 }

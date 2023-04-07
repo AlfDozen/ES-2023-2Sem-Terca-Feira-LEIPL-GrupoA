@@ -104,21 +104,26 @@ final class Schedule {
 
 	@Override
 	public String toString() {
-		String str = "";
-		if (studentName == null) {
-			str += "Unknown Student Name\n";
-		} else {
-			str += "Student Name: " + studentName + "\n";
-		}
-		if (studentNumber == null) {
-			str += "Unknown Student Number\n";
-		} else {
-			str += "Student Number: " + studentNumber + "\n";
-		}
-		str += "Schedule:\n";
-		for (Lecture lecture : lectures) {
-			str += lecture.toString() + "\n";
-		}
-		return str;
+	    String str = "";
+	    if (studentName == null) {
+	        str += "Unknown Student Name\n";
+	    } else {
+	        str += "Student Name: " + studentName + "\n";
+	    }
+	    if (studentNumber == null) {
+	        str += "Unknown Student Number\n";
+	    } else {
+	        str += "Student Number: " + studentNumber + "\n";
+	    }
+	    if (lectures.isEmpty()) {
+	        str += "Schedule is empty";
+	    } else {
+	        str += "Schedule:\n";
+	        for (Lecture lecture : lectures) {
+	            str += lecture.toString() + "\n";
+	        }
+	    }
+	    return str;
 	}
+
 }
