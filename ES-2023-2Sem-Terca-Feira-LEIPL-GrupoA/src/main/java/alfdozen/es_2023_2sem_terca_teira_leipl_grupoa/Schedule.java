@@ -29,17 +29,13 @@ final class Schedule {
 		if (studentNumber != null && studentNumber < 0) {
 			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
 		}
-		this.lectures = lectures;
+		setLectures(lectures);
 		this.studentName = studentName;
 		this.studentNumber = studentNumber;
 	}
 
 	Schedule(List<Lecture> lectures, String studentName, String studentNumber) {
-		if (lectures == null) {
-			this.lectures = new ArrayList<>();
-		} else {
-			setLectures(lectures);
-		}
+		setLectures(lectures);
 		this.studentName = studentName;
 		if (studentNumber == null) {
 			this.studentNumber = null;
@@ -76,12 +72,9 @@ final class Schedule {
 		}
 	}
 
-	String getStudentName() {
-		if (this.studentName == null) {
-			return this.FOR_NULL;
+		String getStudentName() {
+			return studentName;
 		}
-		return studentName;
-	}
 
 	void setStudentName(String studentName) {
 		this.studentName = studentName;
