@@ -5,6 +5,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * @author alfdozen
+ * 
+ *      The Schedule class is used to represent a schedule of lectures for a student. 
+ *		It contains a list of Lecture and information about the student, such as their name and student number. 
+ *		The constructor can be used to create an empty schedule or a schedule with a list of lectures, as well as providing student information.  
+ *		The student number must be a positive integer and will be validated by the class. 
+ *		The class can also add or remove lectures to/from the schedule.
+ *		The class can be sorted by the time slots of the lectures in the schedule. 
+ *		The toString() method returns a String representation of the schedule, including the student name and number, as well as the list of lectures. 
+ *		If the student name or number is not provided, the string "Unknown" will be used instead. 
+ *		If the schedule is empty, the string "Schedule is empty" will be returned.
+ * 
+ */
 final class Schedule {
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
