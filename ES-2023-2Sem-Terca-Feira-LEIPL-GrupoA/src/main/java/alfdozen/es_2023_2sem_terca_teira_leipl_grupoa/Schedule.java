@@ -8,15 +8,19 @@ import java.util.logging.Level;
 /**
  * @author alfdozen
  * 
- *      The Schedule class is used to represent a schedule of lectures for a student. 
- *		It contains a list of Lecture and information about the student, such as their name and student number. 
- *		The constructor can be used to create an empty schedule or a schedule with a list of lectures, as well as providing student information.  
- *		The student number must be a positive integer and will be validated by the class. 
- *		The class can also add or remove lectures to/from the schedule.
- *		The class can be sorted by the time slots of the lectures in the schedule. 
- *		The toString() method returns a String representation of the schedule, including the student name and number, as well as the list of lectures. 
- *		If the student name or number is not provided, the string "Unknown" will be used instead. 
- *		If the schedule is empty, the string "Schedule is empty" will be returned.
+ *         The Schedule class is used to represent a schedule of lectures for a
+ *         student. It contains a list of Lecture and information about the
+ *         student, such as their name and student number. The constructor can
+ *         be used to create an empty schedule or a schedule with a list of
+ *         lectures, as well as providing student information. The student
+ *         number must be a positive integer and will be validated by the class.
+ *         The class can also add or remove lectures to/from the schedule. The
+ *         class can be sorted by the time slots of the lectures in the
+ *         schedule. The toString() method returns a String representation of
+ *         the schedule, including the student name and number, as well as the
+ *         list of lectures. If the student name or number is not provided, the
+ *         string "Unknown" will be used instead. If the schedule is empty, the
+ *         string "Schedule is empty" will be returned.
  * 
  */
 final class Schedule {
@@ -74,21 +78,25 @@ final class Schedule {
 	}
 
 	List<Lecture> getLectures() {
-		return lectures;
+		return new ArrayList<>(this.lectures);
 	}
 
 	void setLectures(List<Lecture> lectures) {
 		if (lectures == null) {
 			this.lectures = new ArrayList<>();
 		} else {
-			this.lectures = lectures;
-			Collections.sort(this.lectures);
+			this.lectures = new ArrayList<>(lectures);
+			sortLectures();
 		}
 	}
 
-		String getStudentName() {
-			return studentName;
-		}
+	void sortLectures() {
+		Collections.sort(this.lectures);
+	}
+
+	String getStudentName() {
+		return studentName;
+	}
 
 	void setStudentName(String studentName) {
 		this.studentName = studentName;
@@ -107,37 +115,38 @@ final class Schedule {
 
 	void addLecture(Lecture lecture) {
 		this.lectures.add(lecture);
-		Collections.sort(this.lectures, (l1, l2) -> l1.getTimeSlot().compareTo(l2.getTimeSlot()));
+		sortLectures();
 	}
 
 	void removeLecture(Lecture lecture) {
-		if (!lectures.isEmpty()) {
-			this.lectures.remove(lecture);
+		if (!this.lectures.contains(lecture)) {
+			throw new IllegalArgumentException("The schedule doesn't contain this lecture");
 		}
+		this.lectures.remove(lecture);
 	}
 
 	@Override
 	public String toString() {
-	    String str = "";
-	    if (studentName == null) {
-	        str += "Unknown Student Name\n";
-	    } else {
-	        str += "Student Name: " + studentName + "\n";
-	    }
-	    if (studentNumber == null) {
-	        str += "Unknown Student Number\n";
-	    } else {
-	        str += "Student Number: " + studentNumber + "\n";
-	    }
-	    if (lectures.isEmpty()) {
-	        str += "Schedule is empty";
-	    } else {
-	        str += "Schedule:\n";
-	        for (Lecture lecture : lectures) {
-	            str += lecture.toString() + "\n";
-	        }
-	    }
-	    return str;
+		String str = "";
+		if (studentName == null) {
+			str += "Unknown Student Name\n";
+		} else {
+			str += "Student Name: " + studentName + "\n";
+		}
+		if (studentNumber == null) {
+			str += "Unknown Student Number\n";
+		} else {
+			str += "Student Number: " + studentNumber + "\n";
+		}
+		if (lectures.isEmpty()) {
+			str += "Schedule is empty";
+		} else {
+			str += "Schedule:\n";
+			for (Lecture lecture : lectures) {
+				str += lecture + "\n";
+			}
+		}
+		return str;
 	}
 
 }
