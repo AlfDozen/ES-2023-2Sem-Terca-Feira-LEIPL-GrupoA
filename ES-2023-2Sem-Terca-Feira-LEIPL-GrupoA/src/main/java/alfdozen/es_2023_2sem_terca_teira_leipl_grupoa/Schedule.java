@@ -1,9 +1,13 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * @author alfdozen
@@ -23,6 +27,11 @@ final class Schedule {
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
+	static final String READ_EXCEPTION = "Error: File read";
+	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
+	static final String ENCODING = "ISO-8859-1";
+	static final String DELIMITER = ",";
+	static final String FILE_FORMAT_CSV = ".csv";
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -115,6 +124,83 @@ final class Schedule {
 			this.lectures.remove(lecture);
 		}
 	}
+
+	static Schedule loadCSV(String path, String encoding) {
+		if(!path.endsWith(FILE_FORMAT_CSV)) {
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
+		}
+		if(encoding == null) {
+			encoding = ENCODING;
+		}
+		String delimiter = DELIMITER;
+		Schedule schedule = new Schedule();
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), encoding));
+			String line = "";
+			boolean flag = true;
+			while((line = br.readLine()) != null) {
+				if(flag) {
+					flag = false;
+				} else {
+					Lecture lecture = buildLecture(line, encoding, delimiter);
+					schedule.addLecture(lecture);
+				}
+			}
+			br.close();
+		} catch(IOException e) {
+			throw new IllegalArgumentException(READ_EXCEPTION);
+		}
+		return schedule;
+	}
+	
+	static Schedule loadCSV(String path) {
+		return loadCSV(path, ENCODING);
+	}
+	
+	private static Lecture buildLecture(String line, String encoding, String delimiter) throws UnsupportedEncodingException {
+		String[] tempArr;
+		String lineEncoding = new String(line.getBytes(ENCODING), encoding);
+		String lineParsed = parseString(lineEncoding);
+		tempArr = lineParsed.split(delimiter);
+		AcademicInfo academicInfo = new AcademicInfo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4]);
+		TimeSlot timeSlot;
+		Room room;
+		if(tempArr.length == 8) { // Falta a sala, a capacidade e a data
+			timeSlot = new TimeSlot(tempArr[5], null, tempArr[6], tempArr[7]);
+			room = new Room(null, (Integer)null);
+		} else if(tempArr.length == 9) { // Falta a sala e a capacidade
+			timeSlot = new TimeSlot(tempArr[5], tempArr[8], tempArr[6], tempArr[7]);
+			room = new Room(null, (Integer)null);
+		} else {
+			if(tempArr[8].equals("")) { // Falta a data
+				timeSlot = new TimeSlot(tempArr[5], null, tempArr[6], tempArr[7]);
+				room = new Room(tempArr[9], tempArr[10]);
+			} else { // Completo
+				timeSlot = new TimeSlot(tempArr[5], tempArr[8], tempArr[6], tempArr[7]);
+				room = new Room(tempArr[9], tempArr[10]);
+			}
+		}
+		return new Lecture(academicInfo, timeSlot, room);
+	}
+	
+	private static String parseString(String line) {
+		String lineReplace = line.replace(", ", " | ");
+		String lineRemove = lineReplace.replace("\"", "\'");
+		if(lineRemove.contains("\'")) {
+			String lineFinal = lineRemove;
+			while(lineFinal.contains("\'")) {
+				Integer nInicio = lineFinal.indexOf("\'");
+				String temp = lineFinal.substring(nInicio+1);
+				Integer nFim = temp.indexOf("\'");
+				String subString = lineFinal.substring(nInicio+1, nInicio+nFim+1);
+				String subStringReplace = subString.replace(",", ".");
+				lineFinal = lineFinal.replace("\'" + subString + "\'", subStringReplace);
+			}
+			return lineFinal;
+		}
+		return lineRemove;
+	}
+	
 
 	@Override
 	public String toString() {
