@@ -1,13 +1,23 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 /**
  * @author alfdozen
@@ -28,10 +38,16 @@ final class Schedule {
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
 	static final String READ_EXCEPTION = "Error: File read";
+	static final String READ_WRITE_EXCEPTION = "Error: File read or write";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String ENCODING = "ISO-8859-1";
 	static final String DELIMITER = ",";
 	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
+	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
+	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
+	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -123,6 +139,104 @@ final class Schedule {
 		if (!lectures.isEmpty()) {
 			this.lectures.remove(lecture);
 		}
+	}
+	
+	
+	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, String encoding) throws IOException{
+		if (csvSourcePath == null) 
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		if (jsonDestinationPath == null) 
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		if(encoding == null) 
+			encoding = ENCODING;
+
+		File csvFile = new File(csvSourcePath);
+		File jsonFile = new File(jsonDestinationPath);
+		
+		if (!csvFile.isFile())
+			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
+		if (!csvFile.getName().endsWith(FILE_FORMAT_CSV))
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
+		if (!jsonFile.getName().endsWith(FILE_FORMAT_JSON))
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
+		if (!jsonFile.getParentFile().isDirectory())
+			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
+		if (jsonFile.isFile())
+			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
+			
+		try (InputStream inputStream = new FileInputStream(csvFile)){
+
+			CsvMapper csvMapper = new CsvMapper();
+			CsvSchema csvSchema = CsvSchema.emptySchema().withHeader().withColumnSeparator(DELIMITER.charAt(0));
+			
+			List<Object> csvData = csvMapper.readerFor(Map.class)
+			            .with(csvSchema)
+			            .readValues(new InputStreamReader(inputStream, encoding))
+			            .readAll();
+			
+			validateCSVData(csvData);
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, csvData);
+		} catch (IOException e) {
+			throw new IOException(READ_WRITE_EXCEPTION);
+		}
+	}
+	
+	static void validateCSVData(List<Object> csvData) {
+		int i = 0;
+	    for (Object row : csvData) {
+	    	Map<Object, Object> rowData = (Map<Object, Object>) row;
+	        if (rowData.size() < 8) {
+	            throw new IllegalArgumentException("At least 1 line of the csv data provided does not have the required values filled!");
+	        }
+	        i++;
+	    }
+	}
+
+	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath) {
+		if (jsonSourcePath == null) 
+			throw new IllegalArgumentException("The path provided for the csv file cannot be null!");
+		if (csvDestinationPath == null) 
+			throw new IllegalArgumentException("The path provided for the json file cannot be null!");
+		try {
+			File jsonFile = new File(jsonSourcePath);
+			// Read JSON data file and store it in a list of objects
+			ObjectMapper jsonMapper = new ObjectMapper();
+			List<Object> data = jsonMapper.readValue(jsonFile, List.class);
+
+			// Convert the JSON data to CSV
+			CsvMapper csvMapper = new CsvMapper();
+			CsvSchema csvSchema = CsvSchema.builder()
+					.setUseHeader(true)
+					.addColumn("Curso")
+					.addColumn("Unidade Curricular")
+					.addColumn("Turno")
+					.addColumn("Turma")
+					.addColumn("Inscritos no turno")
+					.addColumn("Dia da semana")
+					.addColumn("Hora início da aula")
+					.addColumn("Hora fim da aula")
+					.addColumn("Data da aula")
+					.addColumn("Sala atribuída à aula")
+					.addColumn("Lotação da sala")
+					.build()
+					.withColumnSeparator(DELIMITER.charAt(0));
+
+			File csvFile = new File(csvDestinationPath);
+			csvMapper.writerFor(List.class)
+			.with(csvSchema)
+			.writeValue(csvFile, data);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+	
+	static void validateJSONFile() {
+		
 	}
 
 	static Schedule loadCSV(String path, String encoding) {
@@ -224,6 +338,15 @@ final class Schedule {
 	        }
 	    }
 	    return str;
+	}
+	
+	public static void main (String[] args) {
+		try {
+			//convertCSV2JSON("src/resources/horario_exemplo_csv_utf.csv","src/resources/horario-exemplo.json", ENCODING);
+			convertCSV2JSON("src/resources/horario_exemplo_csv_iso.csv","src/resurces/horario-exemplo.json", null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

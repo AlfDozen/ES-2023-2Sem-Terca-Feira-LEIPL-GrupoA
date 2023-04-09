@@ -373,6 +373,27 @@ class ScheduleTest {
 	}
 
 
+	@Test
+	final void testconvertCSV2JSONNull() {
+		String csvSourcePath = null;
+		String jsonDestinationPath = null;
+		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
+	}
+	
+	final void testconvertCSV2JSONNull2() {
+		String csvSourcePath = "src/main/resources/horario-exemplo.csv";
+		String jsonDestinationPath = null;
+		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
+	}
+	
+	@Test
+	final void testconvertCSV2JSONNull3() {
+		String csvSourcePath = null;
+		String jsonDestinationPath = "src/main/resources/horario-exemplo-output.json";
+		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
+	}
+
+
 
 
 
