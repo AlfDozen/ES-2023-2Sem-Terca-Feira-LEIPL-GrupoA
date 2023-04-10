@@ -1,9 +1,14 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.io.File;
+import java.io.FileWriter;
 
 /**
  * @author alfdozen
@@ -125,6 +130,36 @@ final class Schedule {
 		this.lectures.remove(lecture);
 	}
 
+	// MEDOTO PARA GRAVAR EM CSV
+	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
+		// Create a new CSV file
+		File file = new File(fileName);
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+
+		// Write the data to the CSV file
+		FileWriter writer = new FileWriter(file);
+		writer.write(
+				"Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala\n");
+		for (Lecture lecture : schedule.getLectures()) {
+			writer.write(String.format("%s;%s;%s;%s;%d;%s;%s;%s;%s;%s;%s\n",
+
+				lecture.getAcademicInfo().getDegree() != null ? lecture.getAcademicInfo().getDegree().replace(" |", ",") : "",
+				lecture.getAcademicInfo().getCourse() != null ? lecture.getAcademicInfo().getCourse().replace(" |", ",") : "",
+				lecture.getAcademicInfo().getShift() != null ? lecture.getAcademicInfo().getShift().replace(" |", ",") : "",
+				lecture.getAcademicInfo().getClassGroup() != null ? lecture.getAcademicInfo().getClassGroup().replace(" |", ",") : "",
+				lecture.getAcademicInfo().getStudentsEnrolled()  != null ? lecture.getAcademicInfo().getStudentsEnrolled():"",
+				lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay().replace(" |", ",") : "",
+				lecture.getTimeSlot().getTimeBegin() != null ? lecture.getTimeSlot().getTimeBegin() : "",
+				lecture.getTimeSlot().getTimeEnd() != null ? lecture.getTimeSlot().getTimeEnd() : "",
+				lecture.getTimeSlot().getDate() != null ? lecture.getTimeSlot().getDate() : "",
+				lecture.getRoom().getName() != null ? lecture.getRoom().getName().replace(" |", ",") : "",
+				lecture.getRoom().getCapacity() != null ? lecture.getRoom().getCapacity() : ""));
+		}
+		writer.close();
+	}
+
 	@Override
 	public String toString() {
 		String str = "";
@@ -148,5 +183,6 @@ final class Schedule {
 		}
 		return str;
 	}
+
 
 }
