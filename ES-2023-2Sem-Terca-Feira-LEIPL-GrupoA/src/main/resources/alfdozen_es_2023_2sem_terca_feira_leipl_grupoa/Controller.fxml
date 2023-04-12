@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="anchor" minHeight="768.0" minWidth="1045.0" prefHeight="768.0" prefWidth="1045.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="src/main/java/alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.App">
+<AnchorPane fx:id="anchor" minHeight="768.0" minWidth="1045.0" prefHeight="768.0" prefWidth="1045.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.App">
    <children>
       <ScrollPane layoutX="46.0" layoutY="177.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="177.0">
          <content>

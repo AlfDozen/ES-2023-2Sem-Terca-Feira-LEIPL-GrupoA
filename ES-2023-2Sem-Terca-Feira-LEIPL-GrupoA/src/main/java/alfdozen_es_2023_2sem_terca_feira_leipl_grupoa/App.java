@@ -1,4 +1,4 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+package alfdozen_es_2023_2sem_terca_feira_leipl_grupoa;
 
 
 import javafx.application.Application;
@@ -55,7 +55,7 @@ public class App extends Application implements Initializable{
 		try {
 
 //			FXMLLoader loader = new FXMLLoader(Main.class.getResource("Controller.fxml"));
-			scene = new Scene(loadFXML("Controller"), 1000, 680);
+			scene = new Scene(loadFXML("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Controller"), 1000, 680);
 //			Parent root = loader.load();
 //			Scene scene = new Scene(root);
 

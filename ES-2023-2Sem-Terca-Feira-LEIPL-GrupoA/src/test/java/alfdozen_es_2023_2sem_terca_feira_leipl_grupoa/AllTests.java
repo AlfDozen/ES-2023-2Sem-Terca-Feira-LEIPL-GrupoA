@@ -1,4 +1,4 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+package alfdozen_es_2023_2sem_terca_feira_leipl_grupoa;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;

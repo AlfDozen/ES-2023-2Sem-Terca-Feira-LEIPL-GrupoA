@@ -107,7 +107,7 @@
           <artifactId>javafx-maven-plugin</artifactId>
           <version>0.0.6</version>
           <configuration>
-            <mainClass>src/main/java/alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.App</mainClass>
+            <mainClass>alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.App</mainClass>
           </configuration>
         </plugin>
       </plugins>

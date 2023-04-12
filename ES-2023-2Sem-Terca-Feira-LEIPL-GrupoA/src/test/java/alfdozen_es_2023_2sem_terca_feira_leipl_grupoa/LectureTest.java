@@ -1,4 +1,4 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+package alfdozen_es_2023_2sem_terca_feira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Room;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.TimeSlot;
+import alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.AcademicInfo;
+import alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.Lecture;
+import alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.Room;
+import alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.TimeSlot;
 
 class LectureTest {
 
