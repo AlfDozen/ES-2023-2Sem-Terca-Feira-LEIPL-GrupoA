@@ -2,6 +2,9 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
 import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
@@ -372,27 +377,61 @@ class ScheduleTest {
 		
 	}
 
-
-	@Test
-	final void testconvertCSV2JSONNull() {
-		String csvSourcePath = null;
-		String jsonDestinationPath = null;
-		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
+	
+	@ParameterizedTest
+	@CsvSource({
+		"src/resources/horario_exemplo_csv_iso.csv, , IllegalArgumentException",
+		", src/resources/horario-exemplo-output.json, IllegalArgumentException",
+		"src/resources/horario_exemplo_csv_iso, src/resources/horario-exemplo-output.json, IllegalArgumentException",
+		"src/resources/horario_exemplo_csv_iso.csv, src/resources/horario-exemplo-output, IllegalArgumentException",
+		"src/resources/horario_exemplo_csv_iso.csv, src/resources/naoexiste/horario-exemplo-output.json, IllegalArgumentException",
+		"src/resources/horario_exemplo_csv_iso-7-colunas.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER1.json, IllegalArgumentException",// horario-exemplo-output.json deve ser apagado após correr o teste
+		"src/resources/horario_exemplo_csv_iso.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json, N/A",
+		"src/resources/horario_exemplo_csv_iso.csv, src/resources/horario-exemplo_completo.json, IllegalArgumentException",
+		"src/resources/horario_exemplo_csv_nao_existe_iso.csv, src/resources/horario-exemplo_completo.json, IllegalArgumentException",
+	})
+	final void testconvertCSV2JSONArguments(String csvSourcePath, String jsonDestinationPath, String expectedException) {
+	    if (expectedException.equals("IllegalArgumentException")) {
+	        assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath, null));
+	    } else {
+	    	assertFalse(Files.exists(Paths.get(jsonDestinationPath)));
+	    	try {
+				Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath, null);
+				assertTrue(Files.exists(Paths.get(jsonDestinationPath)));
+				Files.deleteIfExists(Paths.get(jsonDestinationPath));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
 	}
 	
-	final void testconvertCSV2JSONNull2() {
-		String csvSourcePath = "src/main/resources/horario-exemplo.csv";
-		String jsonDestinationPath = null;
-		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
+	@ParameterizedTest
+	@CsvSource({
+		"src/resources/horario_exemplo_json_completo.json, , IllegalArgumentException",
+		", src/resources/horario_exemplo_csv_outputJSON2CSV.csv, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo, src/resources/horario_exemplo_csv_outputJSON2CSV.csv, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo.json, src/resources/naoexiste/horario_exemplo_csv_outputJSON2CSV.csv, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_iso.csv, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo_nao_existe.json, src/resources/horario_exemplo_csv_iso.csv, IllegalArgumentException",
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER1.csv, N/A",
+		"src/resources/horario_exemplo-7-colunas.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER2.csv, N/A",
+	})
+	final void testconvertJSON2CSVArguments(String jsonSourcePath, String csvDestinationPath, String expectedException) {
+	    if (expectedException.equals("IllegalArgumentException")) {
+	        assertThrows(IllegalArgumentException.class, () -> Schedule.convertJSON2CSV(jsonSourcePath, csvDestinationPath, null));
+	    } else {
+	    	assertFalse(Files.exists(Paths.get(csvDestinationPath)));
+	    	try {
+				Schedule.convertJSON2CSV(jsonSourcePath, csvDestinationPath, null);
+				assertTrue(Files.exists(Paths.get(csvDestinationPath)));
+				Files.deleteIfExists(Paths.get(csvDestinationPath));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
 	}
 	
-	@Test
-	final void testconvertCSV2JSONNull3() {
-		String csvSourcePath = null;
-		String jsonDestinationPath = "src/main/resources/horario-exemplo-output.json";
-		assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath));
-	}
-
 
 
 
