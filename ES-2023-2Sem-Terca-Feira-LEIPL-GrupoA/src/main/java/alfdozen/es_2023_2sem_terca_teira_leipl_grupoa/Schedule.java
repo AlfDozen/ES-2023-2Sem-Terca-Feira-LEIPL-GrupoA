@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,9 +28,13 @@ final class Schedule {
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
-	static final String ENCODING = "ISO-8859-1";
-	static final String DELIMITER = ",";
+	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String ROW_EXCEPTION = "The row has more columns that the expected";
+	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
+	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
+	static final String EMPTY_ROW = ";;;;;;;;;;";
+	static final Integer NUMBER_COLUMNS = 11;
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -125,24 +128,28 @@ final class Schedule {
 		}
 	}
 
-	static Schedule loadCSV(String path, String encoding) {
+	/**
+	 * This method allows you to load a schedule via a csv file 
+	 * @param path (String) - file path of the csv file
+	 * @return returns a schedule object with all existing lectures in the file given as input
+	 * @throws IllegalArgumentException is thrown if the file path is null
+	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
+	 * @throws IllegalArgumentException is thrown if an error is given when the file is read
+	 */
+	static Schedule loadCSV(String path) {
+		if(path == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
 		if(!path.endsWith(FILE_FORMAT_CSV)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
-		if(encoding == null) {
-			encoding = ENCODING;
-		}
-		String delimiter = DELIMITER;
 		Schedule schedule = new Schedule();
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), encoding));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			String line = "";
-			boolean flag = true;
 			while((line = br.readLine()) != null) {
-				if(flag) {
-					flag = false;
-				} else {
-					Lecture lecture = buildLecture(line, encoding, delimiter);
+				if(!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
+					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
 				}
 			}
@@ -153,54 +160,49 @@ final class Schedule {
 		return schedule;
 	}
 	
-	static Schedule loadCSV(String path) {
-		return loadCSV(path, ENCODING);
-	}
-	
-	private static Lecture buildLecture(String line, String encoding, String delimiter) throws UnsupportedEncodingException {
-		String[] tempArr;
-		String lineEncoding = new String(line.getBytes(ENCODING), encoding);
-		String lineParsed = parseString(lineEncoding);
-		tempArr = lineParsed.split(delimiter);
-		AcademicInfo academicInfo = new AcademicInfo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4]);
-		TimeSlot timeSlot;
-		Room room;
-		if(tempArr.length == 8) { // Falta a sala, a capacidade e a data
-			timeSlot = new TimeSlot(tempArr[5], null, tempArr[6], tempArr[7]);
-			room = new Room(null, (Integer)null);
-		} else if(tempArr.length == 9) { // Falta a sala e a capacidade
-			timeSlot = new TimeSlot(tempArr[5], tempArr[8], tempArr[6], tempArr[7]);
-			room = new Room(null, (Integer)null);
-		} else {
-			if(tempArr[8].equals("")) { // Falta a data
-				timeSlot = new TimeSlot(tempArr[5], null, tempArr[6], tempArr[7]);
-				room = new Room(tempArr[9], tempArr[10]);
-			} else { // Completo
-				timeSlot = new TimeSlot(tempArr[5], tempArr[8], tempArr[6], tempArr[7]);
-				room = new Room(tempArr[9], tempArr[10]);
+	/**
+	 * This method build a lecture object from a csv file entry
+	 * @param line (String) - csv file entry
+	 * @return returns a lecture object from the csv file entry given as input
+	 * @throws IllegalStateException is thrown if the number of columns is greater than expected
+	 */
+	private static Lecture buildLecture(String line) {
+		String[] tempArr = line.split(DELIMITER);
+		if(tempArr.length > NUMBER_COLUMNS) {
+			throw new IllegalStateException(ROW_EXCEPTION);
+		}
+		String[] finalArr = new String[NUMBER_COLUMNS];
+		if(tempArr.length == NUMBER_COLUMNS) {
+			finalArr = buildLine(tempArr);
+		}
+		if(tempArr.length < NUMBER_COLUMNS) {
+			finalArr = buildLine(tempArr);
+			for(int i = tempArr.length; i < NUMBER_COLUMNS; i++) {
+				finalArr[i] = null;
 			}
 		}
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
+		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
+		Room room = new Room(finalArr[9], finalArr[10]);
 		return new Lecture(academicInfo, timeSlot, room);
 	}
 	
-	private static String parseString(String line) {
-		String lineReplace = line.replace(", ", " | ");
-		String lineRemove = lineReplace.replace("\"", "\'");
-		if(lineRemove.contains("\'")) {
-			String lineFinal = lineRemove;
-			while(lineFinal.contains("\'")) {
-				Integer nInicio = lineFinal.indexOf("\'");
-				String temp = lineFinal.substring(nInicio+1);
-				Integer nFim = temp.indexOf("\'");
-				String subString = lineFinal.substring(nInicio+1, nInicio+nFim+1);
-				String subStringReplace = subString.replace(",", ".");
-				lineFinal = lineFinal.replace("\'" + subString + "\'", subStringReplace);
+	/**
+	 * This method allows you to replace empty fields in the csv file entry with null values
+	 * @param array (String[]) - vector with the parsed csv file entry
+	 * @return returns a String[]
+	 */
+	private static String[] buildLine(String[] array) {
+		String[] finalArr = new String[NUMBER_COLUMNS];
+		for(int i = 0; i < array.length; i++) {
+			if(array[i].equals("")) {
+				finalArr[i] = null;
+			} else {
+				finalArr[i] = array[i];
 			}
-			return lineFinal;
 		}
-		return lineRemove;
+		return finalArr;
 	}
-	
 
 	@Override
 	public String toString() {
