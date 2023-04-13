@@ -14,16 +14,15 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<TabPane prefHeight="780.0" prefWidth="1030.0" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.App">
+<TabPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="780.0" prefWidth="1030.0" tabClosingPolicy="ALL_TABS" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.App">
    <tabs>
-      <Tab>
+      <Tab fx:id="dayTab" onSelectionChanged="#showCalendarDay" text="Dia">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <ScrollPane AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="177.0">
                      <content>
-                        <GridPane fx:id="paneCalendar11" prefHeight="554.0" prefWidth="956.0">
+                        <GridPane fx:id="paneCalendarDay" prefHeight="554.0" prefWidth="956.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
@@ -33,26 +32,20 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <DatePicker fx:id="datePicker11" layoutX="649.0" layoutY="79.0" onAction="#showCalendar" />
+                  <DatePicker fx:id="datePickerDay" layoutX="649.0" layoutY="79.0" onAction="#showCalendarDay" />
+                  <Button fx:id="backButtonDay" layoutX="80.0" layoutY="64.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="46.0" prefWidth="88.0" text="Voltar" />
                </children>
             </AnchorPane>
         </content>
-         <graphic>
-            <RadioButton fx:id="daybutton" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#showCalendar" prefHeight="100.0" prefWidth="100.0" text="Dia">
-               <toggleGroup>
-                  <ToggleGroup fx:id="ChooseView" />
-               </toggleGroup>
-            </RadioButton>
-         </graphic>
       </Tab>
-      <Tab>
+      <Tab fx:id="weekTab" onSelectionChanged="#showCalendarWeek" text="Semana">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <DatePicker fx:id="datePicker1" layoutX="649.0" layoutY="79.0" onAction="#showCalendar" />
+                  <DatePicker fx:id="datePickerWeek" layoutX="649.0" layoutY="79.0" onAction="#showCalendarWeek" />
                   <ScrollPane layoutY="168.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="177.0">
                      <content>
-                        <GridPane fx:id="paneCalendar1" prefHeight="554.0" prefWidth="956.0">
+                        <GridPane fx:id="paneCalendarWeek" prefHeight="554.0" prefWidth="956.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                            </columnConstraints>
@@ -62,20 +55,18 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
+                  <Button fx:id="backButtonWeek" layoutX="80.0" layoutY="64.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="46.0" prefWidth="88.0" text="Voltar" />
                </children>
             </AnchorPane>
         </content>
-         <graphic>
-            <RadioButton fx:id="weekbutton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showCalendar" prefHeight="100.0" prefWidth="100.0" text="Semana" textAlignment="CENTER" toggleGroup="$ChooseView" />
-         </graphic>
       </Tab>
-      <Tab>
+      <Tab fx:id="monthTab" onSelectionChanged="#showCalendarMonth" text="Mês">
          <content>
             <AnchorPane>
                <children>
                   <ScrollPane layoutY="168.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="177.0">
                      <content>
-                        <GridPane fx:id="paneCalendar" prefHeight="554.0" prefWidth="956.0">
+                        <GridPane fx:id="paneCalendarMonth" prefHeight="554.0" prefWidth="956.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
@@ -85,13 +76,11 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <DatePicker fx:id="datePicker" layoutX="649.0" layoutY="79.0" onAction="#showCalendar" />
+                  <DatePicker fx:id="datePickerMonth" layoutX="649.0" layoutY="79.0" onAction="#showCalendarMonth" />
+                  <Button fx:id="backButtonMonth" layoutX="80.0" layoutY="64.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="46.0" prefWidth="88.0" text="Voltar" />
                </children>
             </AnchorPane>
          </content>
-         <graphic>
-            <RadioButton fx:id="monthbutton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showCalendar" prefHeight="100.0" prefWidth="100.0" text="Mês" textAlignment="RIGHT" toggleGroup="$ChooseView" />
-         </graphic>
       </Tab>
    </tabs>
 </TabPane>

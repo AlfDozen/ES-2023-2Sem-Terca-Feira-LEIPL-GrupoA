@@ -39,6 +39,10 @@ public class MainScreen extends Application implements Initializable{
 	
     private static Scene scene;
 
+	public static Scene getScene() {
+		return scene;
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -67,6 +71,7 @@ public class MainScreen extends Application implements Initializable{
 	@FXML
 	private void viewSchedule() throws IOException {
 		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule");
+		
 	}
 	
 	@FXML

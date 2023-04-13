@@ -1,30 +1,18 @@
 package alfdozen_es_2023_2sem_terca_feira_leipl_grupoa;
 
 
-import javafx.application.Application;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-//import javafx.scene.web.WebEngine;
-//import javafx.scene.web.WebView;
 
 
 public class App implements Initializable{
@@ -33,31 +21,36 @@ public class App implements Initializable{
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
 
 	@FXML 
-	private RadioButton monthbutton; 
-	@FXML
-	private RadioButton daybutton;
-	@FXML
-	private RadioButton weekbutton;
-
-	//	@FXML
-	//	private WebView webView = new WebView();
+	private Tab monthTab;
+	@FXML 
+	private Tab dayTab;
+	@FXML 
+	private Tab weekTab;
 
 	@FXML
-	private GridPane paneCalendar;
+	private GridPane paneCalendarDay;
+	@FXML
+	private GridPane paneCalendarWeek;
+	@FXML
+	private GridPane paneCalendarMonth;
 
 	@FXML
-	private DatePicker datePicker;
+	private DatePicker datePickerDay;
+	@FXML
+	private DatePicker datePickerWeek;
+	@FXML
+	private DatePicker datePickerMonth;
 
 	@FXML
-	private void showButtons() {
-		// clear the GridPane
-		daybutton.setVisible(true);
-		weekbutton.setVisible(true);
-		monthbutton.setVisible(true);
-	}
+	private Button backButtonDay;
+	@FXML
+	private Button backButtonWeek;
+	@FXML
+	private Button backButtonMonth;
+
 
 	@FXML
-	private void clearGridContent() {
+	private void clearGridContent(GridPane paneCalendar) {
 		// clear the GridPane
 		paneCalendar.getChildren().clear();
 		paneCalendar.getRowConstraints().clear();
@@ -65,28 +58,28 @@ public class App implements Initializable{
 	}
 
 	@FXML
-	private void defineGridLayout() {
+	private void defineGridLayout(GridPane paneCalendar) {
 		paneCalendar.setHgap(50);
 		paneCalendar.setVgap(50);
 
-		paneCalendar.prefWidthProperty().bind(monthbutton.getScene().widthProperty());
-		paneCalendar.prefHeightProperty().bind(monthbutton.getScene().heightProperty());
+		//		paneCalendar.prefWidthProperty().bind(monthtab.getScene().widthProperty());
+		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
 
 	}
 
 	@FXML
-	private void allMonthLayout() {
+	private void allMonthLayout(GridPane paneCalendar) {
 		paneCalendar.setHgap(80);
 		paneCalendar.setVgap(80);
 
-		paneCalendar.prefWidthProperty().bind(monthbutton.getScene().widthProperty());
-		paneCalendar.prefHeightProperty().bind(monthbutton.getScene().heightProperty());
+		//		paneCalendar.prefWidthProperty().bind(monthtab.getScene().widthProperty());
+		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
 
 	}
 
 
 	@FXML
-	private void setDefaultHours() {
+	private void setDefaultHours(GridPane paneCalendar) {
 
 		int startingHour = 8;
 		int row = 1;
@@ -99,22 +92,33 @@ public class App implements Initializable{
 		}
 	}
 
+	@FXML
+	private void returnHome() {
+		try {
+			MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Main");
+		} catch (IOException e) {
+			System.err.println("Erro ao tentar retornar");
+		}
+
+	}
+
 	//   ######################### MOSTRAR CALENDARIO #################################################### //
 
+
+	//  ######################### MÊS #################################################### //
+
 	@FXML
-	public void showCalendar() {
+	public void showCalendarMonth() {
 
-		//  ######################### MÊS #################################################### //
+		if(datePickerMonth.getValue() != null) {
 
-		if(monthbutton.isSelected()) {
-
-			clearGridContent();
+			clearGridContent(paneCalendarMonth);
 
 			for (int i = 0; i < daysOfWeek.length; i++) {
 
 				Label dayLabel = new Label(daysOfWeek[i]);
 
-				paneCalendar.add(dayLabel, i, 0);
+				paneCalendarMonth.add(dayLabel, i, 0);
 			}
 
 			// Add date labels
@@ -122,14 +126,14 @@ public class App implements Initializable{
 			int numCols = 7; // number of columns in the calendar grid
 			int dayOfMonth = 1; // starting day of the month
 
-			LocalDate selectDate = datePicker.getValue();
+			LocalDate selectDate = datePickerMonth.getValue();
 			LocalDate firstDay = selectDate.minusDays(selectDate.getDayOfMonth() - 1);
 
 			DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
 
 			for (int col = dayOfWeek.getValue()-1; col < numCols; col++) {
 				Label dateLabel = new Label(Integer.toString(dayOfMonth));
-				paneCalendar.add(dateLabel, col, 1);
+				paneCalendarMonth.add(dateLabel, col, 1);
 				dayOfMonth++;
 			}
 
@@ -138,27 +142,31 @@ public class App implements Initializable{
 				for (int col = 0; col < numCols; col++) {
 					if (dayOfMonth <= getNumDaysInMonth()) {
 						Label dateLabel = new Label(Integer.toString(dayOfMonth));
-						paneCalendar.add(dateLabel, col, row);
+						paneCalendarMonth.add(dateLabel, col, row);
 						dayOfMonth++;
 					}
 				}
 			}
 
-			allMonthLayout();
+			allMonthLayout(paneCalendarMonth);
 		}
+	}
 
-		//  ######################### SEMANA #################################################### //
+	//  ######################### SEMANA #################################################### //
 
-		if(weekbutton.isSelected()) {
+	@FXML
+	public void showCalendarWeek() {
 
-			clearGridContent();
-			setDefaultHours();
+		if(datePickerWeek.getValue() != null) {
 
-			LocalDate selectedDate = datePicker.getValue();
+			clearGridContent(paneCalendarWeek);
+			setDefaultHours(paneCalendarWeek);
+
+			LocalDate selectedDate = datePickerWeek.getValue();
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 			LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
 
-			datePicker.getValue().plusDays(1);
+			datePickerWeek.getValue().plusDays(1);
 
 			for (int i = 0; i < daysOfWeek.length; i++) {
 
@@ -166,66 +174,53 @@ public class App implements Initializable{
 				dayLabel.setMinHeight(50);
 				dayLabel.setMinHeight(50);
 
-				paneCalendar.add(dayLabel, i+1, 0);
+				paneCalendarWeek.add(dayLabel, i+1, 0);
 			}
 
-			defineGridLayout();
+			defineGridLayout(paneCalendarWeek);
 		}
+	}
 
-		//  ######################### DIA #################################################### //
+	//  ######################### DIA #################################################### //
 
-		if(daybutton.isSelected()) {
+	@FXML
+	public void showCalendarDay() {
 
-			clearGridContent();
-			setDefaultHours();
+		if(datePickerDay.getValue() != null) {
 
-			LocalDate selectedDate = datePicker.getValue();
+			clearGridContent(paneCalendarDay);
+			setDefaultHours(paneCalendarDay);
+
+			LocalDate selectedDate = datePickerDay.getValue();
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 
 			Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 			dayLabel.setMinHeight(50);
 			dayLabel.setMinHeight(50);
 
-			paneCalendar.add(dayLabel, 1, 0);
+			paneCalendarDay.add(dayLabel, 1, 0);
 
-			defineGridLayout();
+			defineGridLayout(paneCalendarDay);
 		}
 	}
 
+	public boolean validateEntry(int value, int option) {
+
+		return value == option;
+	}
 
 	// Returns the number of days in the current month
 	private int getNumDaysInMonth() {
 		// Replace with your own logic to determine the number of days in the current month
-		int numberOfDays = 0;
+		int value = datePickerMonth.getValue().getMonthValue(); 
 
-		switch(datePicker.getValue().getMonthValue()) {
+		if(validateEntry(value, 2))
+			return 28;
+		else 
+			if(validateEntry(value, 4) || validateEntry(value, 6) || validateEntry(value, 9) || validateEntry(value, 11))
+				return 30;
 
-		case 1 : 
-			numberOfDays = 31; break;
-		case 2 : 
-			numberOfDays = 28; break;
-		case 3 : 
-			numberOfDays = 31; break;
-		case 4 : 
-			numberOfDays = 30; break;
-		case 5 : 
-			numberOfDays = 31; break;
-		case 6 : 
-			numberOfDays = 30; break;
-		case 7 : 
-			numberOfDays = 31; break;
-		case 8 : 
-			numberOfDays = 31; break;
-		case 9 : 
-			numberOfDays = 30; break;
-		case 10 : 
-			numberOfDays = 31; break;
-		case 11 : 
-			numberOfDays = 30; break;
-		case 12 : 
-			numberOfDays = 31; break;
-		}
-		return numberOfDays;
+		return 31;
 	}
 
 
@@ -235,8 +230,10 @@ public class App implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		datePicker.setValue(LocalDate.now());
-		showButtons();
+		System.out.println("Set Pickers");
+		datePickerDay.setValue(LocalDate.now());
+		datePickerMonth.setValue(LocalDate.now());
+		datePickerWeek.setValue(LocalDate.now());
 
 	}
 }
