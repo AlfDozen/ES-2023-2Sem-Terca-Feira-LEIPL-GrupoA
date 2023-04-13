@@ -27,7 +27,7 @@ import javafx.scene.layout.*;
 //import javafx.scene.web.WebView;
 
 
-public class App extends Application implements Initializable{
+public class App2 extends Application implements Initializable{
 
 
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
@@ -55,7 +55,7 @@ public class App extends Application implements Initializable{
 		try {
 
 //			FXMLLoader loader = new FXMLLoader(Main.class.getResource("Controller.fxml"));
-			scene = new Scene(loadFXML("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule"), 1000, 680);
+			scene = new Scene(loadFXML("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule2"), 1000, 680);
 //			Parent root = loader.load();
 //			Scene scene = new Scene(root);
 
@@ -75,7 +75,7 @@ public class App extends Application implements Initializable{
 	    }
 	   
 	   private static Parent loadFXML(String fxml) throws IOException {
-	        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+	        FXMLLoader fxmlLoader = new FXMLLoader(App2.class.getResource(fxml + ".fxml"));
 	        return fxmlLoader.load();
 	    }
 
