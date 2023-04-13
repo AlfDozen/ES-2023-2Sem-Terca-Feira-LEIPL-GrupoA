@@ -1,5 +1,8 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author alfdozen
  * 
@@ -11,12 +14,15 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  *         it can be checked if there are still null attributes.
  * 
  */
-
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 final class Room {
 
 	static final String NEGATIVE_EXCEPTION = "Room needs to have a positive number capacity";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
+	
+	@JsonProperty("Sala atribuída à aula")
 	private String name;
+	@JsonProperty("Lotação da sala")
 	private Integer capacity;
 
 	Room(String name, Integer capacity) {

@@ -1,5 +1,11 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 /**
  * @author alfdozen
  * 
@@ -12,14 +18,18 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  *         ordered by date, by time of beginning and finally by time of ending.
  *         Null attributes are always considered to be before non-null
  *         attributes.
- *         
+ * 
  */
+
 
 final class Lecture implements Comparable<Lecture> {
 
 	static final String FOR_NULL = "Unknown";
+	@JsonUnwrapped
 	private AcademicInfo academicInfo;
+	@JsonUnwrapped
 	private TimeSlot timeSlot;
+	@JsonUnwrapped
 	private Room room;
 
 	Lecture(AcademicInfo academicInfo, TimeSlot timeSlot, Room room) {

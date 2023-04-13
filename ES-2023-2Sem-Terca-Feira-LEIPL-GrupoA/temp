@@ -1,0 +1,62 @@
+{
+  "lectures" : [ {
+    "academicInfo" : {
+      "Curso" : "ME",
+      "course" : "Teoria dos Jogos e dos Contratos",
+      "shift" : "01789TP01",
+      "classGroup" : "MEA1",
+      "studentsEnrolled" : 30
+    },
+    "timeSlot" : {
+      "weekDay" : "Sex",
+      "date" : null,
+      "timeBegin" : [ 13, 0 ],
+      "timeEnd" : [ 14, 30 ],
+      "wasWeekDayCorrect" : true
+    },
+    "room" : {
+      "name" : "AA2.25",
+      "capacity" : 34
+    }
+  }, {
+    "academicInfo" : {
+      "Curso" : "LETI | LEI | LEI-PL | LIGE | LIGE-PL",
+      "course" : "Fundamentos de Arquitectura de Computadores",
+      "shift" : "L0705TP23",
+      "classGroup" : "ET-A9 | ET-A8 | ET-A7 | ET-A12 | ET-A11 | ET-A10",
+      "studentsEnrolled" : 44
+    },
+    "timeSlot" : {
+      "weekDay" : "Sex",
+      "date" : [ 2022, 9, 16 ],
+      "timeBegin" : [ 13, 0 ],
+      "timeEnd" : [ 14, 30 ],
+      "wasWeekDayCorrect" : true
+    },
+    "room" : {
+      "name" : null,
+      "capacity" : null
+    }
+  }, {
+    "academicInfo" : {
+      "Curso" : "PIUDHIST",
+      "course" : "Seminário de Projecto I (Piudhist)",
+      "shift" : "SP-I_(Piudhist)S01",
+      "classGroup" : "DHMCMG1",
+      "studentsEnrolled" : 0
+    },
+    "timeSlot" : {
+      "weekDay" : "Seg",
+      "date" : [ 2022, 10, 31 ],
+      "timeBegin" : [ 18, 0 ],
+      "timeEnd" : [ 20, 0 ],
+      "wasWeekDayCorrect" : true
+    },
+    "room" : {
+      "name" : "AA2.23",
+      "capacity" : 50
+    }
+  } ],
+  "studentName" : null,
+  "studentNumber" : null
+}
