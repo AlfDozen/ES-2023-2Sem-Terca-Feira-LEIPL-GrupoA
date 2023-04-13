@@ -30,6 +30,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 
@@ -56,7 +58,7 @@ final class Schedule {
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
-	
+
 	private List<Lecture> lectures;
 	@JsonIgnore
 	private String studentName;
@@ -172,9 +174,15 @@ final class Schedule {
 		this.lectures.remove(lecture);
 	}
 
-	// MEDOTO PARA GRAVAR EM CSV
-	public static boolean saveToCSV(Schedule schedule, String fileName) throws IOException { // mudar para void depois
-																								// dos testes
+	/**
+	 * Saves a given schedule to a CSV file with the specified file name. The file
+	 * will be created if it does not already exist.
+	 * 
+	 * @param schedule the schedule to save
+	 * @param fileName the name of the file to save to (without extension)
+	 * @throws IOException if an I/O error occurs while writing the file
+	 */
+	public static void saveToCSV(Schedule schedule, String fileName) throws IOException { 
 		// Create a new CSV file
 		File file = new File(fileName + ".csv");
 		if (!file.exists()) {
@@ -185,34 +193,28 @@ final class Schedule {
 		FileWriter writer = new FileWriter(file);
 		writer.write(
 				"Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala\n");
+
+		// Loop through each lecture in the schedule and write its data to the CSV file
 		for (Lecture lecture : schedule.getLectures()) {
 			writer.write(String.format("%s;%s;%s;%s;%d;%s;%s;%s;%s;%s;%s\n",
-
-					lecture.getAcademicInfo().getDegree() != null
-							? lecture.getAcademicInfo().getDegree().replace(" |", ",")
-							: "",
-					lecture.getAcademicInfo().getCourse() != null
-							? lecture.getAcademicInfo().getCourse().replace(" |", ",")
-							: "",
-					lecture.getAcademicInfo().getShift() != null
-							? lecture.getAcademicInfo().getShift().replace(" |", ",")
-							: "",
-					lecture.getAcademicInfo().getClassGroup() != null
-							? lecture.getAcademicInfo().getClassGroup().replace(" |", ",")
-							: "",
+					// Use lambda to check for null values in lecture data and insert empty strings
+					// if necessary
+					lecture.getAcademicInfo().getDegree() != null ? lecture.getAcademicInfo().getDegree() : "",
+					lecture.getAcademicInfo().getCourse() != null ? lecture.getAcademicInfo().getCourse() : "",
+					lecture.getAcademicInfo().getShift() != null ? lecture.getAcademicInfo().getShift() : "",
+					lecture.getAcademicInfo().getClassGroup() != null ? lecture.getAcademicInfo().getClassGroup() : "",
 					lecture.getAcademicInfo().getStudentsEnrolled() != null
 							? lecture.getAcademicInfo().getStudentsEnrolled()
 							: "",
-					lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay().replace(" |", ",")
-							: "",
+					lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay() : "",
 					lecture.getTimeSlot().getTimeBegin() != null ? lecture.getTimeSlot().getTimeBegin() : "",
 					lecture.getTimeSlot().getTimeEnd() != null ? lecture.getTimeSlot().getTimeEnd() : "",
 					lecture.getTimeSlot().getDate() != null ? lecture.getTimeSlot().getDate() : "",
-					lecture.getRoom().getName() != null ? lecture.getRoom().getName().replace(" |", ",") : "",
+					lecture.getRoom().getName() != null ? lecture.getRoom().getName() : "",
 					lecture.getRoom().getCapacity() != null ? lecture.getRoom().getCapacity() : ""));
 		}
 		writer.close();
-		return true;//remover depois dos testes
+
 	}
 
 	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
@@ -220,51 +222,29 @@ final class Schedule {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule()); // register the JavaTimeModule
 
-		// Write the schedule to a JSON file
-		
-//	    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//	    mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-//	    mapper.configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true);
+//	 
 //		
-	 mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // if needed
-	
-	   mapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-	    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-	    mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	    mapper.getSerializerProvider().setNullValueSerializer(new ToStringSerializer());
-		
-	    List<Lecture> lectures = schedule.getLectures();
-	    String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lectures);
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // if needed
+		mapper.configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, true);
+		mapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+		mapper.getSerializerProvider().setNullValueSerializer(new ToStringSerializer());
 
-	    // Write the JSON to a file
-	    FileWriter fileWriter = new FileWriter(fileName);
-	    fileWriter.write(json);
-	    fileWriter.close();
-		
-	
-		//mapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName), schedule);
+		List<Lecture> lectures = schedule.getLectures();
+		String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lectures);
+
+		// Write the JSON to a file
+		FileWriter fileWriter = new FileWriter(fileName);
+		fileWriter.write(json);
+		fileWriter.close();
+
 
 		System.out.println("Schedule saved to JSON file successfully.");
 
 	}
 
-//	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
-//	    // Create an ObjectMapper instance
-//	    ObjectMapper mapper = new ObjectMapper();
-//	    mapper.registerModule(new JavaTimeModule()); // register the JavaTimeModule
-//
-//	    // Customize the datetime forma
-//	    // Write the schedule to a JSON file
-//	    List<Lecture> lectures = schedule.getLectures();
-//	    String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lectures);
-//
-//	    // Write the JSON to a file
-//	    FileWriter fileWriter = new FileWriter(fileName);
-//	    fileWriter.write(json);
-//	    fileWriter.close();
-//
-//	    System.out.println("Schedule saved to JSON file successfully.");
-//	}
+
 
 	public static void main(String[] args) throws IOException {
 
@@ -273,7 +253,7 @@ final class Schedule {
 				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
 				new Room("AA2.23", 50));
 		Lecture lecture2 = new Lecture(
-				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+				new AcademicInfo("","Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
 				new TimeSlot("Sex", null, LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)), new Room("AA2.25", 34));
 		Lecture lecture3 = new Lecture(
 				new AcademicInfo("LETI , LEI , LEI-PL , LIGE , LIGE-PL", "Fundamentos de Arquitectura de Computadores",
