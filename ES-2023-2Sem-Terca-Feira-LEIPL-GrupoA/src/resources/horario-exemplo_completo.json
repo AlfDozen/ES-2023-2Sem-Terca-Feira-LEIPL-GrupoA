@@ -1,4 +1,7 @@
+
+
 [ {
+
   "Curso" : "PIUDHIST",
   "Unidade Curricular" : "Seminário de Projecto I (Piudhist)",
   "Turno" : "SP-I_(Piudhist)S01",
@@ -6,6 +9,9 @@
   "Inscritos no turno" : "0",
   "Dia da semana" : "Seg",
   "Hora início da aula" : "18:00:00",
+
+
+
   "Hora fim da aula" : "20:00:00",
   "Data da aula" : "31/10/2022",
   "Sala atribuída à aula" : "AA2.23",

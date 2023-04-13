@@ -1,20 +1,24 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
@@ -47,6 +51,7 @@ final class Schedule {
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
 	private List<Lecture> lectures;
@@ -143,13 +148,22 @@ final class Schedule {
 	}
 	
 	
-	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, String encoding) throws IOException{
+	/**
+	Converts a CSV file to a JSON file.
+
+	@param csvSourcePath the path of the CSV file to convert.
+	@param jsonDestinationPath the path of the JSON file to create.
+	@param delimiter the delimiter character used in the CSV file.
+	@throws IOException if there is an I/O error reading or writing the files.
+	@throws IllegalArgumentException if any of the input arguments are null or invalid.
+	*/
+	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter) throws IOException{
 		if (csvSourcePath == null) 
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		if (jsonDestinationPath == null) 
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if(encoding == null) 
-			encoding = ENCODING;
+		if (delimiter == null) 
+			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
 
 		File csvFile = new File(csvSourcePath);
 		File jsonFile = new File(jsonDestinationPath);
@@ -165,18 +179,34 @@ final class Schedule {
 		if (jsonFile.isFile())
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
 			
-		try (InputStream inputStream = new FileInputStream(csvFile)){
-
+		String destinationTempFilePath = "src/resources/tmpfile.csv";
+		
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath));
+			BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath));){
+			
+			String line;
+			while((line = reader.readLine()) != null) {
+				if(!line.isBlank()) {
+					writer.append(line);
+					writer.newLine();
+				}
+			}
+		}
+		try (InputStream inputStream = new FileInputStream(destinationTempFilePath)){
+			
 			CsvMapper csvMapper = new CsvMapper();
-			CsvSchema csvSchema = CsvSchema.emptySchema().withHeader().withColumnSeparator(DELIMITER.charAt(0));
+			CsvSchema csvSchema = CsvSchema.builder()
+                    .setColumnSeparator(delimiter)
+                    .setUseHeader(true)
+                    .build();
 			
-			List<Object> csvData = csvMapper.readerFor(Map.class)
-			            .with(csvSchema)
-			            .readValues(new InputStreamReader(inputStream, encoding))
-			            .readAll();
+	        List<Object> csvData = csvMapper.readerFor(Map.class)
+	            .with(csvSchema)
+	            .readValues(new InputStreamReader(inputStream))
+	            .readAll();
 			
-			validateCSVData(csvData);
-			
+	        Files.deleteIfExists(Paths.get(destinationTempFilePath));
+	        
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, csvData);
 		} catch (IOException e) {
@@ -184,24 +214,28 @@ final class Schedule {
 		}
 	}
 	
-	static void validateCSVData(List<Object> csvData) {
-	    for (Object row : csvData) {
-	    	Map<Object, Object> rowData = (Map<Object, Object>) row;
-	        if (rowData.size() < 8) {
-	            throw new IllegalArgumentException(FILE_MISSING_DATA);
-	        }
-	    }
-	}
 
-	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, String encoding) throws IOException {
+
+	/**
+	Converts a JSON file to a CSV file.
+
+	@param jsonSourcePath the path of the JSON file to convert.
+	@param csvDestinationPath the path of the CSV file to create.
+	@param delimiter the delimiter character used in the CSV file.
+	@throws IOException if there is an I/O error reading or writing the files.
+	@throws IllegalArgumentException if any of the input arguments are null or invalid.
+	*/
+	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter) throws IOException {
 		if (jsonSourcePath == null) 
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		if (csvDestinationPath == null) 
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (encoding == null)
-			encoding = ENCODING;
+		if (delimiter == null) 
+			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
+		
 		File jsonFile = new File(jsonSourcePath);
 		File csvFile = new File(csvDestinationPath);
+		
 		if (!jsonFile.isFile())
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
 		if (!csvFile.getName().endsWith(FILE_FORMAT_CSV))
@@ -213,15 +247,12 @@ final class Schedule {
 		if (csvFile.isFile())
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
 		
-		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile), encoding);
-			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile), encoding)){
+		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile));
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile))){
 			
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
-			
-			validateJSONFile(data);
 
-			// Convert the JSON data to CSV
 			CsvMapper csvMapper = new CsvMapper();
 			CsvSchema csvSchema = CsvSchema.builder()
 					.setUseHeader(true)
@@ -238,8 +269,7 @@ final class Schedule {
 					.addColumn("Sala atribuída à aula")
 					.addColumn("Lotação da sala")
 					.build()
-					.withColumnSeparator(DELIMITER.charAt(0));
-			
+					.withColumnSeparator(delimiter);
 			
 			csvMapper.writerFor(List.class)
 			        .with(csvSchema)
@@ -249,15 +279,6 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 
-	}
-	
-	static void validateJSONFile(List<Object> data) {
-		for (Object obj : data) {
-		   Map<Object, Object> map = (Map<Object, Object>) obj;
-		   if (map.size() < 8)
-			   throw new IllegalArgumentException(FILE_MISSING_DATA);
-		    
-		}
 	}
 
 	static Schedule loadCSV(String path, String encoding) {
