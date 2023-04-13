@@ -27,57 +27,26 @@ import javafx.scene.layout.*;
 //import javafx.scene.web.WebView;
 
 
-public class App extends Application implements Initializable{
+public class App implements Initializable{
 
 
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
-	
+
 	@FXML 
 	private RadioButton monthbutton; 
 	@FXML
 	private RadioButton daybutton;
 	@FXML
 	private RadioButton weekbutton;
-	
-//	@FXML
-//	private WebView webView = new WebView();
-	
+
+	//	@FXML
+	//	private WebView webView = new WebView();
+
 	@FXML
 	private GridPane paneCalendar;
 
 	@FXML
 	private DatePicker datePicker;
-	
-    private static Scene scene;
-
-	@Override
-	public void start(Stage primaryStage) {
-		try {
-
-//			FXMLLoader loader = new FXMLLoader(Main.class.getResource("Controller.fxml"));
-			scene = new Scene(loadFXML("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule"), 1000, 680);
-//			Parent root = loader.load();
-//			Scene scene = new Scene(root);
-
-			//			daybutton.getScene().setRoot(mainViewRoot);
-
-//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.show();
-
-		} catch(Exception e) {
-			System.err.println("Erro ao tentar correr o conteudo do controller");
-		}
-	}
-
-	   static void setRoot(String fxml) throws IOException {
-	        scene.setRoot(loadFXML(fxml));
-	    }
-	   
-	   private static Parent loadFXML(String fxml) throws IOException {
-	        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-	        return fxmlLoader.load();
-	    }
 
 	@FXML
 	private void showButtons() {
@@ -102,9 +71,9 @@ public class App extends Application implements Initializable{
 
 		paneCalendar.prefWidthProperty().bind(monthbutton.getScene().widthProperty());
 		paneCalendar.prefHeightProperty().bind(monthbutton.getScene().heightProperty());
-	
+
 	}
-	
+
 	@FXML
 	private void allMonthLayout() {
 		paneCalendar.setHgap(80);
@@ -112,7 +81,7 @@ public class App extends Application implements Initializable{
 
 		paneCalendar.prefWidthProperty().bind(monthbutton.getScene().widthProperty());
 		paneCalendar.prefHeightProperty().bind(monthbutton.getScene().heightProperty());
-	
+
 	}
 
 
@@ -134,137 +103,133 @@ public class App extends Application implements Initializable{
 
 	@FXML
 	public void showCalendar() {
-		
-	//  ######################### MÊS #################################################### //
-		
+
+		//  ######################### MÊS #################################################### //
+
 		if(monthbutton.isSelected()) {
-			
-		clearGridContent();
 
-		for (int i = 0; i < daysOfWeek.length; i++) {
+			clearGridContent();
 
-			Label dayLabel = new Label(daysOfWeek[i]);
+			for (int i = 0; i < daysOfWeek.length; i++) {
 
-			paneCalendar.add(dayLabel, i, 0);
-		}
+				Label dayLabel = new Label(daysOfWeek[i]);
 
-		// Add date labels
-		int numRows = 6; // number of rows in the calendar grid
-		int numCols = 7; // number of columns in the calendar grid
-		int dayOfMonth = 1; // starting day of the month
-		
-		LocalDate selectDate = datePicker.getValue();
-		LocalDate firstDay = selectDate.minusDays(selectDate.getDayOfMonth() - 1);
-		
-		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
-		
-		for (int col = dayOfWeek.getValue()-1; col < numCols; col++) {
-			Label dateLabel = new Label(Integer.toString(dayOfMonth));
-			paneCalendar.add(dateLabel, col, 1);
-			dayOfMonth++;
-		}
-			
-			
-		for (int row = 2; row <= numRows; row++) {			
-			for (int col = 0; col < numCols; col++) {
-				if (dayOfMonth <= getNumDaysInMonth()) {
-					Label dateLabel = new Label(Integer.toString(dayOfMonth));
-					paneCalendar.add(dateLabel, col, row);
-					dayOfMonth++;
+				paneCalendar.add(dayLabel, i, 0);
+			}
+
+			// Add date labels
+			int numRows = 6; // number of rows in the calendar grid
+			int numCols = 7; // number of columns in the calendar grid
+			int dayOfMonth = 1; // starting day of the month
+
+			LocalDate selectDate = datePicker.getValue();
+			LocalDate firstDay = selectDate.minusDays(selectDate.getDayOfMonth() - 1);
+
+			DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
+
+			for (int col = dayOfWeek.getValue()-1; col < numCols; col++) {
+				Label dateLabel = new Label(Integer.toString(dayOfMonth));
+				paneCalendar.add(dateLabel, col, 1);
+				dayOfMonth++;
+			}
+
+
+			for (int row = 2; row <= numRows; row++) {			
+				for (int col = 0; col < numCols; col++) {
+					if (dayOfMonth <= getNumDaysInMonth()) {
+						Label dateLabel = new Label(Integer.toString(dayOfMonth));
+						paneCalendar.add(dateLabel, col, row);
+						dayOfMonth++;
+					}
 				}
 			}
+
+			allMonthLayout();
 		}
 
-		allMonthLayout();
-	}
-		
-	//  ######################### SEMANA #################################################### //
+		//  ######################### SEMANA #################################################### //
 
 		if(weekbutton.isSelected()) {
-		
-		clearGridContent();
-		setDefaultHours();
 
-		LocalDate selectedDate = datePicker.getValue();
-		DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
-		LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
+			clearGridContent();
+			setDefaultHours();
 
-		datePicker.getValue().plusDays(1);
+			LocalDate selectedDate = datePicker.getValue();
+			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
+			LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
 
-		for (int i = 0; i < daysOfWeek.length; i++) {
+			datePicker.getValue().plusDays(1);
 
-			Label dayLabel = new Label(daysOfWeek[i] + "\n" + startOfWeek.plusDays(i).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-			dayLabel.setMinHeight(50);
-			dayLabel.setMinHeight(50);
+			for (int i = 0; i < daysOfWeek.length; i++) {
 
-			paneCalendar.add(dayLabel, i+1, 0);
+				Label dayLabel = new Label(daysOfWeek[i] + "\n" + startOfWeek.plusDays(i).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+				dayLabel.setMinHeight(50);
+				dayLabel.setMinHeight(50);
+
+				paneCalendar.add(dayLabel, i+1, 0);
+			}
+
+			defineGridLayout();
 		}
 
-		defineGridLayout();
-		}
-
-	//  ######################### DIA #################################################### //
+		//  ######################### DIA #################################################### //
 
 		if(daybutton.isSelected()) {
-		
-		clearGridContent();
-		setDefaultHours();
 
-		LocalDate selectedDate = datePicker.getValue();
-		DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
+			clearGridContent();
+			setDefaultHours();
 
-		Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-		dayLabel.setMinHeight(50);
-		dayLabel.setMinHeight(50);
+			LocalDate selectedDate = datePicker.getValue();
+			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 
-		paneCalendar.add(dayLabel, 1, 0);
+			Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+			dayLabel.setMinHeight(50);
+			dayLabel.setMinHeight(50);
 
-		defineGridLayout();
+			paneCalendar.add(dayLabel, 1, 0);
+
+			defineGridLayout();
 		}
 	}
 
-	
+
 	// Returns the number of days in the current month
-		private int getNumDaysInMonth() {
-			// Replace with your own logic to determine the number of days in the current month
-			int numberOfDays = 0;
+	private int getNumDaysInMonth() {
+		// Replace with your own logic to determine the number of days in the current month
+		int numberOfDays = 0;
 
-			switch(datePicker.getValue().getMonthValue()) {
+		switch(datePicker.getValue().getMonthValue()) {
 
-			case 1 : 
-				numberOfDays = 31; break;
-			case 2 : 
-				numberOfDays = 28; break;
-			case 3 : 
-				numberOfDays = 31; break;
-			case 4 : 
-				numberOfDays = 30; break;
-			case 5 : 
-				numberOfDays = 31; break;
-			case 6 : 
-				numberOfDays = 30; break;
-			case 7 : 
-				numberOfDays = 31; break;
-			case 8 : 
-				numberOfDays = 31; break;
-			case 9 : 
-				numberOfDays = 30; break;
-			case 10 : 
-				numberOfDays = 31; break;
-			case 11 : 
-				numberOfDays = 30; break;
-			case 12 : 
-				numberOfDays = 31; break;
-			}
-			return numberOfDays;
+		case 1 : 
+			numberOfDays = 31; break;
+		case 2 : 
+			numberOfDays = 28; break;
+		case 3 : 
+			numberOfDays = 31; break;
+		case 4 : 
+			numberOfDays = 30; break;
+		case 5 : 
+			numberOfDays = 31; break;
+		case 6 : 
+			numberOfDays = 30; break;
+		case 7 : 
+			numberOfDays = 31; break;
+		case 8 : 
+			numberOfDays = 31; break;
+		case 9 : 
+			numberOfDays = 30; break;
+		case 10 : 
+			numberOfDays = 31; break;
+		case 11 : 
+			numberOfDays = 30; break;
+		case 12 : 
+			numberOfDays = 31; break;
 		}
-	
-	
-	//  ######################### MAIN #################################################### //
-
-	public static void main(String[] args) {
-		launch(args);
+		return numberOfDays;
 	}
+
+
+	//  ######################### MAIN #################################################### //
 
 
 	@Override
