@@ -117,9 +117,9 @@ final class Schedule {
 		}
 	}
 
-		String getStudentName() {
-			return studentName;
-		}
+	String getStudentName() {
+		return studentName;
+	}
 
 	void setStudentName(String studentName) {
 		this.studentName = studentName;
@@ -147,7 +147,6 @@ final class Schedule {
 		}
 	}
 	
-	
 	/**
 	Converts a CSV file to a JSON file.
 
@@ -158,22 +157,13 @@ final class Schedule {
 	@throws IllegalArgumentException if any of the input arguments are null or invalid.
 	*/
 	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter) throws IOException{
-		if (csvSourcePath == null) 
-			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (jsonDestinationPath == null) 
-			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (delimiter == null) 
-			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
+		validateArguments(csvSourcePath, jsonDestinationPath, delimiter, FILE_FORMAT_CSV, FILE_FORMAT_JSON);
 
 		File csvFile = new File(csvSourcePath);
 		File jsonFile = new File(jsonDestinationPath);
 		
 		if (!csvFile.isFile())
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
-		if (!csvFile.getName().endsWith(FILE_FORMAT_CSV))
-			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
-		if (!jsonFile.getName().endsWith(FILE_FORMAT_JSON))
-			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
 		if (!jsonFile.getParentFile().isDirectory())
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
 		if (jsonFile.isFile())
@@ -213,8 +203,6 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
-	
-
 
 	/**
 	Converts a JSON file to a CSV file.
@@ -226,22 +214,13 @@ final class Schedule {
 	@throws IllegalArgumentException if any of the input arguments are null or invalid.
 	*/
 	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter) throws IOException {
-		if (jsonSourcePath == null) 
-			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (csvDestinationPath == null) 
-			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (delimiter == null) 
-			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
+		validateArguments(jsonSourcePath, csvDestinationPath, delimiter, FILE_FORMAT_JSON, FILE_FORMAT_CSV);
 		
 		File jsonFile = new File(jsonSourcePath);
 		File csvFile = new File(csvDestinationPath);
 		
 		if (!jsonFile.isFile())
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
-		if (!csvFile.getName().endsWith(FILE_FORMAT_CSV))
-			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
-		if (!jsonFile.getName().endsWith(FILE_FORMAT_JSON))
-			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
 		if (!csvFile.getParentFile().isDirectory())
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
 		if (csvFile.isFile())
@@ -254,22 +233,14 @@ final class Schedule {
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 
 			CsvMapper csvMapper = new CsvMapper();
-			CsvSchema csvSchema = CsvSchema.builder()
-					.setUseHeader(true)
-					.disableQuoteChar()
-					.addColumn("Curso")
-					.addColumn("Unidade Curricular")
-					.addColumn("Turno")
-					.addColumn("Turma")
-					.addColumn("Inscritos no turno")
-					.addColumn("Dia da semana")
-					.addColumn("Hora início da aula")
-					.addColumn("Hora fim da aula")
-					.addColumn("Data da aula")
-					.addColumn("Sala atribuída à aula")
-					.addColumn("Lotação da sala")
-					.build()
-					.withColumnSeparator(delimiter);
+			
+			Map<String, Object> firstRecord = (Map<String, Object>) data.get(0);
+			CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder().setUseHeader(true).disableQuoteChar();
+
+			for (String columnName : firstRecord.keySet()) 
+			    csvSchemaBuilder.addColumn(columnName);
+
+			CsvSchema csvSchema = csvSchemaBuilder.build().withColumnSeparator(delimiter);
 			
 			csvMapper.writerFor(List.class)
 			        .with(csvSchema)
@@ -279,6 +250,27 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 
+	}
+	
+	/**
+	 * Validates the input arguments for file conversion methods.
+	 *
+	 * @param sourcePath      the path of the source file to be converted.
+	 * @param destinationPath the path of the destination file to be created.
+	 * @param delimiter       the delimiter character used in the CSV file (if applicable).
+	 * @param sourceFormat    the expected file format of the source file (e.g., ".csv", ".json").
+	 * @param destinationFormat the expected file format of the destination file (e.g., ".csv", ".json").
+	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 */
+	static void validateArguments(String sourcePath, String destinationPath, Character delimiter, String sourceFormat, String destinationFormat) {
+	    if (sourcePath == null || destinationPath == null)
+	        throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+	    if (delimiter == null)
+	        throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
+	    if (!sourcePath.endsWith(sourceFormat))
+	        throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + sourceFormat);
+	    if (!destinationPath.endsWith(destinationFormat))
+	        throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 	}
 
 	static Schedule loadCSV(String path, String encoding) {
@@ -381,5 +373,16 @@ final class Schedule {
 	    }
 	    return str;
 	}
+	
+	
+	public static void main (String[] args) {
+		try {
+			convertJSON2CSV("src/resources/horario_exemplo_json_completo.json", "src/resources/qq.csv", ';');
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 }
