@@ -12,8 +12,8 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  *         accepted by the constructor and setters. With the function isComplete
  *         it can be checked if there are still null attributes.
  * 
+ * @version 1.0.0
  */
-
 final class AcademicInfo {
 
 	static final String NEGATIVE_EXCEPTION = "The number of students enrolled can't be negative";
@@ -24,6 +24,19 @@ final class AcademicInfo {
 	private String classGroup;
 	private Integer studentsEnrolled;
 
+	/**
+	 * Constructor creates academic information with name of degree, name of the
+	 * course, designation of the shift, designation of the student class and the
+	 * number of students enrolled.
+	 * 
+	 * @param degree           the name of the degree.
+	 * @param course           the name of the course.
+	 * @param shift            the designation of the shift.
+	 * @param classGroup       the designation of the student class.
+	 * @param studentsEnrolled the number of students enrolled.
+	 * @throws IllegalArgumentException if the number of students enrolled is
+	 *                                  negative.
+	 */
 	AcademicInfo(String degree, String course, String shift, String classGroup, Integer studentsEnrolled) {
 		this.degree = degree;
 		this.course = course;
@@ -35,6 +48,22 @@ final class AcademicInfo {
 		this.studentsEnrolled = studentsEnrolled;
 	}
 
+	/**
+	 * Constructor creates academic information with name of degree, name of the
+	 * course, designation of the shift, designation of the student class and the
+	 * number of students enrolled. Receives the number of students enrolled as a
+	 * String and converts to Integer.
+	 * 
+	 * @param degree           the name of the degree.
+	 * @param course           the name of the course.
+	 * @param shift            the designation of the shift.
+	 * @param classGroup       the designation of the student class.
+	 * @param studentsEnrolled the number of students enrolled as a String.
+	 * @throws NumberFormatException    if the number of students enrolled String
+	 *                                  cannot be parsed to an Integer.
+	 * @throws IllegalArgumentException if the number of students enrolled is
+	 *                                  negative.
+	 */
 	AcademicInfo(String degree, String course, String shift, String classGroup, String studentsEnrolled) {
 		this.degree = degree;
 		this.course = course;
@@ -54,22 +83,48 @@ final class AcademicInfo {
 		}
 	}
 
+	/**
+	 * Return the name of the degree.
+	 * 
+	 * @return the name of the degree.
+	 */
 	String getDegree() {
 		return degree;
 	}
 
+	/**
+	 * Sets the name of the degree.
+	 * 
+	 * @param degree the name of the degree.
+	 */
 	void setDegree(String degree) {
 		this.degree = degree;
 	}
 
+	/**
+	 * Return the name of the course.
+	 * 
+	 * @return the name of the course.
+	 */
 	String getCourse() {
 		return course;
 	}
 
+	/**
+	 * Sets the name of the course.
+	 * 
+	 * @param degree the name of the course.
+	 */
 	void setCourse(String course) {
 		this.course = course;
 	}
 
+	/**
+	 * Return the abbreviated name of the course. This abbreviation is built using
+	 * all the upper case characters in the name of the course.
+	 * 
+	 * @return the abbreviated name of the course.
+	 */
 	String getCourseAbbreviation() {
 		if (course == null) {
 			return null;
@@ -84,26 +139,58 @@ final class AcademicInfo {
 		return abb.toString();
 	}
 
+	/**
+	 * Return the designation of the shift.
+	 * 
+	 * @return the designation of the shift.
+	 */
 	String getShift() {
 		return shift;
 	}
 
+	/**
+	 * Sets the designation of the shift.
+	 * 
+	 * @param degree the designation of the shift.
+	 */
 	void setShift(String shift) {
 		this.shift = shift;
 	}
 
+	/**
+	 * Return the designation student class.
+	 * 
+	 * @return the designation of the student class.
+	 */
 	String getClassGroup() {
 		return classGroup;
 	}
 
+	/**
+	 * Sets the designation of the student class.
+	 * 
+	 * @param degree the designation of the student class.
+	 */
 	void setClassGroup(String classGroup) {
 		this.classGroup = classGroup;
 	}
 
+	/**
+	 * Return the number of students enrolled.
+	 * 
+	 * @return the number of students enrolled.
+	 */
 	Integer getStudentsEnrolled() {
 		return studentsEnrolled;
 	}
 
+	/**
+	 * Sets the number of students enrolled.
+	 * 
+	 * @param studentsEnrolled the number of students enrolled.
+	 * @throws IllegalArgumentException if the number of students enrolled is
+	 *                                  negative.
+	 */
 	void setStudentsEnrolled(Integer studentsEnrolled) {
 		if (studentsEnrolled != null && studentsEnrolled < 0) {
 			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
@@ -111,6 +198,16 @@ final class AcademicInfo {
 		this.studentsEnrolled = studentsEnrolled;
 	}
 
+	/**
+	 * Sets the number of students enrolled. Receives the number of students
+	 * enrolled as a String and converts to Integer.
+	 * 
+	 * @param studentsEnrolled the number of students enrolled as a String.
+	 * @throws NumberFormatException    if the number of students enrolled String
+	 *                                  cannot be parsed to an Integer.
+	 * @throws IllegalArgumentException if the number of students enrolled is
+	 *                                  negative.
+	 */
 	void setStudentsEnrolled(String studentsEnrolled) {
 		if (studentsEnrolled == null) {
 			this.studentsEnrolled = null;
@@ -128,10 +225,28 @@ final class AcademicInfo {
 		this.studentsEnrolled = number;
 	}
 
+	/**
+	 * Checks if the name of degree, name of the course, the designation of the
+	 * shift, the designation of the student class and the number of students
+	 * enrolled are not null. If a null is found, the method returns false.
+	 * Otherwise, it returns true.
+	 * 
+	 * @return true if all the academic information is complete (not null); false
+	 *         otherwise.
+	 */
 	boolean isComplete() {
 		return degree != null && course != null && shift != null && classGroup != null && studentsEnrolled != null;
 	}
 
+	/**
+	 * Return a string representation of the academic information, including the
+	 * name of the degree, the name of the course, the designation of the shift, the
+	 * designation of the student class and the number of students enrolled. If any
+	 * of this information is not defined, that information is instead given as
+	 * "Unknown".
+	 * 
+	 * @return a string representation of the academic information.
+	 */
 	@Override
 	public String toString() {
 		String str = "Degree ";
