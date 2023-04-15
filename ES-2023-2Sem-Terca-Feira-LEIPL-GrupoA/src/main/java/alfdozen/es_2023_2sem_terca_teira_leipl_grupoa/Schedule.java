@@ -1,12 +1,9 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -130,7 +127,14 @@ final class Schedule {
 		this.lectures.remove(lecture);
 	}
 
-	// MEDOTO PARA GRAVAR EM CSV
+
+	/**
+	Method that saves a Schedule object to a CSV file.
+
+	@param schedule A schedule to be saved
+	@param fileName A name for the CSV file
+	@throws IOException if an I/O error occurs while writing to the file
+	*/
 	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
 		// Create a new CSV file
 		File file = new File(fileName);
