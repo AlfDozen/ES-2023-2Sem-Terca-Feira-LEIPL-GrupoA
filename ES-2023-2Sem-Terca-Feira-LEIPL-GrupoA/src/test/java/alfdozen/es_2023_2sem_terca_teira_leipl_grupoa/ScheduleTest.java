@@ -147,7 +147,7 @@ class ScheduleTest {
 	final void testScheduleConstructorStringNegativeStudentNumber() {
 		assertThrows(IllegalArgumentException.class, () -> new Schedule("John Doe", "-123"));
 	}
-	
+
 	@Test
 	final void testScheduleConstructorInvalidStringStudentNumber() {
 		assertThrows(NumberFormatException.class, () -> new Schedule("John Doe", "abc"));
@@ -349,6 +349,47 @@ class ScheduleTest {
 	}
 	
 	@Test
+	final void testSaveToCSV() {
+		Lecture lecture = new Lecture(
+				new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+				new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+		Lecture lecture3 = new Lecture(
+				new AcademicInfo("LETI, LEI, LEI-PL, LIGE, LIGE-PL", "Fundamentos de Arquitectura de Computadores",
+						"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
+				new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room("AA2.23", 50));
+		List<Lecture> lectures = new ArrayList<>();
+		lectures.add(lecture);
+		lectures.add(lecture2);
+		lectures.add(lecture3);
+		Schedule expected = new Schedule(lectures);
+
+		try {
+			Schedule.saveToCSV(expected, "teste.csv");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Path path1 = Paths.get("./src/main/resources/Method_save_CSV_horario.csv");
+		Path path2 = Paths.get("teste.csv");
+		long result = 0;
+		try {
+			result = Files.mismatch(path1, path2);
+			Files.deleteIfExists(path2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertTrue(-1 == result);
+
+		IOException saveException = assertThrows(IOException.class,
+				() -> Schedule.saveToCSV(expected, "./src/main/resources/readonly.csv"));
+		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
+
+	}
+
+	@Test
 	final void testToString() {
 	    Schedule schedule = new Schedule();
 	    String expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
@@ -381,7 +422,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	final void testLoadCSV() {
+	final void testLoadCSV() throws IOException {
 		// Path null
 		assertThrows(IllegalArgumentException.class, () -> Schedule.loadCSV(null));
 		
@@ -465,5 +506,68 @@ class ScheduleTest {
 
 	}
 
-
+	@Test
+	final void testLoadJSON() throws IOException {
+		// Path null
+		assertThrows(IllegalArgumentException.class, () -> Schedule.loadJSON(null));
+		
+		// Ficheiro txt
+		assertThrows(IllegalArgumentException.class, () -> Schedule.loadJSON("./src/main/resources/horario_exemplo_txt.txt"));
+		
+		// Path errado
+		assertThrows(IOException.class, () -> Schedule.loadJSON("./src/main/resources/horario_exemplo_nao_existe.json"));
+		
+		// Entrada com campos vazios
+		Lecture lecture4 = new Lecture(new AcademicInfo("ME", null, "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", null, null, LocalTime.of(14, 30, 0)),
+	            new Room(null, (Integer)null));
+		List<Lecture> lectures4 = new ArrayList<>();
+		lectures4.add(lecture4);
+		Schedule expected4 = new Schedule(lectures4);
+		assertEquals(expected4.toString(), Schedule.loadJSON("./src/main/resources/horario_exemplo_json_campos_vazios.json").toString());
+		
+		// Entrada tudo ok
+		Lecture lecture3 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room("AA2.25", 34));
+		List<Lecture> lectures3 = new ArrayList<>();
+		lectures3.add(lecture3);
+		Schedule expected3 = new Schedule(lectures3);
+		assertEquals(expected3.toString(), Schedule.loadJSON("./src/main/resources/horario_exemplo_json.json").toString());
+		
+		// Entrada tudo ok
+		Lecture lecture5 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room("AA2.25", 34));
+		List<Lecture> lectures5 = new ArrayList<>();
+		lectures5.add(lecture5);
+		Schedule expected5 = new Schedule(lectures5);
+		assertEquals(expected5.toString(), Schedule.loadJSON("./src/main/resources/horario_exemplo_json2.JSON").toString());
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
