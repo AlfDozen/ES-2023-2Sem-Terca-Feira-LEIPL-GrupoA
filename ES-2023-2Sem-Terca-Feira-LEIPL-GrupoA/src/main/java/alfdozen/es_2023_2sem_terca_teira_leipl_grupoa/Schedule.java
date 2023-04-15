@@ -250,24 +250,22 @@ final class Schedule {
 	/**
 	 * This method allows you to load a schedule via a csv file
 	 *
-	 * @param path (String) - file path of the csv file
-	 * @return returns a schedule object with all existing lectures in the file
-	 *         given as input
+	 * @param filePath the path of the csv file
+	 * @return a schedule object with all existing lectures in the file given as input
 	 * @throws IllegalArgumentException is thrown if the file path is null
 	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
-	 * @throws IllegalArgumentException is thrown if an error is given when the file
-	 *                                  is read
+	 * @throws IOException				is thrown if an error is given when the file is read
 	 */
-	static Schedule loadCSV(String path) {
-		if (path == null) {
+	static Schedule loadCSV(String filePath) throws IOException {
+		if (filePath == null) {
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		}
-		if (!path.endsWith(FILE_FORMAT_CSV) && !path.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
+		if (!filePath.endsWith(FILE_FORMAT_CSV) && !filePath.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
 			String line = "";
 			while ((line = br.readLine()) != null) {
 				if (!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
@@ -277,7 +275,7 @@ final class Schedule {
 			}
 			br.close();
 		} catch (IOException e) {
-			throw new IllegalArgumentException(READ_EXCEPTION);
+			throw new IOException(READ_EXCEPTION);
 		}
 		return schedule;
 	}
@@ -285,8 +283,8 @@ final class Schedule {
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
-	 * @param line (String) - csv file entry
-	 * @return returns a lecture object from the csv file entry given as input
+	 * @param line a csv file entry
+	 * @return a lecture object from the csv file entry given as input
 	 * @throws IllegalStateException is thrown if the number of columns is greater
 	 *                               than expected
 	 */
@@ -315,7 +313,7 @@ final class Schedule {
 	 * This method allows you to replace empty fields in the csv file entry with
 	 * null values
 	 *
-	 * @param array (String[]) - vector with the parsed csv file entry
+	 * @param array vector with the parsed csv file entry
 	 * @return returns a String[]
 	 */
 	private static String[] buildLine(String[] array) {
@@ -328,6 +326,63 @@ final class Schedule {
 			}
 		}
 		return finalArr;
+	}	
+	
+	/**
+	 * This method allows to load a schedule via a json file
+	 * 
+	 * @param path the file path of the json file
+	 * @return a schedule object with all existing lectures in the file given as input
+	 * @throws IllegalArgumentException is thrown if the file path is null
+	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
+	 * @throws IOException				is thrown if an error is given when the file is read
+	 */
+	@SuppressWarnings("unchecked")
+	static Schedule loadJSON(String path) throws IOException {
+		if (path == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
+		if (!path.endsWith(FILE_FORMAT_JSON) && !path.endsWith(FILE_FORMAT_JSON.toUpperCase())) {
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
+		}
+		Schedule schedule = new Schedule();
+		String[] headerArr = HEADER.split(DELIMITER);
+		try {
+			Reader reader = new InputStreamReader(new FileInputStream(path));
+			ObjectMapper jsonMapper = new ObjectMapper();
+			List<Object> data = jsonMapper.readValue(reader, List.class);
+			for(int i = 0; i < data.size(); i++) {
+				Map<String, Object> entry = (Map<String, Object>)data.get(i);
+				Lecture lecture = buildLecture(entry, headerArr);
+				schedule.addLecture(lecture);
+			}
+		} catch (IOException e) {
+			throw new IOException(READ_EXCEPTION);
+		}
+		return schedule;
+	}
+	
+	/**
+	 * This method build a lecture object from a json file entry
+	 * 
+	 * @param entry 		json entry in the form of a Map
+	 * @param headerArray	vector with the parsed header
+	 * @return a lecture object from the json file entry given as input
+	 */
+	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) {
+		String[] finalArr = new String[NUMBER_COLUMNS];
+		for(int j = 0; j < NUMBER_COLUMNS; j++) {
+			String aux = (String)entry.get(headerArr[j]);
+			if(aux.equals("")) {
+				finalArr[j] = null;
+			} else {
+				finalArr[j] = aux;
+			}
+		}
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
+		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
+		Room room = new Room(finalArr[9], finalArr[10]);
+		return  new Lecture(academicInfo, timeSlot, room);
 	}
 
 	/**
