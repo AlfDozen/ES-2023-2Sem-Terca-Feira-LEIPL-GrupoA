@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -64,6 +66,7 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -283,16 +286,15 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
 
 	/**
-	This method saves a Schedule object to a JSON file.
-
-	@param schedule A Schedule object to be saved.
-	@param fileName A name for the file to save the Schedule object.
-
-	@throws IOException if an I/O error occurs while writing the JSON file.
-	*/
+	 * This method saves a Schedule object to a JSON file.
+	 * 
+	 * @param schedule A Schedule object to be saved.
+	 * @param fileName A name for the file to save the Schedule object.
+	 * 
+	 * @throws IOException if an I/O error occurs while writing the JSON file.
+	 */
 	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
 
 		List<Lecture> lectures = schedule.getLectures();
@@ -302,81 +304,52 @@ final class Schedule {
 
 		for (Lecture lecture : lectures) {
 			ObjectNode lectureNode = mapper.createObjectNode();
-			String degree = "";
-			if (lecture.getAcademicInfo().getDegree() != null) {
-				degree = lecture.getAcademicInfo().getDegree();
-			}
-			lectureNode.put("Curso", degree);
 
-			String uc = "";
-			if (lecture.getAcademicInfo().getCourse() != null) {
-				uc = lecture.getAcademicInfo().getCourse();
-			}
-			lectureNode.put("Unidade Curricular", uc);
+			String[] attrArray = new String[11];
+			attrArray[0] = lecture.getAcademicInfo().getDegree();
+			attrArray[1] = lecture.getAcademicInfo().getCourse();
+			attrArray[2] = lecture.getAcademicInfo().getShift();
+			attrArray[3] = lecture.getAcademicInfo().getClassGroup();
+			attrArray[5] = lecture.getTimeSlot().getWeekDay();
+			attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
+			attrArray[7] = lecture.getTimeSlot().getTimeEndString();
+			attrArray[8] = lecture.getTimeSlot().getDateString();
+			attrArray[9] = lecture.getRoom().getName();
 
-			String turno = "";
-			if (lecture.getAcademicInfo().getShift() != null) {
-				turno = lecture.getAcademicInfo().getShift();
+			for (int i = 0; i < attrArray.length; i++) {
+				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+					attrArray[i] = "";
+				}
 			}
-			lectureNode.put("Turno", turno);
+			if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
+				attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
 
-			String turma = "";
-			if (lecture.getAcademicInfo().getClassGroup() != null) {
-				turma = lecture.getAcademicInfo().getClassGroup();
-			}
-			lectureNode.put("Turma", turma);
+			if (lecture.getRoom().getCapacity() != null)
+				attrArray[10] = lecture.getRoom().getCapacity().toString();
 
-			String inscritos = "";
-			if (lecture.getAcademicInfo().getStudentsEnrolled() != null) {
-				inscritos = lecture.getAcademicInfo().getStudentsEnrolled().toString();
-			}
-			lectureNode.put("Inscritos no turno", inscritos);
-
-			String weekday = "";
-			if (lecture.getTimeSlot().getWeekDay() != null) {
-				weekday = lecture.getTimeSlot().getWeekDay();
-			}
-			lectureNode.put("Dia da semana", weekday);
-
-			String data = "";
-			if (lecture.getTimeSlot().getDate() != null) {
-				data = lecture.getTimeSlot().getDateString();
-			}
-			lectureNode.put("Data da aula", data);
-
-			String inicio = "";
-			if (lecture.getTimeSlot().getTimeBegin() != null) {
-				inicio = lecture.getTimeSlot().getTimeBeginString();
-			}
-			lectureNode.put("Hora inicio da aula", inicio);
-
-			String fim = "";
-			if (lecture.getTimeSlot().getTimeEnd() != null) {
-				fim = lecture.getTimeSlot().getTimeEndString();
-			}
-			lectureNode.put("Hora fim da aula", fim);
-
-			String sala = "";
-			if (lecture.getRoom().getName() != null) {
-				sala = lecture.getRoom().getName();
-			}
-			lectureNode.put("Sala atribuída à aula", sala);
-
-			String lotacao = "";
-			if (lecture.getRoom().getCapacity() != null) {
-				lotacao = lecture.getRoom().getCapacity().toString();
-			}
-			lectureNode.put("Lotação da sala", lotacao);
+			lectureNode.put("Curso", attrArray[0]);
+			lectureNode.put("Unidade Curricular", attrArray[1]);
+			lectureNode.put("Turno", attrArray[2]);
+			lectureNode.put("Turma", attrArray[3]);
+			lectureNode.put("Inscritos no turno", attrArray[4]);
+			lectureNode.put("Dia da semana", attrArray[5]);
+			lectureNode.put("Hora inicio da aula", attrArray[6]);
+			lectureNode.put("Hora fim da aula", attrArray[7]);
+			lectureNode.put("Data da aula", attrArray[8]);
+			lectureNode.put("Sala atribuída à aula", attrArray[9]);
+			lectureNode.put("Lotação da sala", attrArray[10]);
 
 			lecturesArray.add(lectureNode);
 		}
 
-		String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
-
-		try (FileWriter fileWriter = new FileWriter(fileName)) {
+		try {
+			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
+			FileWriter fileWriter = new FileWriter(fileName);
 			fileWriter.write(json);
+			fileWriter.close();
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
 		}
-
 	}
 
 	/**
