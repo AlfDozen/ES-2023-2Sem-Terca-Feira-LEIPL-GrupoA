@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.CreateSchedule">
+   <children>
+      <Label fx:id="header" alignment="CENTER" layoutX="69.0" layoutY="180.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu número de aluno" />
+      <Button fx:id="save" layoutX="479.0" layoutY="643.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="49.0" prefWidth="131.0" text="Guardar" textAlignment="CENTER">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+      </Button>
+      <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
+      <TextField fx:id="studentNumber" layoutX="87.0" layoutY="244.0" />
+      <TextField fx:id="studentName" layoutX="472.0" layoutY="244.0" />
+      <Label fx:id="header1" alignment="CENTER" layoutX="454.0" layoutY="171.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu nome completo" />
+      <Button fx:id="clear" layoutX="143.0" layoutY="643.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#clear" prefHeight="49.0" prefWidth="131.0" text="Limpar" textAlignment="CENTER">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+      </Button>
+      <ScrollPane layoutX="105.0" layoutY="359.0" prefHeight="243.0" prefWidth="574.0">
+         <content>
+            <GridPane fx:id="lectures" prefHeight="240.0" prefWidth="572.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <Label fx:id="header2" alignment="CENTER" layoutX="97.0" layoutY="310.0" prefHeight="49.0" prefWidth="582.0" text="Seleccione todas as disciplinas que pretenda inserir no seu horário" />
+   </children>
+</AnchorPane>

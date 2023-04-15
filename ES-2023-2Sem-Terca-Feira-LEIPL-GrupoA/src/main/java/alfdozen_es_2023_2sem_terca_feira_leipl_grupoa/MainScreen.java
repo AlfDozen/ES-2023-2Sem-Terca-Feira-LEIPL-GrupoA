@@ -70,23 +70,23 @@ public class MainScreen extends Application implements Initializable{
 
 	@FXML
 	private void viewSchedule() throws IOException {
-		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule");
+		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/ViewSchedule");
 		
 	}
 	
 	@FXML
 	private void createSchedule() throws IOException {
-		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule2");
+		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/CreateSchedule");
 	}
 	
 	@FXML
 	private void uploadSchedule() throws IOException {
-		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule");
+		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/UploadSchedule");
 	}
 	
 	@FXML
 	private void webcal() throws IOException {
-		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Schedule");
+		MainScreen.setRoot("/alfdozen_es_2023_2sem_terca_feira_leipl_grupoa/Webcal");
 	}
 	
 	
@@ -99,6 +99,7 @@ public class MainScreen extends Application implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		image.setImage(photo);
+		header.setText("Bem vindo à plataforma de gestão de horários para alunos ISCTE");
 
 	}
 }

@@ -15,7 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 
-public class App implements Initializable{
+public class ViewSchedule implements Initializable{
 
 
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};

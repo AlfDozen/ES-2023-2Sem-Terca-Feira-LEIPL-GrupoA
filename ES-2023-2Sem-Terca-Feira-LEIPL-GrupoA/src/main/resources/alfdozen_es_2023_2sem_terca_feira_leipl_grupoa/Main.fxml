@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
@@ -10,19 +11,22 @@
 
 <AnchorPane minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen_es_2023_2sem_terca_feira_leipl_grupoa.MainScreen">
    <children>
-      <Label fx:id="header" layoutX="283.0" layoutY="77.0" prefHeight="139.0" prefWidth="428.0" text="Label" />
+      <Label fx:id="header" contentDisplay="CENTER" layoutX="283.0" layoutY="77.0" prefHeight="139.0" prefWidth="428.0" text="Label" wrapText="true">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font></Label>
       <ImageView fx:id="image" fitHeight="150.0" fitWidth="200.0" layoutX="113.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="uploadSchedule" layoutX="132.0" layoutY="349.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onMouseClicked="#uploadSchedule" prefHeight="91.0" prefWidth="223.0" text="Carregar ficheiro de Horário" textAlignment="CENTER">
+      <Button fx:id="uploadSchedule" layoutX="132.0" layoutY="349.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#uploadSchedule" onMouseClicked="#uploadSchedule" prefHeight="91.0" prefWidth="223.0" text="Carregar ficheiro de Horário" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Button fx:id="viewSchedule" layoutX="470.0" layoutY="349.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onMouseClicked="#viewSchedule" prefHeight="73.0" prefWidth="150.0" text="Consultar Horário" textAlignment="CENTER">
+      <Button fx:id="viewSchedule" layoutX="470.0" layoutY="349.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#viewSchedule" onMouseClicked="#viewSchedule" prefHeight="73.0" prefWidth="150.0" text="Consultar Horário" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="Empty Tooltip" />
          </tooltip>
        </Button>
-      <Button fx:id="createSchedule" layoutX="132.0" layoutY="522.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onMouseClicked="#createSchedule" prefHeight="63.0" prefWidth="209.0" text="Criar Horário" textAlignment="CENTER" />
-      <Button fx:id="webcal" layoutX="470.0" layoutY="522.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onMouseClicked="#webcal" prefHeight="53.0" prefWidth="102.0" text="Fazer upload de Horário do Fénix" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="createSchedule" layoutX="132.0" layoutY="522.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#createSchedule" onMouseClicked="#createSchedule" prefHeight="63.0" prefWidth="209.0" text="Criar Horário" textAlignment="CENTER" />
+      <Button fx:id="webcal" layoutX="470.0" layoutY="522.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#webcal" onMouseClicked="#webcal" prefHeight="53.0" prefWidth="102.0" text="Fazer upload de Horário do Fénix" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>
