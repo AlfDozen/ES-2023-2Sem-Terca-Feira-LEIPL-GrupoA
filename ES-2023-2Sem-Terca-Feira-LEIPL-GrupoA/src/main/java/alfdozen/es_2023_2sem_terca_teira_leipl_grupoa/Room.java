@@ -131,8 +131,8 @@ final class Room {
 	}
 
 	/**
-	 * Checks if the name and the capacity are not null. If a null is found, the method
-	 * returns false. Otherwise, it returns true.
+	 * Checks if the name and the capacity are not null. If a null is found, the
+	 * method returns false. Otherwise, it returns true.
 	 * 
 	 * @return true if both the name and capacity are not null; false otherwise.
 	 */

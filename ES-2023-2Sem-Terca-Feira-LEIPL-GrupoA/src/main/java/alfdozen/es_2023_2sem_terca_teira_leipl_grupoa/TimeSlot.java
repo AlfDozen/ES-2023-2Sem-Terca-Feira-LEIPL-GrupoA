@@ -43,12 +43,16 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	private Boolean wasWeekDayCorrect;
 
 	/**
-	 * Constructor creates a time slot with day of the week (as String), date (as LocalDate), beginning and ending time (both as LocalTime). If the date is not null, checks if the day of the week is correct. It is not, the day of the week is changed to the correct designation and the parameter wasWeekDayCorrect is set to true.
+	 * Constructor creates a time slot with day of the week (as String), date (as
+	 * LocalDate), beginning and ending time (both as LocalTime). If the date is not
+	 * null, checks if the day of the week is correct. It is not, the day of the
+	 * week is changed to the correct designation and the parameter
+	 * wasWeekDayCorrect is set to true.
 	 * 
-	 * @param weekDay the day of the week for the time slot.
-	 * @param date the date for the time slot.
+	 * @param weekDay   the day of the week for the time slot.
+	 * @param date      the date for the time slot.
 	 * @param timeBegin the beginning time for the time slot.
-	 * @param timeEnd the ending time for the time slot.
+	 * @param timeEnd   the ending time for the time slot.
 	 */
 	TimeSlot(String weekDay, LocalDate date, LocalTime timeBegin, LocalTime timeEnd) {
 		this.date = date;
@@ -67,13 +71,20 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Constructor creates a time slot with day of the week, date, beginning and ending time. Receives all parameters as a String and converts date to LocalDate and beginning and ending time to LocalTime. If the date is not null, checks if the day of the week is correct. It is not, the day of the week is changed to the correct designation and the parameter wasWeekDayCorrect is set to true.
+	 * Constructor creates a time slot with day of the week, date, beginning and
+	 * ending time. Receives all parameters as a String and converts date to
+	 * LocalDate and beginning and ending time to LocalTime. If the date is not
+	 * null, checks if the day of the week is correct. It is not, the day of the
+	 * week is changed to the correct designation and the parameter
+	 * wasWeekDayCorrect is set to true.
 	 * 
-	 * @param weekDay the day of the week for the time slot.
-	 * @param date the date for the time slot as String.
+	 * @param weekDay   the day of the week for the time slot.
+	 * @param date      the date for the time slot as String.
 	 * @param timeBegin the beginning time for the time slot as String.
-	 * @param timeEnd the ending time for the time slot as String.
-	 * @throws IllegalArgumentException if the date or the beginning or the ending time cannot be converted to LocalData or LocalTime, respectively. 
+	 * @param timeEnd   the ending time for the time slot as String.
+	 * @throws IllegalArgumentException if the date or the beginning or the ending
+	 *                                  time cannot be converted to LocalData or
+	 *                                  LocalTime, respectively.
 	 */
 	TimeSlot(String weekDay, String date, String timeBegin, String timeEnd) {
 		wasWeekDayCorrect = true;
@@ -155,7 +166,8 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Returns a string representation of the date of the time slot with the format dd/mm/year If the date is null, the string "Unknown" is returned instead.
+	 * Returns a string representation of the date of the time slot with the format
+	 * dd/mm/year If the date is null, the string "Unknown" is returned instead.
 	 * 
 	 * @return a string representation of the date of the time slot.
 	 */
@@ -181,7 +193,8 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Sets the date of the time slot. If the date is not null, it changes the day of the week to the new day.
+	 * Sets the date of the time slot. If the date is not null, it changes the day
+	 * of the week to the new day.
 	 * 
 	 * @param date the date for the time slot.
 	 */
@@ -193,10 +206,13 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Sets the date of the time slot. Receives the date as a String and converts to LocalData. If the date is not null, it changes the day of the week to the new day.
+	 * Sets the date of the time slot. Receives the date as a String and converts to
+	 * LocalData. If the date is not null, it changes the day of the week to the new
+	 * day.
 	 * 
 	 * @param date the date for the time slot as String.
-	 * @throws IllegalArgumentException if the date cannot be converted to LocalData. 
+	 * @throws IllegalArgumentException if the date cannot be converted to
+	 *                                  LocalData.
 	 */
 	void setDate(String date) {
 		if (date == null) {
@@ -223,7 +239,9 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Returns a string representation of the beginning time of the time slot with the format hh:ss. If the time is null, the string "Unknown" is returned instead.
+	 * Returns a string representation of the beginning time of the time slot with
+	 * the format hh:ss. If the time is null, the string "Unknown" is returned
+	 * instead.
 	 * 
 	 * @return a string representation of the beginning time of the time slot.
 	 */
@@ -240,17 +258,19 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	/**
 	 * Sets the beginning time of the time slot.
 	 * 
-	 * @param timeBegin the beginning time for the time slot. 
+	 * @param timeBegin the beginning time for the time slot.
 	 */
 	void setTimeBegin(LocalTime timeBegin) {
 		this.timeBegin = timeBegin;
 	}
 
 	/**
-	 * Sets the beginning time of the time slot. Receives the time as a String and converts to LocalTime.
+	 * Sets the beginning time of the time slot. Receives the time as a String and
+	 * converts to LocalTime.
 	 * 
 	 * @param timeBegin the beginning time for the time slot as String.
-	 * @throws IllegalArgumentException if the beginning time cannot be converted to LocalTime. 
+	 * @throws IllegalArgumentException if the beginning time cannot be converted to
+	 *                                  LocalTime.
 	 */
 	void setTimeBegin(String timeBegin) {
 		if (timeBegin == null) {
@@ -276,7 +296,8 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Returns a string representation of the ending time of the time slot with the format hh:ss. If the time is null, the string "Unknown" is returned instead.
+	 * Returns a string representation of the ending time of the time slot with the
+	 * format hh:ss. If the time is null, the string "Unknown" is returned instead.
 	 * 
 	 * @return a string representation of the ending time of the time slot.
 	 */
@@ -293,17 +314,19 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	/**
 	 * Sets the ending time of the time slot.
 	 * 
-	 * @param timeEnd the ending time for the time slot. 
+	 * @param timeEnd the ending time for the time slot.
 	 */
 	void setTimeEnd(LocalTime timeEnd) {
 		this.timeEnd = timeEnd;
 	}
 
 	/**
-	 * Sets the ending time of the time slot. Receives the time as a String and converts to LocalTime.
+	 * Sets the ending time of the time slot. Receives the time as a String and
+	 * converts to LocalTime.
 	 * 
 	 * @param timeEnd the ending time for the time slot as String.
-	 * @throws IllegalArgumentException if the ending time cannot be converted to LocalTime. 
+	 * @throws IllegalArgumentException if the ending time cannot be converted to
+	 *                                  LocalTime.
 	 */
 	void setTimeEnd(String timeEnd) {
 		if (timeEnd == null) {
@@ -318,33 +341,44 @@ final class TimeSlot implements Comparable<TimeSlot> {
 			throw new IllegalArgumentException(WRONG_END_TIME_FORMAT);
 		}
 	}
-	
+
 	/**
-	 * Checks if the day of the week, date and beginning and ending time are not null. If a null is found, the method returns false. Otherwise, it returns true.
+	 * Checks if the day of the week, date and beginning and ending time are not
+	 * null. If a null is found, the method returns false. Otherwise, it returns
+	 * true.
 	 * 
-	 * @return true if the day of the week, date and beginning and ending time are not null; false otherwise.
+	 * @return true if the day of the week, date and beginning and ending time are
+	 *         not null; false otherwise.
 	 */
 	boolean isComplete() {
 		return weekDay != null && date != null && timeBegin != null && timeEnd != null;
 	}
 
 	/**
-	 * Checks if the beginning time is before the ending time. Returns true if this condition is met. Otherwise, or if any of the times are null, returns false. It does not consider the hypothesis the two dates are in different dates.
+	 * Checks if the beginning time is before the ending time. Returns true if this
+	 * condition is met. Otherwise, or if any of the times are null, returns false.
+	 * It does not consider the hypothesis the two dates are in different dates.
 	 * 
-	 * @return true if the beginning time is before the ending time; false otherwise.
+	 * @return true if the beginning time is before the ending time; false
+	 *         otherwise.
 	 */
 	boolean isValidInterval() {
-		if(timeBegin == null || timeEnd == null) {
+		if (timeBegin == null || timeEnd == null) {
 			return false;
 		}
 		return timeBegin.compareTo(timeEnd) < 0;
 	}
 
 	/**
-	 * Compares this time slot with the specified time slot for order. Return -1, 0, or 1 as this time slot is less than, equal to, or greater than the specified time slot. To determine which is less, this method compares, by order of priority, the date, then the beginning time and finally the ending time. Null attributes are always considered less than non null attributes.
+	 * Compares this time slot with the specified time slot for order. Return -1, 0,
+	 * or 1 as this time slot is less than, equal to, or greater than the specified
+	 * time slot. To determine which is less, this method compares, by order of
+	 * priority, the date, then the beginning time and finally the ending time. Null
+	 * attributes are always considered less than non null attributes.
 	 * 
 	 * @param timeSlot the time slot to be compared with.
-	 * @return -1, 0, or 1 as this time slot is less than, equal to, or greater than the specified lecture
+	 * @return -1, 0, or 1 as this time slot is less than, equal to, or greater than
+	 *         the specified lecture
 	 */
 	@Override
 	public int compareTo(TimeSlot timeSlot) {
@@ -381,11 +415,15 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Auxiliary to compareTo method to order objects where at least one of the two is null. The original compareTo() method throws an exception when there is a null involved. Returns -1 if only the first object is null, 0 if both objects are null and 1 if only the second object is null.
+	 * Auxiliary to compareTo method to order objects where at least one of the two
+	 * is null. The original compareTo() method throws an exception when there is a
+	 * null involved. Returns -1 if only the first object is null, 0 if both objects
+	 * are null and 1 if only the second object is null.
 	 * 
-	 * @param o the object to compare.
+	 * @param o  the object to compare.
 	 * @param o2 the second object to compare.
-	 * @return -1 if only the first object is null, 0 if both objects are null and 1 if only the second object is null.
+	 * @return -1 if only the first object is null, 0 if both objects are null and 1
+	 *         if only the second object is null.
 	 */
 	static int resolveCompareToNull(Object o, Object o2) {
 		if (o != null && o2 == null) {
@@ -398,7 +436,9 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	}
 
 	/**
-	 * Return a string representation of the time slot, including its date, beginning and ending time. If any of this information is not defined, that information is instead given as "Unknown".
+	 * Return a string representation of the time slot, including its date,
+	 * beginning and ending time. If any of this information is not defined, that
+	 * information is instead given as "Unknown".
 	 * 
 	 * @return a string representation of the time slot.
 	 */
