@@ -2,6 +2,9 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
 import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
@@ -287,37 +292,91 @@ class ScheduleTest {
 		assertThrows(IllegalArgumentException.class, () -> schedule.setStudentNumber(-12345));
 		assertNull(schedule.getStudentNumber());
 	}
-
+	
+	@ParameterizedTest
+	@CsvSource({
+		"src/resources/horario_exemplo.csv,,';', IllegalArgumentException",		// null json
+		", src/resources/horario-exemplo-output.json, ';', IllegalArgumentException",	//null csv
+		"src/resources/horario_exemplo, src/resources/horario-exemplo-output.json, ';', IllegalArgumentException",	// falta extensão .csv
+		"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-output, ';', IllegalArgumentException",	// falta extensão .json
+		"src/resources/horario_exemplo.csv, src/resources/naoexiste/horario-exemplo-output.json, ';', IllegalArgumentException",		// nao existe parent directory json
+		"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json, ';', N/A",	// sucesso
+		"src/resources/horario_exemplo.csv, src/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",	// json já existe
+		"src/resources/horario_exemplo_csv_nao_existe.csv, src/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",	// não existe csv
+		"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json,, IllegalArgumentException",	// delimiter null
+	})
+	final void testconvertCSV2JSONArguments(String csvSourcePath, String jsonDestinationPath, Character delimiter, String expectedException) {
+	    if (expectedException.equals("IllegalArgumentException")) {
+	        assertThrows(IllegalArgumentException.class, () -> Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath, delimiter));
+	    } else {
+	    	  assertFalse(Files.exists(Paths.get(jsonDestinationPath)));
+	    	try {
+				  Schedule.convertCSV2JSON(csvSourcePath, jsonDestinationPath, delimiter);
+				  assertTrue(Files.exists(Paths.get(jsonDestinationPath)));
+				  Files.deleteIfExists(Paths.get(jsonDestinationPath));
+			  } catch (IOException e) {
+				  e.printStackTrace();
+			  }
+	    }
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"src/resources/horario_exemplo_json_completo.json,, ';', IllegalArgumentException",	// null csv
+		", src/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",	// null json
+		"src/resources/horario_exemplo_json_completo, src/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",	// falta extensão .json
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV, ';', IllegalArgumentException",	// falta extensão .csv
+		"src/resources/horario_exemplo_json_completo.json, src/resources/naoexiste/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",	// nao existe parent directory csv
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo.csv, ';', IllegalArgumentException",	// csv já existe
+		"src/resources/horario_exemplo_json_completo_nao_existe.json, src/resources/horario_exemplo_csv_iso.csv, ';', IllegalArgumentException",	// json não existe
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER1.csv, ';', N/A",	//sucesso
+		"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER2.csv,, IllegalArgumentException",	// delimiter null
+	})
+	final void testconvertJSON2CSVArguments(String jsonSourcePath, String csvDestinationPath, Character delimiter, String expectedException) {
+	    if (expectedException.equals("IllegalArgumentException")) {
+	        assertThrows(IllegalArgumentException.class, () -> Schedule.convertJSON2CSV(jsonSourcePath, csvDestinationPath, delimiter));
+	    } else {
+	    	  assertFalse(Files.exists(Paths.get(csvDestinationPath)));
+	      try {
+				  Schedule.convertJSON2CSV(jsonSourcePath, csvDestinationPath,delimiter);
+				  assertTrue(Files.exists(Paths.get(csvDestinationPath)));
+				  Files.deleteIfExists(Paths.get(csvDestinationPath));
+			  } catch (IOException e) {
+				  e.printStackTrace();
+			  }
+	    }
+	}
+	
 	@Test
 	final void testToString() {
-		Schedule schedule = new Schedule();
-		String expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		assertEquals(expected, schedule.toString());
+	    Schedule schedule = new Schedule();
+	    String expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
 
-		schedule = new Schedule(null, null, (Integer) null);
-		expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		assertEquals(expected, schedule.toString());
+	    schedule = new Schedule(null, null, (Integer) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
 
-		schedule = new Schedule(new ArrayList<Lecture>(), null, (Integer) null);
-		expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		assertEquals(expected, schedule.toString());
+	    schedule = new Schedule(new ArrayList<Lecture>(), null, (Integer) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
+	    
+	    schedule = new Schedule(null, null, (String) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
 
-		schedule = new Schedule(null, null, (String) null);
-		expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		assertEquals(expected, schedule.toString());
+	    schedule = new Schedule(new ArrayList<Lecture>(), null, (String) null);
+	    expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+	    assertEquals(expected, schedule.toString());
 
-		schedule = new Schedule(new ArrayList<Lecture>(), null, (String) null);
-		expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		assertEquals(expected, schedule.toString());
-
-		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
-				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
-				new Room("ES23", 20));
-		List<Lecture> lectures = new ArrayList<>();
-		lectures.add(lecture);
-		schedule = new Schedule(lectures, "John Doe", 12345);
-		expected = "Student Name: John Doe\nStudent Number: 12345\nSchedule:\n23/02/2023 - 03:02:32-11:23:04 - Engenharia de Software - T02A - Room ES23\n";
-		assertEquals(expected, schedule.toString());
+	    Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+	            new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+	            new Room("ES23", 20));
+	    List<Lecture> lectures = new ArrayList<>();
+	    lectures.add(lecture);
+	    schedule = new Schedule(lectures, "John Doe", 12345);
+	    expected = "Student Name: John Doe\nStudent Number: 12345\nSchedule:\n23/02/2023 - 03:02:32-11:23:04 - Engenharia de Software - T02A - Room ES23\n";
+	    assertEquals(expected, schedule.toString());
 	}
 
 }
