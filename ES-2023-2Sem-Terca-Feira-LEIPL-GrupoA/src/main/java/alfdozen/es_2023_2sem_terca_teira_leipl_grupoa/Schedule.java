@@ -18,7 +18,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
@@ -63,6 +67,7 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -331,6 +336,71 @@ final class Schedule {
 			throw new IOException(READ_EXCEPTION);
 		}
 		return schedule;
+	}
+
+	/**
+	 * This method saves a Schedule object to a JSON file.
+	 * 
+	 * @param schedule A Schedule object to be saved.
+	 * @param fileName A name for the file to save the Schedule object.
+	 * 
+	 * @throws IOException if an I/O error occurs while writing the JSON file.
+	 */
+	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
+
+		List<Lecture> lectures = schedule.getLectures();
+		ObjectMapper mapper = new ObjectMapper();
+
+		ArrayNode lecturesArray = mapper.createArrayNode();
+
+		for (Lecture lecture : lectures) {
+			ObjectNode lectureNode = mapper.createObjectNode();
+
+			String[] attrArray = new String[11];
+			attrArray[0] = lecture.getAcademicInfo().getDegree();
+			attrArray[1] = lecture.getAcademicInfo().getCourse();
+			attrArray[2] = lecture.getAcademicInfo().getShift();
+			attrArray[3] = lecture.getAcademicInfo().getClassGroup();
+			attrArray[5] = lecture.getTimeSlot().getWeekDay();
+			attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
+			attrArray[7] = lecture.getTimeSlot().getTimeEndString();
+			attrArray[8] = lecture.getTimeSlot().getDateString();
+			attrArray[9] = lecture.getRoom().getName();
+
+			for (int i = 0; i < attrArray.length; i++) {
+				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+					attrArray[i] = "";
+				}
+			}
+			if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
+				attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+
+			if (lecture.getRoom().getCapacity() != null)
+				attrArray[10] = lecture.getRoom().getCapacity().toString();
+
+			lectureNode.put("Curso", attrArray[0]);
+			lectureNode.put("Unidade Curricular", attrArray[1]);
+			lectureNode.put("Turno", attrArray[2]);
+			lectureNode.put("Turma", attrArray[3]);
+			lectureNode.put("Inscritos no turno", attrArray[4]);
+			lectureNode.put("Dia da semana", attrArray[5]);
+			lectureNode.put("Hora inicio da aula", attrArray[6]);
+			lectureNode.put("Hora fim da aula", attrArray[7]);
+			lectureNode.put("Data da aula", attrArray[8]);
+			lectureNode.put("Sala atribuída à aula", attrArray[9]);
+			lectureNode.put("Lotação da sala", attrArray[10]);
+
+			lecturesArray.add(lectureNode);
+		}
+
+		try {
+			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
+			FileWriter fileWriter = new FileWriter(fileName);
+			fileWriter.write(json);
+			fileWriter.close();
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
+		}
 	}
 
 	/**

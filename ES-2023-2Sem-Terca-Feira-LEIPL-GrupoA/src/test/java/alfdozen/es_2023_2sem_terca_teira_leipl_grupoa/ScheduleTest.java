@@ -466,6 +466,47 @@ class ScheduleTest {
 	}
 	
 	@Test
+	final void testSaveToJSON() {
+		Lecture lecture = new Lecture(
+				new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+				new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+		Lecture lecture3 = new Lecture(
+				new AcademicInfo("LETI, LEI, LEI-PL, LIGE, LIGE-PL", "Fundamentos de Arquitectura de Computadores",
+						"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
+				new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room("AA2.23", 50));
+		List<Lecture> lectures = new ArrayList<>();
+		lectures.add(lecture);
+		lectures.add(lecture2);
+		lectures.add(lecture3);
+		Schedule expected = new Schedule(lectures);
+
+		try {
+			Schedule.saveToJSON(expected, "teste.json");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Path path1 = Paths.get("./src/main/resources/Method_save_JSON_horario.json");
+		Path path2 = Paths.get("teste.json");
+		long result = 0;
+		try {
+			result = Files.mismatch(path1, path2);
+			Files.deleteIfExists(path2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertTrue(-1 == result);
+
+		IOException saveException = assertThrows(IOException.class,
+				() -> Schedule.saveToJSON(expected, "./src/main/resources/readonly.json"));
+		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
+
+	}
+
+	@Test
 	final void testLoadJSON() throws IOException {
 		// Path null
 		assertThrows(IllegalArgumentException.class, () -> Schedule.loadJSON(null));
