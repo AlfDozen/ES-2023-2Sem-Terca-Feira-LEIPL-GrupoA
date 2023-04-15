@@ -32,6 +32,7 @@ final class Schedule {
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
+	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
 
 	Schedule() {
 		this.studentName = null;
@@ -127,14 +128,13 @@ final class Schedule {
 		this.lectures.remove(lecture);
 	}
 
-
 	/**
-	Method that saves a Schedule object to a CSV file.
-
-	@param schedule A schedule to be saved
-	@param fileName A name for the CSV file
-	@throws IOException if an I/O error occurs while writing to the file
-	*/
+	 * Method that saves a Schedule object to a CSV file.
+	 * 
+	 * @param schedule A schedule to be saved
+	 * @param fileName A name for the CSV file
+	 * @throws IOException if an I/O error occurs while writing to the file
+	 */
 	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
 		// Create a new CSV file
 		File file = new File(fileName);
@@ -144,22 +144,71 @@ final class Schedule {
 
 		// Write the data to the CSV file
 		FileWriter writer = new FileWriter(file);
-		writer.write(
-				"Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala\n");
+		writer.write(HEADER);
 		for (Lecture lecture : schedule.getLectures()) {
-			writer.write(String.format("%s;%s;%s;%s;%d;%s;%s;%s;%s;%s;%s\n",
+			String degree = "", uc = "", turno = "", turma = "", inscritos = "", weekday = "", data = "", inicio = "",
+					fim = "", sala = "", lotacao = "";
 
-				lecture.getAcademicInfo().getDegree() != null ? lecture.getAcademicInfo().getDegree().replace(" |", ",") : "",
-				lecture.getAcademicInfo().getCourse() != null ? lecture.getAcademicInfo().getCourse().replace(" |", ",") : "",
-				lecture.getAcademicInfo().getShift() != null ? lecture.getAcademicInfo().getShift().replace(" |", ",") : "",
-				lecture.getAcademicInfo().getClassGroup() != null ? lecture.getAcademicInfo().getClassGroup().replace(" |", ",") : "",
-				lecture.getAcademicInfo().getStudentsEnrolled()  != null ? lecture.getAcademicInfo().getStudentsEnrolled():"",
-				lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay().replace(" |", ",") : "",
-				lecture.getTimeSlot().getTimeBegin() != null ? lecture.getTimeSlot().getTimeBegin() : "",
-				lecture.getTimeSlot().getTimeEnd() != null ? lecture.getTimeSlot().getTimeEnd() : "",
-				lecture.getTimeSlot().getDate() != null ? lecture.getTimeSlot().getDate() : "",
-				lecture.getRoom().getName() != null ? lecture.getRoom().getName().replace(" |", ",") : "",
-				lecture.getRoom().getCapacity() != null ? lecture.getRoom().getCapacity() : ""));
+			if (lecture.getAcademicInfo().getDegree() != null) {
+				degree = lecture.getAcademicInfo().getDegree();
+			}
+
+			if (lecture.getAcademicInfo().getCourse() != null) {
+				uc = lecture.getAcademicInfo().getCourse();
+			}
+
+			if (lecture.getAcademicInfo().getShift() != null) {
+				turno = lecture.getAcademicInfo().getShift();
+			}
+
+			if (lecture.getAcademicInfo().getClassGroup() != null) {
+				turma = lecture.getAcademicInfo().getClassGroup();
+			}
+
+			if (lecture.getAcademicInfo().getStudentsEnrolled() != null) {
+				inscritos = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+			}
+
+			if (lecture.getTimeSlot().getWeekDay() != null) {
+				weekday = lecture.getTimeSlot().getWeekDay();
+			}
+
+			if (lecture.getTimeSlot().getDate() != null) {
+				data = lecture.getTimeSlot().getDateString();
+			}
+
+			if (lecture.getTimeSlot().getTimeBegin() != null) {
+				inicio = lecture.getTimeSlot().getTimeBeginString();
+			}
+
+			if (lecture.getTimeSlot().getTimeEnd() != null) {
+				fim = lecture.getTimeSlot().getTimeEndString();
+			}
+
+			if (lecture.getRoom().getName() != null) {
+				sala = lecture.getRoom().getName();
+			}
+
+			if (lecture.getRoom().getCapacity() != null) {
+				lotacao = lecture.getRoom().getCapacity().toString();
+			}
+
+			writer.write(String.format("%s;%s;%s;%s;%d;%s;%s;%s;%s;%s;%s\n", degree, uc, turno, turma, inscritos,
+					weekday, data, inicio, fim, sala, lotacao));
+
+//					lecture.getAcademicInfo().getDegree() != null ? lecture.getAcademicInfo().getDegree() : "",
+//					lecture.getAcademicInfo().getCourse() != null ? lecture.getAcademicInfo().getCourse() : "",
+//					lecture.getAcademicInfo().getShift() != null ? lecture.getAcademicInfo().getShift() : "",
+//					lecture.getAcademicInfo().getClassGroup() != null ? lecture.getAcademicInfo().getClassGroup() : "",
+//					lecture.getAcademicInfo().getStudentsEnrolled() != null
+//							? lecture.getAcademicInfo().getStudentsEnrolled()
+//							: "",
+//					lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay() : "",
+//					lecture.getTimeSlot().getTimeBegin() != null ? lecture.getTimeSlot().getTimeBegin() : "",
+//					lecture.getTimeSlot().getTimeEnd() != null ? lecture.getTimeSlot().getTimeEnd() : "",
+//					lecture.getTimeSlot().getDate() != null ? lecture.getTimeSlot().getDate() : "",
+//					lecture.getRoom().getName() != null ? lecture.getRoom().getName() : "",
+//					lecture.getRoom().getCapacity() != null ? lecture.getRoom().getCapacity() : ""));
 		}
 		writer.close();
 	}
@@ -187,6 +236,5 @@ final class Schedule {
 		}
 		return str;
 	}
-
 
 }
