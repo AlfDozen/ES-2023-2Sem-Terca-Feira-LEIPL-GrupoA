@@ -69,12 +69,6 @@ public class MainScreen extends Application implements Initializable{
 	    }
 
 	@FXML
-	private void viewSchedule() throws IOException {
-		MainScreen.setRoot("/fxml/ViewSchedule");
-		
-	}
-	
-	@FXML
 	private void createSchedule() throws IOException {
 		MainScreen.setRoot("/fxml/CreateSchedule");
 	}

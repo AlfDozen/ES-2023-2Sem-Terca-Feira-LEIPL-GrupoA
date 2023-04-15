@@ -35,6 +35,11 @@ public class UploadSchedule implements Initializable{
 
 
 	@FXML
+	private void viewSchedule() throws IOException {
+		MainScreen.setRoot("/fxml/ViewSchedule");
+	}
+	
+	@FXML
 	private void getFile() {
 
 		fileChooser.setTitle("Open Resource File");

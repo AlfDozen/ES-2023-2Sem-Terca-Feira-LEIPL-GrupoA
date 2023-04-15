@@ -48,6 +48,11 @@ public class Webcal implements Initializable{
 
 	}
 
+	
+	@FXML
+	private void viewSchedule() throws IOException {
+		MainScreen.setRoot("/fxml/ViewSchedule");
+	}
 
 	@FXML
 	private void returnHome() {
