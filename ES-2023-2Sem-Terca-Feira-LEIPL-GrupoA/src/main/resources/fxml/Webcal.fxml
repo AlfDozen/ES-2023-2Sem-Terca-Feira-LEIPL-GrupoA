@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Webcal">
+   <children>
+      <Label fx:id="header" alignment="CENTER" layoutX="157.0" layoutY="226.0" prefHeight="74.0" prefWidth="465.0" text="Insira o URI do seu calendário pessoal da plataforma do Fénix ISCTE. " wrapText="true" />
+      <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
+      <TextField fx:id="webcal" layoutX="167.0" layoutY="300.0" prefHeight="49.0" prefWidth="442.0" />
+      <Button fx:id="save" layoutX="341.0" layoutY="395.0" mnemonicParsing="false" onAction="#webcallLink" prefHeight="49.0" prefWidth="98.0" text="Guardar" />
+   </children>
+</AnchorPane>
