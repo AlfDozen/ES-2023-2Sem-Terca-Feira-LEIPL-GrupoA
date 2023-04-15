@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -67,7 +68,8 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
-	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
+	static final String ENCODE_TO = "ISO-8859-1";
+	static final String ENCODE_FROM = "UTF-8";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -262,14 +264,13 @@ final class Schedule {
 	 */
 	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
 		try {
-
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-
 			FileWriter writer = new FileWriter(file);
-			writer.write(HEADER + "\n");
+			String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
+			writer.write(header + "\n");
 			for (Lecture lecture : schedule.getLectures()) {
 
 				String[] attrArray = new String[11];
@@ -285,19 +286,18 @@ final class Schedule {
 
 				for (int i = 0; i < attrArray.length; i++) {
 					if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
-						attrArray[i] = "";
+						attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
 					}
 				}
 				if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
-					attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+					attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 
 				if (lecture.getRoom().getCapacity() != null)
-					attrArray[10] = lecture.getRoom().getCapacity().toString();
+					attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 
 				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", attrArray[0], attrArray[1],
 						attrArray[2], attrArray[3], attrArray[4], attrArray[5], attrArray[6], attrArray[7],
 						attrArray[8], attrArray[9], attrArray[10]));
-
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -305,14 +305,16 @@ final class Schedule {
 		}
 	}
 
-  /**
+	/**
 	 * This method allows you to load a schedule via a csv file
 	 *
 	 * @param filePath the path of the csv file
-	 * @return a schedule object with all existing lectures in the file given as input
+	 * @return a schedule object with all existing lectures in the file given as
+	 *         input
 	 * @throws IllegalArgumentException is thrown if the file path is null
 	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
-	 * @throws IOException				is thrown if an error is given when the file is read
+	 * @throws IOException              is thrown if an error is given when the file
+	 *                                  is read
 	 */
 	static Schedule loadCSV(String filePath) throws IOException {
 		if (filePath == null) {
@@ -324,9 +326,10 @@ final class Schedule {
 		Schedule schedule = new Schedule();
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-			String line = "";
-			while ((line = br.readLine()) != null) {
-				if (!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
+			String lineRaw = "";
+			while ((lineRaw = br.readLine()) != null) {
+				String line = new String(lineRaw.getBytes(ENCODE_FROM), ENCODE_TO);
+				if (!line.isBlank() && !line.equals(new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO)) && !line.equals(EMPTY_ROW)) {
 					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
 				}
@@ -369,13 +372,16 @@ final class Schedule {
 
 			for (int i = 0; i < attrArray.length; i++) {
 				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+					attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
 					attrArray[i] = "";
 				}
 			}
 			if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
+				//attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 				attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
-
+			
 			if (lecture.getRoom().getCapacity() != null)
+				//attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 				attrArray[10] = lecture.getRoom().getCapacity().toString();
 
 			lectureNode.put("Curso", attrArray[0]);
@@ -449,16 +455,18 @@ final class Schedule {
 			}
 		}
 		return finalArr;
-	}	
-	
+	}
+
 	/**
 	 * This method allows to load a schedule via a json file
 	 * 
 	 * @param path the file path of the json file
-	 * @return a schedule object with all existing lectures in the file given as input
+	 * @return a schedule object with all existing lectures in the file given as
+	 *         input
 	 * @throws IllegalArgumentException is thrown if the file path is null
 	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
-	 * @throws IOException				is thrown if an error is given when the file is read
+	 * @throws IOException              is thrown if an error is given when the file
+	 *                                  is read
 	 */
 	@SuppressWarnings("unchecked")
 	static Schedule loadJSON(String path) throws IOException {
@@ -469,13 +477,14 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
 		}
 		Schedule schedule = new Schedule();
+		//String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
 		String[] headerArr = HEADER.split(DELIMITER);
 		try {
 			Reader reader = new InputStreamReader(new FileInputStream(path));
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
-			for(int i = 0; i < data.size(); i++) {
-				Map<String, Object> entry = (Map<String, Object>)data.get(i);
+			for (int i = 0; i < data.size(); i++) {
+				Map<String, Object> entry = (Map<String, Object>) data.get(i);
 				Lecture lecture = buildLecture(entry, headerArr);
 				schedule.addLecture(lecture);
 			}
@@ -484,28 +493,35 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
+
 	/**
 	 * This method build a lecture object from a json file entry
 	 * 
-	 * @param entry 		json entry in the form of a Map
-	 * @param headerArray	vector with the parsed header
+	 * @param entry       json entry in the form of a Map
+	 * @param headerArray vector with the parsed header
 	 * @return a lecture object from the json file entry given as input
 	 */
-	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) {
+	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) throws IOException {
 		String[] finalArr = new String[NUMBER_COLUMNS];
-		for(int j = 0; j < NUMBER_COLUMNS; j++) {
-			String aux = (String)entry.get(headerArr[j]);
-			if(aux.equals("")) {
+		for (int j = 0; j < NUMBER_COLUMNS; j++) {
+			String aux = (String) entry.get(headerArr[j]);
+			//System.out.println(aux);
+			if (aux.equals("")) {
 				finalArr[j] = null;
 			} else {
 				finalArr[j] = aux;
+//				try {
+//					//finalArr[j] = new String(aux.getBytes(ENCODE_FROM), ENCODE_TO);
+//					
+//				} catch (UnsupportedEncodingException e) {
+//					throw new IOException(READ_EXCEPTION);
+//				}
 			}
 		}
 		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
 		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
 		Room room = new Room(finalArr[9], finalArr[10]);
-		return  new Lecture(academicInfo, timeSlot, room);
+		return new Lecture(academicInfo, timeSlot, room);
 	}
 
 	/**

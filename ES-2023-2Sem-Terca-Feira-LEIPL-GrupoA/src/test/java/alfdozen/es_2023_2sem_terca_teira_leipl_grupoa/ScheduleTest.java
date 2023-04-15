@@ -384,7 +384,7 @@ class ScheduleTest {
 		assertTrue(-1 == result);
 
 		IOException saveException = assertThrows(IOException.class,
-				() -> Schedule.saveToCSV(expected, "./src/main/resources/readonly.csv"));
+				() -> Schedule.saveToCSV(expected, "ZD:\\\\THIS_IS_ER00R"));
 		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
 
 	}
@@ -501,7 +501,7 @@ class ScheduleTest {
 		assertTrue(-1 == result);
 
 		IOException saveException = assertThrows(IOException.class,
-				() -> Schedule.saveToJSON(expected, "./src/main/resources/readonly.json"));
+				() -> Schedule.saveToJSON(expected, "ZD:\\THIS_IS_ER00R"));
 		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
 
 	}
