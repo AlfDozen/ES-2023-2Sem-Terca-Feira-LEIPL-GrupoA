@@ -32,7 +32,10 @@ public class ViewSchedule implements Initializable{
 	@FXML
 	private Button backButtonDay, backButtonWeek, backButtonMonth;
 
-
+	@FXML
+	private TabPane window; 
+	
+	
 	@FXML
 	private void clearGridContent(GridPane paneCalendar) {
 		// clear the GridPane
@@ -46,8 +49,8 @@ public class ViewSchedule implements Initializable{
 		paneCalendar.setHgap(50);
 		paneCalendar.setVgap(50);
 
-		//		paneCalendar.prefWidthProperty().bind(monthtab.getScene().widthProperty());
-		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
+//		paneCalendar.prefWidthProperty().bind(monthTab.App.scene.widthProperty());
+//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
 
 	}
 
@@ -79,7 +82,7 @@ public class ViewSchedule implements Initializable{
 	@FXML
 	private void returnHome() {
 		try {
-			MainScreen.setRoot("/fxml/Main");
+			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
 			System.err.println("Erro ao tentar retornar");
 		}
@@ -214,7 +217,9 @@ public class ViewSchedule implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-		System.out.println("Set Pickers");
+
+		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+		
 		datePickerDay.setValue(LocalDate.now());
 		datePickerMonth.setValue(LocalDate.now());
 		datePickerWeek.setValue(LocalDate.now());

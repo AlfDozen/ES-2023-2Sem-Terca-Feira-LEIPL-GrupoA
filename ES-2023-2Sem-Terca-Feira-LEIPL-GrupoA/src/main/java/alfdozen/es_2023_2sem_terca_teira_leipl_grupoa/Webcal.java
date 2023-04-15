@@ -28,11 +28,13 @@ public class Webcal implements Initializable{
 	@FXML
 	private TextField webcal;
 
-	// Returns the number of days in the current month
+	@FXML
+	private AnchorPane window;
+	
 	@FXML
 	private void webcallLink() {
 
-		if(webcal != null) {
+		if(webcal.getText().length() > 7) {
 
 			String domain = webcal.getText().substring(0, 8);
 
@@ -53,13 +55,13 @@ public class Webcal implements Initializable{
 	
 	@FXML
 	private void viewSchedule() throws IOException {
-		MainScreen.setRoot("/fxml/ViewSchedule");
+		App.setRoot("/fxml/ViewSchedule");
 	}
 
 	@FXML
 	private void returnHome() {
 		try {
-			MainScreen.setRoot("/fxml/Main");
+			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
 			System.err.println("Erro ao tentar retornar");
 		}
@@ -72,6 +74,6 @@ public class Webcal implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-
+		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 	}
 }

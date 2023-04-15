@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 
-<AnchorPane minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.UploadSchedule">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.UploadSchedule">
    <children>
       <Label fx:id="header" alignment="CENTER" layoutX="174.0" layoutY="227.0" prefHeight="74.0" prefWidth="443.0" text="Escolha o ficheiro .CSV ou .JSON a importar" />
       <Button fx:id="uploadSchedule" layoutX="304.0" layoutY="310.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFile" prefHeight="74.0" prefWidth="150.0" text="Carregar ficheiro de Horário" textAlignment="CENTER" wrapText="true">

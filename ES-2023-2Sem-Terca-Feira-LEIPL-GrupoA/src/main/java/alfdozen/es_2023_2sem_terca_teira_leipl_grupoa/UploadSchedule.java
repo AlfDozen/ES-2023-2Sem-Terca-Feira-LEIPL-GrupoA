@@ -31,12 +31,13 @@ public class UploadSchedule implements Initializable{
 	FileChooser fileChooser  = new FileChooser();
 	File filePath;
 
-	// Returns the number of days in the current month
+	@FXML
+	private AnchorPane window; 
 
 
 	@FXML
 	private void viewSchedule() throws IOException {
-		MainScreen.setRoot("/fxml/ViewSchedule");
+		App.setRoot("/fxml/ViewSchedule");
 	}
 	
 	@FXML
@@ -45,6 +46,7 @@ public class UploadSchedule implements Initializable{
 		fileChooser.setTitle("Open Resource File");
 
 		filePath = fileChooser.showOpenDialog(new Stage());
+		System.out.println("Path " + filePath);
 		
 		fileChosen.setText(filePath.getName());
 		
@@ -57,16 +59,25 @@ public class UploadSchedule implements Initializable{
 		if(filePath != null) {
 
 			String filename = filePath.getName();
+			System.out.println("absolute " + filename);
+			
 			String extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
 
-			System.out.println(filename + " " + extension);
+//			System.out.println(filename + " " + extension);
 
 			if(extension.equals("json") || extension.equals("csv")) {
 
-				//usar ficheiro para criar calendario
+				try {
+					
+					App.addSCHEDULE(Schedule.loadCSV(filename));
+					
+					viewSchedule.setVisible(true);
+					
+				}catch(IllegalArgumentException e1) {
+					
+					JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+				}
 				
-				viewSchedule.setVisible(true);
-
 			}else {
 
 				JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
@@ -78,7 +89,7 @@ public class UploadSchedule implements Initializable{
 	@FXML
 	private void returnHome() {
 		try {
-			MainScreen.setRoot("/fxml/Main");
+			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
 			System.err.println("Erro ao tentar retornar");
 		}
@@ -91,6 +102,7 @@ public class UploadSchedule implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-
+		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+		
 	}
 }

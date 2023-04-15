@@ -24,16 +24,16 @@ public class CreateSchedule implements Initializable{
 
 
 	@FXML
-	private Button backButton, save, clear;
+	private Button backButton, save, selectAll, clearAll;
 	
 	@FXML
 	private TextField studentName, studentNumber;	
 	
 	@FXML
-	private GridPane lectures; 
+	private GridPane lectures, calendar; 
 	
-	private List<Lecture> lecturesList = new ArrayList<>();
-
+	@FXML
+	private AnchorPane window; 
 	
 	@FXML
 	private void createSchedule() {
@@ -41,14 +41,20 @@ public class CreateSchedule implements Initializable{
 	}
 
 	@FXML
-	private void clear() {
+	private void clearAll() {
+	
+		
+	}
+	
+	@FXML
+	private void selectAll() {
 	
 	}
 	
 	@FXML
 	private void returnHome() {
 		try {
-			MainScreen.setRoot("/fxml/Main");
+			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
 			System.err.println("Erro ao tentar retornar");
 		}
@@ -61,8 +67,9 @@ public class CreateSchedule implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-//		alimentar a lecturesList com dados de BD
+		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 		
+		List<Lecture> lecturesList = App.getAllLectures();
 		
 		for(int row = 0; row < lecturesList.size() ; row++) {
 			
