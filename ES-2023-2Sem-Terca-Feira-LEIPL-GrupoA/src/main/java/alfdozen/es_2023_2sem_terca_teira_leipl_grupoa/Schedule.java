@@ -27,7 +27,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  * @author alfdozen
  * 
  *         The Schedule class is used to represent a schedule of lectures for a
- *         student. It contains a list of Lecture and information about the
+ *         student. It contains a list of Lectures and information about the
  *         student, such as their name and student number. The constructor can
  *         be used to create an empty schedule or a schedule with a list of
  *         lectures, as well as providing student information. The student
@@ -40,6 +40,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  *         string "Unknown" will be used instead. If the schedule is empty, the
  *         string "Schedule is empty" will be returned.
  * 
+ *
+ * @version 1.0.0
  */
 final class Schedule {
 	static final String FOR_NULL = "Unknown";
@@ -61,18 +63,35 @@ final class Schedule {
 	private String studentName;
 	private Integer studentNumber;
 
+	/**
+	 * Default constructor creates an empty Schedule.
+	 */
 	Schedule() {
 		this.studentName = null;
 		this.studentNumber = null;
 		this.lectures = new ArrayList<>();
 	}
 
+	/**
+	 * Constructor creates a Schedule with a list of lectures.
+	 * 
+	 * @param lectures A list of Lecture objects.
+	 */
 	Schedule(List<Lecture> lectures) {
 		this.studentName = null;
 		this.studentNumber = null;
 		setLectures(lectures);
 	}
 
+	/**
+	 * Constructor creates a Schedule with a list of lectures and student
+	 * information.
+	 * 
+	 * @param lectures      A list of Lecture objects.
+	 * @param studentName   The name of the student.
+	 * @param studentNumber The student number as an Integer.
+	 * @throws IllegalArgumentException if the studentNumber is negative.
+	 */
 	Schedule(List<Lecture> lectures, String studentName, Integer studentNumber) {
 		if (studentNumber != null && studentNumber < 0) {
 			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
@@ -82,6 +101,17 @@ final class Schedule {
 		this.studentNumber = studentNumber;
 	}
 
+	/**
+	 * Constructor creates a Schedule with a list of lectures and student
+	 * information.
+	 * 
+	 * @param lectures      A list of Lecture objects.
+	 * @param studentName   The name of the student.
+	 * @param studentNumber The student number as a String.
+	 * @throws NumberFormatException    if the provided studentNumber is not a valid
+	 *                                  number.
+	 * @throws IllegalArgumentException if the studentNumber is negative.
+	 */
 	Schedule(List<Lecture> lectures, String studentName, String studentNumber) {
 		setLectures(lectures);
 		this.studentName = studentName;
@@ -99,18 +129,40 @@ final class Schedule {
 		}
 	}
 
+	/**
+	 * Constructor creates a Schedule with student information.
+	 * 
+	 * @param studentName   The name of the student.
+	 * @param studentNumber The student number as an Integer.
+	 */
 	Schedule(String studentName, Integer studentNumber) {
 		this(new ArrayList<>(), studentName, studentNumber);
 	}
 
+	/**
+	 * Constructor creates a Schedule with student information.
+	 * 
+	 * @param studentName   The name of the student.
+	 * @param studentNumber The student number as a String.
+	 */
 	Schedule(String studentName, String studentNumber) {
 		this(new ArrayList<>(), studentName, studentNumber);
 	}
 
+	/**
+	 * Returns a copy of the list of lectures in the schedule.
+	 * 
+	 * @return A list of Lecture objects.
+	 */
 	List<Lecture> getLectures() {
 		return new ArrayList<>(this.lectures);
 	}
 
+	/**
+	 * Sets the list of lectures in the schedule and sorts it.
+	 * 
+	 * @param lectures A list of Lecture objects.
+	 */
 	void setLectures(List<Lecture> lectures) {
 		if (lectures == null) {
 			this.lectures = new ArrayList<>();
@@ -120,18 +172,46 @@ final class Schedule {
 		}
 	}
 
+	/**
+	 * Sorts the list of lectures in the schedule by their time slots.
+	 */
+	void sortLectures() {
+		Collections.sort(this.lectures);
+	}
+
+	/**
+	 * Returns the student name associated with the schedule.
+	 * 
+	 * @return A string representing the student's name.
+	 */
 	String getStudentName() {
 		return studentName;
 	}
 
+	/**
+	 * Sets the student name associated with the schedule.
+	 * 
+	 * @param studentName A string representing the student's name.
+	 */
 	void setStudentName(String studentName) {
 		this.studentName = studentName;
 	}
 
+	/**
+	 * Returns the student number associated with the schedule.
+	 * 
+	 * @return An integer representing the student's number.
+	 */
 	Integer getStudentNumber() {
 		return studentNumber;
 	}
 
+	/**
+	 * Sets the student number associated with the schedule.
+	 * 
+	 * @param studentNumber An integer representing the student's number.
+	 * @throws IllegalArgumentException if the studentNumber is negative.
+	 */
 	void setStudentNumber(Integer studentNumber) {
 		if (studentNumber != null && studentNumber < 0) {
 			throw new IllegalArgumentException(NEGATIVE_EXCEPTION);
@@ -139,11 +219,23 @@ final class Schedule {
 		this.studentNumber = studentNumber;
 	}
 
+	/**
+	 * Adds a lecture to the schedule and sorts the schedule.
+	 * 
+	 * @param lecture A Lecture object to be added to the schedule.
+	 */
 	void addLecture(Lecture lecture) {
 		this.lectures.add(lecture);
 		sortLectures();
 	}
 
+	/**
+	 * Removes a lecture from the schedule.
+	 * 
+	 * @param lecture A Lecture object to be removed from the schedule.
+	 * @throws IllegalArgumentException if the schedule doesn't contain the
+	 *                                  specified lecture.
+	 */
 	void removeLecture(Lecture lecture) {
 		if (!this.lectures.contains(lecture)) {
 			throw new IllegalArgumentException("The schedule doesn't contain this lecture");
@@ -253,7 +345,6 @@ final class Schedule {
 		} catch (Exception e) {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
-
 	}
 	
 	/**
@@ -276,9 +367,13 @@ final class Schedule {
 	    if (!destinationPath.endsWith(destinationFormat))
 	        throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 	}
-
-	
-
+  
+	/**
+	 * Returns a string representation of the schedule, including the student's name
+	 * and number, and the list of lectures.
+	 * 
+	 * @return A string representing the schedule.
+	 */
 	@Override
 	public String toString() {
 		String str = "";
@@ -302,6 +397,4 @@ final class Schedule {
 		}
 		return str;
 	}
-	
-
 }
