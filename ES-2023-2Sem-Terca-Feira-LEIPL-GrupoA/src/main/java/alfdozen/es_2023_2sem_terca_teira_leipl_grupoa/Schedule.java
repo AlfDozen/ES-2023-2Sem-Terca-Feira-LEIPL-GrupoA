@@ -150,17 +150,76 @@ final class Schedule {
 	
 		for (Lecture lecture : lectures) {
 			  ObjectNode lectureNode = mapper.createObjectNode();
-			  lectureNode.put("Curso", lecture.getAcademicInfo().getDegree());
-			  lectureNode.put("Unidade Curricular", lecture.getAcademicInfo().getCourse());
-			  lectureNode.put("Turno", lecture.getAcademicInfo().getShift());
-			  lectureNode.put("Turma", lecture.getAcademicInfo().getClassGroup());
-			  lectureNode.put("Inscritos no turno", lecture.getAcademicInfo().getStudentsEnrolled());
-			  lectureNode.put("Dia da semana", lecture.getTimeSlot().getWeekDay());
-			  lectureNode.put("Data da aula", lecture.getTimeSlot().getDateString());
-			  lectureNode.put("Hora início da aula", lecture.getTimeSlot().getTimeBeginString());
-			  lectureNode.put("Hora fim da aula", lecture.getTimeSlot().getTimeEndString());
-			  lectureNode.put("Sala atribuída à aula", lecture.getRoom().getName());
-			  lectureNode.put("Lotação da sala", lecture.getRoom().getCapacity());
+			  String degree = "";
+			  if (lecture.getAcademicInfo().getDegree() != null){
+				  degree = lecture.getAcademicInfo().getDegree();
+			  }
+			  lectureNode.put("Curso", degree);
+			  
+			  String uc = "";
+			  if (lecture.getAcademicInfo().getCourse() != null){
+				  uc = lecture.getAcademicInfo().getCourse();
+			  }
+			  lectureNode.put("Unidade Curricular", uc);
+			  
+			  String turno = "";
+			  if (lecture.getAcademicInfo().getShift() != null){
+				  turno = lecture.getAcademicInfo().getShift();
+			  }
+			  lectureNode.put("Turno", turno);
+			  
+			  String turma = "";
+			  if (lecture.getAcademicInfo().getClassGroup() != null){
+				  turma = lecture.getAcademicInfo().getClassGroup();
+			  }
+			  lectureNode.put("Turma", turma);
+			  
+			  String inscritos = "";
+			  if (lecture.getAcademicInfo().getStudentsEnrolled() != null){
+				  inscritos = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+			  }
+			  lectureNode.put("Inscritos no turno", inscritos);
+			  
+			  String weekday = "";
+			  if ( lecture.getTimeSlot().getWeekDay() != null){
+				  weekday =  lecture.getTimeSlot().getWeekDay();
+			  }
+			  lectureNode.put("Dia da semana", weekday);
+			  
+			  String data = "";
+			  if ( lecture.getTimeSlot().getDate() != null){
+				  data =  lecture.getTimeSlot().getDateString();
+			  }
+			  lectureNode.put("Data da aula", data);
+			  
+			  
+			  String inicio = "";
+			  if ( lecture.getTimeSlot().getTimeBegin() != null){
+				  inicio =  lecture.getTimeSlot().getTimeBeginString();
+			  }
+			  lectureNode.put("Hora inicio da aula", inicio);
+			  
+			  String fim = "";
+			  if ( lecture.getTimeSlot().getTimeEnd() != null){
+				  fim =  lecture.getTimeSlot().getTimeEndString();
+			  }
+			  lectureNode.put("Hora fim da aula", fim);
+			  
+			  
+			  String sala = "";
+			  if ( lecture.getRoom().getName() != null){
+				  sala =  lecture.getRoom().getName();
+			  }
+			  lectureNode.put("Sala atribuída à aula", sala);
+			  
+			  
+			  String lotacao = "";
+			  if ( lecture.getRoom().getCapacity() != null){
+				  lotacao =  lecture.getRoom().getCapacity().toString();
+			  }
+			  lectureNode.put("Lotação da sala", lotacao);
+
+
 
 			  lecturesArray.add(lectureNode);
 			}
@@ -170,9 +229,6 @@ final class Schedule {
 		// Write the JSON to a file
 		try (FileWriter fileWriter = new FileWriter(fileName)) {
 		    fileWriter.write(json);
-		    System.out.println("Schedule saved to JSON file successfully.");
-		} catch (IOException e) {
-		    System.out.println("Error writing JSON file: " + e.getMessage());
 		}
 
 	}
