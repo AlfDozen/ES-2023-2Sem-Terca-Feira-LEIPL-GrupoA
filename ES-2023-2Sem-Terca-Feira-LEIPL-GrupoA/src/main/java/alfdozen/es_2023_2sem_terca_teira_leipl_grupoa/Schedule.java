@@ -46,6 +46,7 @@ final class Schedule {
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
+	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String READ_WRITE_EXCEPTION = "Error: File read or write";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
@@ -248,6 +249,58 @@ final class Schedule {
 	}
 
 	/**
+	 * Method that saves a Schedule object to a CSV file.
+	 * 
+	 * @param schedule A schedule to be saved
+	 * @param fileName A name for the CSV file
+	 * @throws IOException if an I/O error occurs while writing to the file
+	 */
+	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
+		try {
+
+			File file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter writer = new FileWriter(file);
+			writer.write(HEADER + "\n");
+			for (Lecture lecture : schedule.getLectures()) {
+
+				String[] attrArray = new String[11];
+				attrArray[0] = lecture.getAcademicInfo().getDegree();
+				attrArray[1] = lecture.getAcademicInfo().getCourse();
+				attrArray[2] = lecture.getAcademicInfo().getShift();
+				attrArray[3] = lecture.getAcademicInfo().getClassGroup();
+				attrArray[5] = lecture.getTimeSlot().getWeekDay();
+				attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
+				attrArray[7] = lecture.getTimeSlot().getTimeEndString();
+				attrArray[8] = lecture.getTimeSlot().getDateString();
+				attrArray[9] = lecture.getRoom().getName();
+
+				for (int i = 0; i < attrArray.length; i++) {
+					if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+						attrArray[i] = "";
+					}
+				}
+				if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
+					attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+
+				if (lecture.getRoom().getCapacity() != null)
+					attrArray[10] = lecture.getRoom().getCapacity().toString();
+
+				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", attrArray[0], attrArray[1],
+						attrArray[2], attrArray[3], attrArray[4], attrArray[5], attrArray[6], attrArray[7],
+						attrArray[8], attrArray[9], attrArray[10]));
+
+			}
+			writer.close();
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
+		}
+	}
+
+  /**
 	 * This method allows you to load a schedule via a csv file
 	 *
 	 * @param filePath the path of the csv file
