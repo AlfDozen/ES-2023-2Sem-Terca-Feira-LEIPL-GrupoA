@@ -1,0 +1,17 @@
+Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala
+;;;;;;;;;;
+ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;13:00:00;14:30:00;02/12/2022;AA2.25;34
+ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;23/11/2022;AA2.25;34
+ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;14:30:00;16:00:00;07/11/2022;AA2.25;34
+PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;12/12/2022;AA3.24;30
+PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;;;
+LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;28/09/2022;2,00E+07;50
+LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;21/09/2022;2,00E+07;50
+CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;10/11/2022;AA3.30;24
+LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;23/09/2022;C5.06;70
+LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;16/09/2022;;
+DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;05/12/2022;AA2.24;30
+DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;28/11/2022;D1.07;27
+LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;22/09/2022;C6.10;80
+LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;15/09/2022;;
+LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;;C6.10;80

@@ -50,15 +50,20 @@ final class Schedule {
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String READ_WRITE_EXCEPTION = "Error: File read or write";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
-	static final String DELIMITER = ",";
+	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String ROW_EXCEPTION = "The row has more columns than the expected";
+	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
+	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
+	static final String EMPTY_ROW = ";;;;;;;;;;";
+	static final Integer NUMBER_COLUMNS = 11;
 	static final String FILE_FORMAT_JSON = ".json";
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
-	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -244,14 +249,93 @@ final class Schedule {
 	}
 	
 	/**
-	Converts a CSV file to a JSON file.
+	 * This method allows you to load a schedule via a csv file 
+   *
+	 * @param path (String) - file path of the csv file
+	 * @return returns a schedule object with all existing lectures in the file given as input
+	 * @throws IllegalArgumentException is thrown if the file path is null
+	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
+	 * @throws IllegalArgumentException is thrown if an error is given when the file is read
+	 */
+	static Schedule loadCSV(String path) {
+		if(path == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
+		if(!path.endsWith(FILE_FORMAT_CSV) && !path.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
+		}
+		Schedule schedule = new Schedule();
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+			String line = "";
+			while((line = br.readLine()) != null) {
+				if(!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
+					Lecture lecture = buildLecture(line);
+					schedule.addLecture(lecture);
+        }
+			}
+			br.close();
+		} catch(IOException e) {
+			throw new IllegalArgumentException(READ_EXCEPTION);
+		}
+		return schedule;
+	}
+  
+  /**
+	 * This method build a lecture object from a csv file entry
+   *
+	 * @param line (String) - csv file entry
+	 * @return returns a lecture object from the csv file entry given as input
+	 * @throws IllegalStateException is thrown if the number of columns is greater than expected
+	 */
+	private static Lecture buildLecture(String line) {
+		String[] tempArr = line.split(DELIMITER);
+		if(tempArr.length > NUMBER_COLUMNS) {
+			throw new IllegalStateException(ROW_EXCEPTION);
+		}
+		String[] finalArr = new String[NUMBER_COLUMNS];
+		if(tempArr.length == NUMBER_COLUMNS) {
+			finalArr = buildLine(tempArr);
+		}
+		if(tempArr.length < NUMBER_COLUMNS) {
+			finalArr = buildLine(tempArr);
+			for(int i = tempArr.length; i < NUMBER_COLUMNS; i++) {
+				finalArr[i] = null;
+			}
+		}
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
+		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
+		Room room = new Room(finalArr[9], finalArr[10]);
+		return new Lecture(academicInfo, timeSlot, room);
+	}
+	
+	/**
+	 * This method allows you to replace empty fields in the csv file entry with null values
+   *
+	 * @param array (String[]) - vector with the parsed csv file entry
+	 * @return returns a String[]
+	 */
+	private static String[] buildLine(String[] array) {
+		String[] finalArr = new String[NUMBER_COLUMNS];
+		for(int i = 0; i < array.length; i++) {
+			if(array[i].equals("")) {
+				finalArr[i] = null;
+			} else {
+				finalArr[i] = array[i];
+			}
+		}
+		return finalArr;
+	}
 
-	@param csvSourcePath the path of the CSV file to convert.
-	@param jsonDestinationPath the path of the JSON file to create.
-	@param delimiter the delimiter character used in the CSV file.
-	@throws IOException if there is an I/O error reading or writing the files.
-	@throws IllegalArgumentException if any of the input arguments are null or invalid.
-	*/
+  /**
+	 * Converts a CSV file to a JSON file.
+   * 
+	 * @param csvSourcePath the path of the CSV file to convert.
+	 * @param jsonDestinationPath the path of the JSON file to create.
+	 * @param delimiter the delimiter character used in the CSV file.
+	 * @throws IOException if there is an I/O error reading or writing the files.
+	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 */
 	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter) throws IOException{
 		validateArguments(csvSourcePath, jsonDestinationPath, delimiter, FILE_FORMAT_CSV, FILE_FORMAT_JSON);
 
@@ -278,7 +362,7 @@ final class Schedule {
 				}
 			}
 		}
-		try (InputStream inputStream = new FileInputStream(destinationTempFilePath)){
+    try (InputStream inputStream = new FileInputStream(destinationTempFilePath)){
 			
 			CsvMapper csvMapper = new CsvMapper();
 			CsvSchema csvSchema = CsvSchema.builder()
@@ -299,16 +383,16 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
-
+	
 	/**
-	Converts a JSON file to a CSV file.
-
-	@param jsonSourcePath the path of the JSON file to convert.
-	@param csvDestinationPath the path of the CSV file to create.
-	@param delimiter the delimiter character used in the CSV file.
-	@throws IOException if there is an I/O error reading or writing the files.
-	@throws IllegalArgumentException if any of the input arguments are null or invalid.
-	*/
+	 * Converts a JSON file to a CSV file.
+   * 
+	 * @param jsonSourcePath the path of the JSON file to convert.
+	 * @param csvDestinationPath the path of the CSV file to create.
+	 * @param delimiter the delimiter character used in the CSV file.
+	 * @throws IOException if there is an I/O error reading or writing the files.
+	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 */
 	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter) throws IOException {
 		validateArguments(jsonSourcePath, csvDestinationPath, delimiter, FILE_FORMAT_JSON, FILE_FORMAT_CSV);
 		

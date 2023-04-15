@@ -379,4 +379,47 @@ class ScheduleTest {
 	    assertEquals(expected, schedule.toString());
 	}
 
+	@Test
+	final void testLoadCSV() {
+		// Path null
+		assertThrows(IllegalArgumentException.class, () -> Schedule.loadCSV(null));
+		
+		// Ficheiro txt
+		assertThrows(IllegalArgumentException.class, () -> Schedule.loadCSV("./src/main/resources/horario_exemplo_txt.txt"));
+		
+		// Ficheiro apenas com linhas em branco, cabeçalho e linhas vazias
+		String expected = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+		assertEquals(expected, Schedule.loadCSV("./src/main/resources/horario_exemplo_sem_dados.csv").toString());
+		
+		// Entrada com mais de 11 colunas
+		assertThrows(IllegalStateException.class, () -> Schedule.loadCSV("./src/main/resources/horario_exemplo_12colunas.csv"));
+		
+		// Entrada com 11 colunas
+		Lecture lecture3 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room("AA2.25", 34));
+		List<Lecture> lectures3 = new ArrayList<>();
+		lectures3.add(lecture3);
+		Schedule expected3 = new Schedule(lectures3);
+		assertEquals(expected3.toString(), Schedule.loadCSV("./src/main/resources/horario_exemplo_11colunas.csv").toString());
+		
+		// Entrada com menos de 11 colunas
+		Lecture lecture4 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room(null, (Integer)null));
+		List<Lecture> lectures4 = new ArrayList<>();
+		lectures4.add(lecture4);
+		Schedule expected4 = new Schedule(lectures4);
+		assertEquals(expected4.toString(), Schedule.loadCSV("./src/main/resources/horario_exemplo_9colunas.csv").toString());
+		
+		// Entrada com campos vazios no meio
+		Lecture lecture5 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", null, "MEA1", 30),
+	            new TimeSlot("Sex", null, LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room("AA2.25", 34));
+		List<Lecture> lectures5 = new ArrayList<>();
+		lectures5.add(lecture5);
+		Schedule expected5 = new Schedule(lectures5);
+		assertEquals(expected5.toString(), Schedule.loadCSV("./src/main/resources/horario_exemplo_campos_vazios.csv").toString());
+
+	}
 }
