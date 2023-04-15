@@ -23,16 +23,14 @@ import javafx.scene.image.ImageView;
 public class MainScreen extends Application implements Initializable{
 
 
-//	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
-	
 	@FXML
-	private Button viewSchedule, createSchedule, uploadSchedule, webcal;
+	private Button convertFile, createSchedule, uploadSchedule, webcal;
 	
 	@FXML
 	private ImageView image;
 	
 	@FXML
-	private Image photo = new Image("/fxml/default_avatar.jpg");
+	private Image photo = new Image("/fxml/iscte.gif");
 	
 	@FXML
 	private Label header;
@@ -83,6 +81,10 @@ public class MainScreen extends Application implements Initializable{
 		MainScreen.setRoot("/fxml/Webcal");
 	}
 	
+	@FXML
+	private void convertFile() throws IOException {
+		MainScreen.setRoot("/fxml/ConvertFile");
+	}
 	
 	public static void main(String[] args) {
 		launch(args);

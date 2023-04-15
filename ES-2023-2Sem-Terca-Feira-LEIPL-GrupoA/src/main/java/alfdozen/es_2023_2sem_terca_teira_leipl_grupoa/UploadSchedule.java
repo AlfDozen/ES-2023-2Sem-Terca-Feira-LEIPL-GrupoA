@@ -23,7 +23,7 @@ public class UploadSchedule implements Initializable{
 
 
 	@FXML
-	private Button save, backButton, uploadSchedule;
+	private Button save, backButton, uploadSchedule, viewSchedule;
 
 	@FXML
 	private Label fileChosen;
@@ -48,6 +48,7 @@ public class UploadSchedule implements Initializable{
 		
 		fileChosen.setText(filePath.getName());
 		
+		save.setVisible(true);
 	}
 
 	@FXML
@@ -63,6 +64,8 @@ public class UploadSchedule implements Initializable{
 			if(extension.equals("json") || extension.equals("csv")) {
 
 				//usar ficheiro para criar calendario
+				
+				viewSchedule.setVisible(true);
 
 			}else {
 

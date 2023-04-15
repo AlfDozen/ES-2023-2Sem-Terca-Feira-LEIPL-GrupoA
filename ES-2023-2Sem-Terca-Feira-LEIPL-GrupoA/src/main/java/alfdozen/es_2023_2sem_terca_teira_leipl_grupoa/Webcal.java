@@ -23,7 +23,7 @@ public class Webcal implements Initializable{
 
 
 	@FXML
-	private Button save, backButton;
+	private Button save, backButton, viewSchedule;
 
 	@FXML
 	private TextField webcal;
@@ -39,6 +39,8 @@ public class Webcal implements Initializable{
 			if(domain.equals("webcal://")) {
 
 				//usar ficheiro para criar calendario
+				
+				viewSchedule.setVisible(true);
 
 			}else {
 

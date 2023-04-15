@@ -21,32 +21,16 @@ public class ViewSchedule implements Initializable{
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
 
 	@FXML 
-	private Tab monthTab;
-	@FXML 
-	private Tab dayTab;
-	@FXML 
-	private Tab weekTab;
+	private Tab monthTab, dayTab, weekTab;
 
 	@FXML
-	private GridPane paneCalendarDay;
-	@FXML
-	private GridPane paneCalendarWeek;
-	@FXML
-	private GridPane paneCalendarMonth;
+	private GridPane paneCalendarDay, paneCalendarWeek, paneCalendarMonth;
 
 	@FXML
-	private DatePicker datePickerDay;
-	@FXML
-	private DatePicker datePickerWeek;
-	@FXML
-	private DatePicker datePickerMonth;
+	private DatePicker datePickerDay, datePickerWeek, datePickerMonth;
 
 	@FXML
-	private Button backButtonDay;
-	@FXML
-	private Button backButtonWeek;
-	@FXML
-	private Button backButtonMonth;
+	private Button backButtonDay, backButtonWeek, backButtonMonth;
 
 
 	@FXML
