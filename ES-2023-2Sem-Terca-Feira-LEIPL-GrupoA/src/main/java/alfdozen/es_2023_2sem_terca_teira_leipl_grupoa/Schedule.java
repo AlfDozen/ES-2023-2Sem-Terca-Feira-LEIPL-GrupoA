@@ -285,6 +285,14 @@ final class Schedule {
 	}
 	
 
+	/**
+	This method saves a Schedule object to a JSON file.
+
+	@param schedule A Schedule object to be saved.
+	@param fileName A name for the file to save the Schedule object.
+
+	@throws IOException if an I/O error occurs while writing the JSON file.
+	*/
 	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
 
 		List<Lecture> lectures = schedule.getLectures();
