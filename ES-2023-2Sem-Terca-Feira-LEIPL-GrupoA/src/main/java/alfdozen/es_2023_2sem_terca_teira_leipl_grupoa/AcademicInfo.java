@@ -1,6 +1,5 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author alfdozen
@@ -20,15 +19,11 @@ final class AcademicInfo {
 
 	static final String NEGATIVE_EXCEPTION = "The number of students enrolled can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
-	@JsonProperty("Curso")
+	
 	private String degree;
-	@JsonProperty("Unidade Curricular")
 	private String course;
-	@JsonProperty("Turno")
 	private String shift;
-	@JsonProperty("Turma")
 	private String classGroup;
-	@JsonProperty("Inscritos no turno")
 	private Integer studentsEnrolled;
 
 	AcademicInfo(String degree, String course, String shift, String classGroup, Integer studentsEnrolled) {

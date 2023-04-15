@@ -1,9 +1,11 @@
 [ {
+  "Curso" : null,
   "Unidade Curricular" : "Teoria dos Jogos e dos Contratos",
   "Turno" : "01789TP01",
   "Turma" : "MEA1",
   "Inscritos no turno" : 30,
   "Dia da semana" : "Sex",
+  "Data da aula" : "Unknown",
   "Hora início da aula" : "13:00:00",
   "Hora fim da aula" : "14:30:00",
   "Sala atribuída à aula" : "AA2.25",
@@ -17,7 +19,9 @@
   "Dia da semana" : "Sex",
   "Data da aula" : "16/09/2022",
   "Hora início da aula" : "13:00:00",
-  "Hora fim da aula" : "14:30:00"
+  "Hora fim da aula" : "14:30:00",
+  "Sala atribuída à aula" : null,
+  "Lotação da sala" : null
 }, {
   "Curso" : "PIUDHIST",
   "Unidade Curricular" : "Seminário de Projecto I (Piudhist)",

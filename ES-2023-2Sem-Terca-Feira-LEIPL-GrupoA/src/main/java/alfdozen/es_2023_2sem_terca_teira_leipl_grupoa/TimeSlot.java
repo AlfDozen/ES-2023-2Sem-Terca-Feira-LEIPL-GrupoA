@@ -5,11 +5,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.OptBoolean;
-
 /**
  * @author alfdozen
  * 
@@ -41,20 +36,12 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	static final String[] WEEK_DAY_ARRAY = { "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" };
 	private static final String DATE_FORMAT = "d/M/yyyy";
 	private static final String TIME_FORMAT = "h:m:s";
-	@JsonProperty("Dia da semana")
+	
+
 	private String weekDay;
-	@JsonProperty("Data da aula")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-	private LocalDate date;
-	
-	@JsonProperty("Hora início da aula")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-	private LocalTime timeBegin;
-	
-	@JsonProperty("Hora fim da aula")
-//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", lenient = OptBoolean.FALSE)
+	private LocalDate date;	
+	private LocalTime timeBegin;	
 	private LocalTime timeEnd;
-	
 	private Boolean wasWeekDayCorrect;
 
 	TimeSlot(String weekDay, LocalDate date, LocalTime timeBegin, LocalTime timeEnd) {
