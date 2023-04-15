@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -247,59 +246,62 @@ final class Schedule {
 		}
 		this.lectures.remove(lecture);
 	}
-	
+
 	/**
-	 * This method allows you to load a schedule via a csv file 
-   *
+	 * This method allows you to load a schedule via a csv file
+	 *
 	 * @param path (String) - file path of the csv file
-	 * @return returns a schedule object with all existing lectures in the file given as input
+	 * @return returns a schedule object with all existing lectures in the file
+	 *         given as input
 	 * @throws IllegalArgumentException is thrown if the file path is null
 	 * @throws IllegalArgumentException is thrown if the file is in the wrong format
-	 * @throws IllegalArgumentException is thrown if an error is given when the file is read
+	 * @throws IllegalArgumentException is thrown if an error is given when the file
+	 *                                  is read
 	 */
 	static Schedule loadCSV(String path) {
-		if(path == null) {
+		if (path == null) {
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		}
-		if(!path.endsWith(FILE_FORMAT_CSV) && !path.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
+		if (!path.endsWith(FILE_FORMAT_CSV) && !path.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
 			String line = "";
-			while((line = br.readLine()) != null) {
-				if(!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
+			while ((line = br.readLine()) != null) {
+				if (!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
 					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
-        }
+				}
 			}
 			br.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new IllegalArgumentException(READ_EXCEPTION);
 		}
 		return schedule;
 	}
-  
-  /**
+
+	/**
 	 * This method build a lecture object from a csv file entry
-   *
+	 *
 	 * @param line (String) - csv file entry
 	 * @return returns a lecture object from the csv file entry given as input
-	 * @throws IllegalStateException is thrown if the number of columns is greater than expected
+	 * @throws IllegalStateException is thrown if the number of columns is greater
+	 *                               than expected
 	 */
 	private static Lecture buildLecture(String line) {
 		String[] tempArr = line.split(DELIMITER);
-		if(tempArr.length > NUMBER_COLUMNS) {
+		if (tempArr.length > NUMBER_COLUMNS) {
 			throw new IllegalStateException(ROW_EXCEPTION);
 		}
 		String[] finalArr = new String[NUMBER_COLUMNS];
-		if(tempArr.length == NUMBER_COLUMNS) {
+		if (tempArr.length == NUMBER_COLUMNS) {
 			finalArr = buildLine(tempArr);
 		}
-		if(tempArr.length < NUMBER_COLUMNS) {
+		if (tempArr.length < NUMBER_COLUMNS) {
 			finalArr = buildLine(tempArr);
-			for(int i = tempArr.length; i < NUMBER_COLUMNS; i++) {
+			for (int i = tempArr.length; i < NUMBER_COLUMNS; i++) {
 				finalArr[i] = null;
 			}
 		}
@@ -308,17 +310,18 @@ final class Schedule {
 		Room room = new Room(finalArr[9], finalArr[10]);
 		return new Lecture(academicInfo, timeSlot, room);
 	}
-	
+
 	/**
-	 * This method allows you to replace empty fields in the csv file entry with null values
-   *
+	 * This method allows you to replace empty fields in the csv file entry with
+	 * null values
+	 *
 	 * @param array (String[]) - vector with the parsed csv file entry
 	 * @return returns a String[]
 	 */
 	private static String[] buildLine(String[] array) {
 		String[] finalArr = new String[NUMBER_COLUMNS];
-		for(int i = 0; i < array.length; i++) {
-			if(array[i].equals("")) {
+		for (int i = 0; i < array.length; i++) {
+			if (array[i].equals("")) {
 				finalArr[i] = null;
 			} else {
 				finalArr[i] = array[i];
@@ -327,131 +330,135 @@ final class Schedule {
 		return finalArr;
 	}
 
-  /**
+	/**
 	 * Converts a CSV file to a JSON file.
-   * 
-	 * @param csvSourcePath the path of the CSV file to convert.
+	 * 
+	 * @param csvSourcePath       the path of the CSV file to convert.
 	 * @param jsonDestinationPath the path of the JSON file to create.
-	 * @param delimiter the delimiter character used in the CSV file.
-	 * @throws IOException if there is an I/O error reading or writing the files.
-	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 * @param delimiter           the delimiter character used in the CSV file.
+	 * @throws IOException              if there is an I/O error reading or writing
+	 *                                  the files.
+	 * @throws IllegalArgumentException if any of the input arguments are null or
+	 *                                  invalid.
 	 */
-	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter) throws IOException{
+	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter)
+			throws IOException {
 		validateArguments(csvSourcePath, jsonDestinationPath, delimiter, FILE_FORMAT_CSV, FILE_FORMAT_JSON);
 
 		File csvFile = new File(csvSourcePath);
 		File jsonFile = new File(jsonDestinationPath);
-		
+
 		if (!csvFile.isFile())
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
 		if (!jsonFile.getParentFile().isDirectory())
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
 		if (jsonFile.isFile())
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
-			
+
 		String destinationTempFilePath = "src/resources/tmpfile.csv";
-		
+
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath));
-			BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath));){
-			
+				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath));) {
+
 			String line;
-			while((line = reader.readLine()) != null) {
-				if(!line.isBlank()) {
+			while ((line = reader.readLine()) != null) {
+				if (!line.isBlank()) {
 					writer.append(line);
 					writer.newLine();
 				}
 			}
 		}
-    try (InputStream inputStream = new FileInputStream(destinationTempFilePath)){
-			
+		try (InputStream inputStream = new FileInputStream(destinationTempFilePath)) {
+
 			CsvMapper csvMapper = new CsvMapper();
-			CsvSchema csvSchema = CsvSchema.builder()
-                    .setColumnSeparator(delimiter)
-                    .setUseHeader(true)
-                    .build();
-			
-	        List<Object> csvData = csvMapper.readerFor(Map.class)
-	            .with(csvSchema)
-	            .readValues(new InputStreamReader(inputStream))
-	            .readAll();
-			
-	        Files.deleteIfExists(Paths.get(destinationTempFilePath));
-	        
+			CsvSchema csvSchema = CsvSchema.builder().setColumnSeparator(delimiter).setUseHeader(true).build();
+
+			List<Object> csvData = csvMapper.readerFor(Map.class).with(csvSchema)
+					.readValues(new InputStreamReader(inputStream)).readAll();
+
+			Files.deleteIfExists(Paths.get(destinationTempFilePath));
+
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, csvData);
 		} catch (IOException e) {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
-	
+
 	/**
 	 * Converts a JSON file to a CSV file.
-   * 
-	 * @param jsonSourcePath the path of the JSON file to convert.
+	 * 
+	 * @param jsonSourcePath     the path of the JSON file to convert.
 	 * @param csvDestinationPath the path of the CSV file to create.
-	 * @param delimiter the delimiter character used in the CSV file.
-	 * @throws IOException if there is an I/O error reading or writing the files.
-	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 * @param delimiter          the delimiter character used in the CSV file.
+	 * @throws IOException              if there is an I/O error reading or writing
+	 *                                  the files.
+	 * @throws IllegalArgumentException if any of the input arguments are null or
+	 *                                  invalid.
 	 */
-	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter) throws IOException {
+	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter)
+			throws IOException {
 		validateArguments(jsonSourcePath, csvDestinationPath, delimiter, FILE_FORMAT_JSON, FILE_FORMAT_CSV);
-		
+
 		File jsonFile = new File(jsonSourcePath);
 		File csvFile = new File(csvDestinationPath);
-		
+
 		if (!jsonFile.isFile())
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
 		if (!csvFile.getParentFile().isDirectory())
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
 		if (csvFile.isFile())
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
-		
+
 		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile));
-			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile))){
-			
+				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile))) {
+
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 
 			CsvMapper csvMapper = new CsvMapper();
-			
+
 			Map<String, Object> firstRecord = (Map<String, Object>) data.get(0);
 			CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder().setUseHeader(true).disableQuoteChar();
 
-			for (String columnName : firstRecord.keySet()) 
-			    csvSchemaBuilder.addColumn(columnName);
+			for (String columnName : firstRecord.keySet())
+				csvSchemaBuilder.addColumn(columnName);
 
 			CsvSchema csvSchema = csvSchemaBuilder.build().withColumnSeparator(delimiter);
-			
-			csvMapper.writerFor(List.class)
-			        .with(csvSchema)
-			        .writeValue(writer, data);
+
+			csvMapper.writerFor(List.class).with(csvSchema).writeValue(writer, data);
 
 		} catch (Exception e) {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
-	
+
 	/**
 	 * Validates the input arguments for file conversion methods.
 	 *
-	 * @param sourcePath      the path of the source file to be converted.
-	 * @param destinationPath the path of the destination file to be created.
-	 * @param delimiter       the delimiter character used in the CSV file (if applicable).
-	 * @param sourceFormat    the expected file format of the source file (e.g., ".csv", ".json").
-	 * @param destinationFormat the expected file format of the destination file (e.g., ".csv", ".json").
-	 * @throws IllegalArgumentException if any of the input arguments are null or invalid.
+	 * @param sourcePath        the path of the source file to be converted.
+	 * @param destinationPath   the path of the destination file to be created.
+	 * @param delimiter         the delimiter character used in the CSV file (if
+	 *                          applicable).
+	 * @param sourceFormat      the expected file format of the source file (e.g.,
+	 *                          ".csv", ".json").
+	 * @param destinationFormat the expected file format of the destination file
+	 *                          (e.g., ".csv", ".json").
+	 * @throws IllegalArgumentException if any of the input arguments are null or
+	 *                                  invalid.
 	 */
-	static void validateArguments(String sourcePath, String destinationPath, Character delimiter, String sourceFormat, String destinationFormat) {
-	    if (sourcePath == null || destinationPath == null)
-	        throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-	    if (delimiter == null)
-	        throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
-	    if (!sourcePath.endsWith(sourceFormat))
-	        throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + sourceFormat);
-	    if (!destinationPath.endsWith(destinationFormat))
-	        throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
+	static void validateArguments(String sourcePath, String destinationPath, Character delimiter, String sourceFormat,
+			String destinationFormat) {
+		if (sourcePath == null || destinationPath == null)
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		if (delimiter == null)
+			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
+		if (!sourcePath.endsWith(sourceFormat))
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + sourceFormat);
+		if (!destinationPath.endsWith(destinationFormat))
+			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 	}
-  
+
 	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.
