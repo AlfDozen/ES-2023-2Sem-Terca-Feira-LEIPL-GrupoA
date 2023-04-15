@@ -29,7 +29,7 @@ final class Schedule {
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
-	static final String ROW_EXCEPTION = "The row has more columns that the expected";
+	static final String ROW_EXCEPTION = "The row has more columns than the expected";
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
@@ -140,7 +140,7 @@ final class Schedule {
 		if(path == null) {
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		}
-		if(!path.endsWith(FILE_FORMAT_CSV)) {
+		if(!path.endsWith(FILE_FORMAT_CSV) && !path.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
