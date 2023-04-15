@@ -326,20 +326,7 @@ final class Schedule {
 			}
 		}
 		return finalArr;
-	}
-	
-	
-	public static void main(String[] args) {
-		try {
-			Schedule s = loadJSON("./src/main/resources/horario_exemplo_json_campos_vazios.json");
-			System.out.println(s.toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
+	}	
 	
 	/**
 	 * This method allows to load a schedule via a json file

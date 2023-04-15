@@ -431,6 +431,9 @@ class ScheduleTest {
 		// Ficheiro txt
 		assertThrows(IllegalArgumentException.class, () -> Schedule.loadJSON("./src/main/resources/horario_exemplo_txt.txt"));
 		
+		// Path errado
+		assertThrows(IOException.class, () -> Schedule.loadJSON("./src/main/resources/horario_exemplo_nao_existe.json"));
+		
 		// Entrada com campos vazios
 		Lecture lecture4 = new Lecture(new AcademicInfo("ME", null, "01789TP01", "MEA1", 30),
 	            new TimeSlot("Sex", null, null, LocalTime.of(14, 30, 0)),
@@ -448,6 +451,15 @@ class ScheduleTest {
 		lectures3.add(lecture3);
 		Schedule expected3 = new Schedule(lectures3);
 		assertEquals(expected3.toString(), Schedule.loadJSON("./src/main/resources/horario_exemplo_json.json").toString());
+		
+		// Entrada tudo ok
+		Lecture lecture5 = new Lecture(new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+	            new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+	            new Room("AA2.25", 34));
+		List<Lecture> lectures5 = new ArrayList<>();
+		lectures5.add(lecture5);
+		Schedule expected5 = new Schedule(lectures5);
+		assertEquals(expected5.toString(), Schedule.loadJSON("./src/main/resources/horario_exemplo_json2.JSON").toString());
 	}
 }
 
