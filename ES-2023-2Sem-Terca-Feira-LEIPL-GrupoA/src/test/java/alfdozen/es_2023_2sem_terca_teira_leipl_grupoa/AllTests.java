@@ -4,7 +4,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @Suite
-@SelectClasses({ AcademicInfoTest.class, LectureTest.class, RoomTest.class, TimeSlotTest.class })
+@SelectClasses({ AcademicInfoTest.class, LectureTest.class, RoomTest.class, TimeSlotTest.class, ScheduleTest.class })
 public class AllTests {
 
 }

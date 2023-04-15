@@ -385,6 +385,12 @@ class TimeSlotTest {
 		TimeSlot timeSlotSame = new TimeSlot("Sex", LocalDate.of(2023, 2, 23), LocalTime.of(11, 23, 4),
 				LocalTime.of(11, 23, 4));
 		assertFalse(timeSlotSame.isValidInterval());
+		
+		TimeSlot timeSlotNull = new TimeSlot("Sex", null, null, LocalTime.of(11, 23, 4));
+		assertFalse(timeSlotNull.isValidInterval());
+		
+		TimeSlot timeSlotNull2 = new TimeSlot("Sex", null, LocalTime.of(3, 2, 32), null);
+		assertFalse(timeSlotNull2.isValidInterval());
 	}
 
 	@Test
