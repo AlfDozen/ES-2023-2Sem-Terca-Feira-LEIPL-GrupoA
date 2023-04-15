@@ -29,10 +29,12 @@ final class Schedule {
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
+	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
+	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
+
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
-	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
 
 	Schedule() {
 		this.studentName = null;
@@ -136,81 +138,48 @@ final class Schedule {
 	 * @throws IOException if an I/O error occurs while writing to the file
 	 */
 	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
-		// Create a new CSV file
-		File file = new File(fileName);
-		if (!file.exists()) {
-			file.createNewFile();
+		try {
+
+			File file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter writer = new FileWriter(file);
+			writer.write(HEADER + "\n");
+			for (Lecture lecture : schedule.getLectures()) {
+
+				String[] attrArray = new String[11];
+				attrArray[0] = lecture.getAcademicInfo().getDegree();
+				attrArray[1] = lecture.getAcademicInfo().getCourse();
+				attrArray[2] = lecture.getAcademicInfo().getShift();
+				attrArray[3] = lecture.getAcademicInfo().getClassGroup();
+				attrArray[5] = lecture.getTimeSlot().getWeekDay();
+				attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
+				attrArray[7] = lecture.getTimeSlot().getTimeEndString();
+				attrArray[8] = lecture.getTimeSlot().getDateString();
+				attrArray[9] = lecture.getRoom().getName();
+
+				for (int i = 0; i < attrArray.length; i++) {
+					if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+						attrArray[i] = "";
+					}
+				}
+				if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
+					attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+
+				if (lecture.getRoom().getCapacity() != null)
+					attrArray[10] = lecture.getRoom().getCapacity().toString();
+
+				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", attrArray[0], attrArray[1],
+						attrArray[2], attrArray[3], attrArray[4], attrArray[5], attrArray[6], attrArray[7],
+						attrArray[8], attrArray[9], attrArray[10]));
+
+			}
+			writer.close();
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
 		}
-
-		// Write the data to the CSV file
-		FileWriter writer = new FileWriter(file);
-		writer.write(HEADER);
-		for (Lecture lecture : schedule.getLectures()) {
-			String degree = "", uc = "", turno = "", turma = "", inscritos = "", weekday = "", data = "", inicio = "",
-					fim = "", sala = "", lotacao = "";
-
-			if (lecture.getAcademicInfo().getDegree() != null) {
-				degree = lecture.getAcademicInfo().getDegree();
-			}
-
-			if (lecture.getAcademicInfo().getCourse() != null) {
-				uc = lecture.getAcademicInfo().getCourse();
-			}
-
-			if (lecture.getAcademicInfo().getShift() != null) {
-				turno = lecture.getAcademicInfo().getShift();
-			}
-
-			if (lecture.getAcademicInfo().getClassGroup() != null) {
-				turma = lecture.getAcademicInfo().getClassGroup();
-			}
-
-			if (lecture.getAcademicInfo().getStudentsEnrolled() != null) {
-				inscritos = lecture.getAcademicInfo().getStudentsEnrolled().toString();
-			}
-
-			if (lecture.getTimeSlot().getWeekDay() != null) {
-				weekday = lecture.getTimeSlot().getWeekDay();
-			}
-
-			if (lecture.getTimeSlot().getDate() != null) {
-				data = lecture.getTimeSlot().getDateString();
-			}
-
-			if (lecture.getTimeSlot().getTimeBegin() != null) {
-				inicio = lecture.getTimeSlot().getTimeBeginString();
-			}
-
-			if (lecture.getTimeSlot().getTimeEnd() != null) {
-				fim = lecture.getTimeSlot().getTimeEndString();
-			}
-
-			if (lecture.getRoom().getName() != null) {
-				sala = lecture.getRoom().getName();
-			}
-
-			if (lecture.getRoom().getCapacity() != null) {
-				lotacao = lecture.getRoom().getCapacity().toString();
-			}
-
-			writer.write(String.format("%s;%s;%s;%s;%d;%s;%s;%s;%s;%s;%s\n", degree, uc, turno, turma, inscritos,
-					weekday, data, inicio, fim, sala, lotacao));
-
-//					lecture.getAcademicInfo().getDegree() != null ? lecture.getAcademicInfo().getDegree() : "",
-//					lecture.getAcademicInfo().getCourse() != null ? lecture.getAcademicInfo().getCourse() : "",
-//					lecture.getAcademicInfo().getShift() != null ? lecture.getAcademicInfo().getShift() : "",
-//					lecture.getAcademicInfo().getClassGroup() != null ? lecture.getAcademicInfo().getClassGroup() : "",
-//					lecture.getAcademicInfo().getStudentsEnrolled() != null
-//							? lecture.getAcademicInfo().getStudentsEnrolled()
-//							: "",
-//					lecture.getTimeSlot().getWeekDay() != null ? lecture.getTimeSlot().getWeekDay() : "",
-//					lecture.getTimeSlot().getTimeBegin() != null ? lecture.getTimeSlot().getTimeBegin() : "",
-//					lecture.getTimeSlot().getTimeEnd() != null ? lecture.getTimeSlot().getTimeEnd() : "",
-//					lecture.getTimeSlot().getDate() != null ? lecture.getTimeSlot().getDate() : "",
-//					lecture.getRoom().getName() != null ? lecture.getRoom().getName() : "",
-//					lecture.getRoom().getCapacity() != null ? lecture.getRoom().getCapacity() : ""));
-		}
-		writer.close();
 	}
 
 	@Override
