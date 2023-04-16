@@ -1,17 +1,16 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
+ * The AcademicInfo class is used to define various academic information
+ * associated with the lecture. Namely, the university degree, the lecture
+ * course, the lecture shift, the associated student class and the number of
+ * students enrolled in the lecture. Since the information used to instantiate
+ * this class will frequently come from documents, the constructor accepts all
+ * arguments as Strings. Null arguments are accepted by the constructor and
+ * setters. With the function isComplete it can be checked if there are still
+ * null attributes.
+ * 
  * @author alfdozen
- * 
- *         The AcademicInfo class is used to define various academic information
- *         associated with the lecture: the university degree, the lecture
- *         course, the lecture shift, the associated student class and the
- *         number of students enrolled in the lecture. Since the information
- *         used to instantiate this class will frequently come from documents,
- *         the constructor accepts all arguments as Strings. Null arguments are
- *         accepted by the constructor and setters. With the function isComplete
- *         it can be checked if there are still null attributes.
- * 
  * @version 1.0.0
  */
 final class AcademicInfo {
@@ -113,7 +112,7 @@ final class AcademicInfo {
 	/**
 	 * Sets the name of the course.
 	 * 
-	 * @param degree the name of the course.
+	 * @param course the name of the course.
 	 */
 	void setCourse(String course) {
 		this.course = course;
@@ -151,7 +150,7 @@ final class AcademicInfo {
 	/**
 	 * Sets the designation of the shift.
 	 * 
-	 * @param degree the designation of the shift.
+	 * @param shift the designation of the shift.
 	 */
 	void setShift(String shift) {
 		this.shift = shift;
@@ -169,7 +168,7 @@ final class AcademicInfo {
 	/**
 	 * Sets the designation of the student class.
 	 * 
-	 * @param degree the designation of the student class.
+	 * @param classGroup the designation of the student class.
 	 */
 	void setClassGroup(String classGroup) {
 		this.classGroup = classGroup;

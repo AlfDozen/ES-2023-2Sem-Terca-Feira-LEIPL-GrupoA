@@ -27,23 +27,20 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
 /**
+ * The Schedule class is used to represent a schedule of lectures for a student.
+ * It contains a list of Lectures and information about the student, such as
+ * their name and student number. The constructor can be used to create an empty
+ * schedule or a schedule with a list of lectures, as well as providing student
+ * information. The student number must be a positive integer and will be
+ * validated by the class. The class can also add or remove lectures to/from the
+ * schedule. The class can be sorted by the time slots of the lectures in the
+ * schedule. The toString() method returns a String representation of the
+ * schedule, including the student name and number, as well as the list of
+ * lectures. If the student name or number is not provided, the string "Unknown"
+ * will be used instead. If the schedule is empty, the string "Schedule is
+ * empty" will be returned.
+ * 
  * @author alfdozen
- * 
- *         The Schedule class is used to represent a schedule of lectures for a
- *         student. It contains a list of Lectures and information about the
- *         student, such as their name and student number. The constructor can
- *         be used to create an empty schedule or a schedule with a list of
- *         lectures, as well as providing student information. The student
- *         number must be a positive integer and will be validated by the class.
- *         The class can also add or remove lectures to/from the schedule. The
- *         class can be sorted by the time slots of the lectures in the
- *         schedule. The toString() method returns a String representation of
- *         the schedule, including the student name and number, as well as the
- *         list of lectures. If the student name or number is not provided, the
- *         string "Unknown" will be used instead. If the schedule is empty, the
- *         string "Schedule is empty" will be returned.
- * 
- *
  * @version 1.0.0
  */
 final class Schedule {
@@ -326,8 +323,8 @@ final class Schedule {
 				finalArr[i] = null;
 			}
 		}
-		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE], finalArr[INDEX_SHIFT],
-				finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE],
+				finalArr[INDEX_SHIFT], finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
 		TimeSlot timeSlot = new TimeSlot(finalArr[INDEX_WEEKDAY], finalArr[INDEX_DATE], finalArr[INDEX_TIMEBEGIN],
 				finalArr[INDEX_TIMEEND]);
 		Room room = new Room(finalArr[INDEX_ROOM], finalArr[INDEX_CAPACITY]);
@@ -366,16 +363,17 @@ final class Schedule {
 			writer.write(HEADER + "\n");
 			for (Lecture lecture : schedule.getLectures()) {
 				String[] attrArray = buildLineToSaveCSV(lecture);
-				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s%n", attrArray[INDEX_DEGREE], attrArray[INDEX_COURSE],
-						attrArray[INDEX_SHIFT], attrArray[INDEX_CLASSGROUP], attrArray[INDEX_STUDENTSENROLLED],
-						attrArray[INDEX_WEEKDAY], attrArray[INDEX_TIMEBEGIN], attrArray[INDEX_TIMEEND],
-						attrArray[INDEX_DATE], attrArray[INDEX_ROOM], attrArray[INDEX_CAPACITY]));
+				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s%n", attrArray[INDEX_DEGREE],
+						attrArray[INDEX_COURSE], attrArray[INDEX_SHIFT], attrArray[INDEX_CLASSGROUP],
+						attrArray[INDEX_STUDENTSENROLLED], attrArray[INDEX_WEEKDAY], attrArray[INDEX_TIMEBEGIN],
+						attrArray[INDEX_TIMEEND], attrArray[INDEX_DATE], attrArray[INDEX_ROOM],
+						attrArray[INDEX_CAPACITY]));
 			}
 		} catch (IOException e) {
 			throw new IOException(SAVE_FILE_EXCEPTION);
 		}
 	}
-	
+
 	/**
 	 * Method to build the entry to save in the file csv
 	 * 
@@ -406,8 +404,6 @@ final class Schedule {
 		}
 		return attrArray;
 	}
-	
-	
 
 	/**
 	 * This method allows to load a schedule via a json file
@@ -448,8 +444,8 @@ final class Schedule {
 	/**
 	 * This method build a lecture object from a json file entry
 	 * 
-	 * @param entry       json entry in the form of a Map
-	 * @param headerArray vector with the parsed header
+	 * @param entry     json entry in the form of a Map
+	 * @param headerArr vector with the parsed header
 	 * @return a lecture object from the json file entry given as input
 	 */
 	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) {
@@ -462,8 +458,8 @@ final class Schedule {
 				finalArr[j] = aux;
 			}
 		}
-		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE], finalArr[INDEX_SHIFT],
-				finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE],
+				finalArr[INDEX_SHIFT], finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
 		TimeSlot timeSlot = new TimeSlot(finalArr[INDEX_WEEKDAY], finalArr[INDEX_DATE], finalArr[INDEX_TIMEBEGIN],
 				finalArr[INDEX_TIMEEND]);
 		Room room = new Room(finalArr[INDEX_ROOM], finalArr[INDEX_CAPACITY]);
@@ -641,7 +637,7 @@ final class Schedule {
 		}
 		if (delimiter == null) {
 			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
-		}	
+		}
 		if (!sourcePath.endsWith(sourceFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + sourceFormat);
 		}

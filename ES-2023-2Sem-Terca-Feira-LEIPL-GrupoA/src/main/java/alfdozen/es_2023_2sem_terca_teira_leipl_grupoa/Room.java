@@ -1,15 +1,14 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
+ * The Room class is used to define the name and capacity of the room where the
+ * lecture is scheduled to be. Since the information used to instantiate this
+ * class will frequently come from documents, the constructor accepts all
+ * arguments as Strings. Null arguments are accepted by the constructor and
+ * setters. With the function isComplete it can be checked if there are still
+ * null attributes.
+ * 
  * @author alfdozen
- * 
- *         The Room class is used to define the name and capacity of the room
- *         where the lecture is scheduled to be. Since the information used to
- *         instantiate this class will frequently come from documents, the
- *         constructor accepts all arguments as Strings. Null arguments are
- *         accepted by the constructor and setters. With the function isComplete
- *         it can be checked if there are still null attributes.
- * 
  * @version 1.0.0
  */
 final class Room {

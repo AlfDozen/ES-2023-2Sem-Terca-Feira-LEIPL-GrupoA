@@ -1,17 +1,16 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
+ * The Lecture class is used to manage all the information regarding a lecture.
+ * Null arguments are accepted by the constructor and setters. The function
+ * isComplete checks if none of its attributes are null, and if none of the
+ * attributes of its attributes (AcademicInfo, TimeSlot, Room) are null.
+ * Lectures can be sorted by TimeSlot: first will be Lectures with null timeSlot
+ * attribute, then they will be ordered by date, by beginning time and finally
+ * by ending time. Null attributes are always considered to be before non null
+ * attributes.
+ * 
  * @author alfdozen
- * 
- *         The Lecture class is used to manage all the information regarding a
- *         lecture. Null arguments are accepted by the constructor and setters.
- *         The function isComplete checks if none of its attributes are null,
- *         and if none of the attributes of its attributes (AcademicInfo,
- *         TimeSlot, Room) are null. Lectures can be sorted by TimeSlot: first
- *         will be Lectures with null timeSlot attribute, then they will be
- *         ordered by date, by beginning time and finally by ending time. Null
- *         attributes are always considered to be before non null attributes.
- * 
  * @version 1.0.0
  */
 final class Lecture implements Comparable<Lecture> {
