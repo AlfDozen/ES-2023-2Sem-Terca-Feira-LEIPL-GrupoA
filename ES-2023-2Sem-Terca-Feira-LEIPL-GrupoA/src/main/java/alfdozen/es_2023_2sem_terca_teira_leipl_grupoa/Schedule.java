@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -58,19 +56,31 @@ final class Schedule {
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
-	static final String DELIMITER = ";";
-	static final String FILE_FORMAT_CSV = ".csv";
-	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
-	static final String EMPTY_ROW = ";;;;;;;;;;";
-	static final Integer NUMBER_COLUMNS = 11;
-	static final String FILE_FORMAT_JSON = ".json";
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+	static final String DELIMITER = ";";
+	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
+	static final String EMPTY_ROW = ";;;;;;;;;;";
 	static final String ENCODE_TO = "ISO-8859-1";
 	static final String ENCODE_FROM = "UTF-8";
+	static final String PATH_TMP = "src/resources/tmpfile.csv";
+	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
+	static final Integer NUMBER_COLUMNS = 11;
+	static final Integer INDEX_DEGREE = 0;
+	static final Integer INDEX_COURSE = 1;
+	static final Integer INDEX_SHIFT = 2;
+	static final Integer INDEX_CLASSGROUP = 3;
+	static final Integer INDEX_STUDENTSENROLLED = 4;
+	static final Integer INDEX_WEEKDAY = 5;
+	static final Integer INDEX_TIMEBEGIN = 6;
+	static final Integer INDEX_TIMEEND = 7;
+	static final Integer INDEX_DATE = 8;
+	static final Integer INDEX_ROOM = 9;
+	static final Integer INDEX_CAPACITY = 10;
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -257,60 +267,6 @@ final class Schedule {
 	}
 
 	/**
-	 * Method that saves a Schedule object to a CSV file.
-	 * 
-	 * @param schedule A schedule to be saved
-	 * @param fileName A name for the CSV file
-	 * @throws IOException if an I/O error occurs while writing to the file
-	 */
-	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
-		try {
-			File file = new File(fileName);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			//Files.newBufferedWriter(file.toPath(), "ISO-8859-15");
-			FileWriter writer = new FileWriter(file, StandardCharsets.ISO_8859_1);
-			//String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
-			writer.write(HEADER + "\n");
-			for (Lecture lecture : schedule.getLectures()) {
-
-				String[] attrArray = new String[11];
-				attrArray[0] = lecture.getAcademicInfo().getDegree();
-				attrArray[1] = lecture.getAcademicInfo().getCourse();
-				attrArray[2] = lecture.getAcademicInfo().getShift();
-				attrArray[3] = lecture.getAcademicInfo().getClassGroup();
-				attrArray[5] = lecture.getTimeSlot().getWeekDay();
-				attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
-				attrArray[7] = lecture.getTimeSlot().getTimeEndString();
-				attrArray[8] = lecture.getTimeSlot().getDateString();
-				attrArray[9] = lecture.getRoom().getName();
-
-				for (int i = 0; i < attrArray.length; i++) {
-					if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
-						//attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
-						attrArray[i] = "";
-					}
-				}
-				if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
-					attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
-					//attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
-
-				if (lecture.getRoom().getCapacity() != null)
-					attrArray[10] = lecture.getRoom().getCapacity().toString();
-					//attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
-
-				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", attrArray[0], attrArray[1],
-						attrArray[2], attrArray[3], attrArray[4], attrArray[5], attrArray[6], attrArray[7],
-						attrArray[8], attrArray[9], attrArray[10]));
-			}
-			writer.close();
-		} catch (IOException e) {
-			throw new IOException(SAVE_FILE_EXCEPTION);
-		}
-	}
-
-	/**
 	 * This method allows you to load a schedule via a csv file
 	 *
 	 * @param filePath the path of the csv file
@@ -329,95 +285,22 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.ISO_8859_1));;
-			Boolean isEmpty = true;
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(new FileInputStream(filePath), StandardCharsets.ISO_8859_1))) {
 			String line = "";
-			while(br.readLine().isBlank()) {
+			while (br.readLine().isBlank()) {
 				continue;
 			}
 			while ((line = br.readLine()) != null) {
-				//String line = new String(lineRaw.getBytes(ENCODE_FROM), ENCODE_TO);
-				// new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO)
 				if (!line.isBlank() && !line.equals(EMPTY_ROW)) {
-					//System.out.println(line);
 					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
 				}
 			}
-			br.close();
 		} catch (IOException e) {
 			throw new IOException(READ_EXCEPTION);
 		}
 		return schedule;
-	}
-
-	/**
-	 * This method saves a Schedule object to a JSON file.
-	 * 
-	 * @param schedule A Schedule object to be saved.
-	 * @param fileName A name for the file to save the Schedule object.
-	 * 
-	 * @throws IOException if an I/O error occurs while writing the JSON file.
-	 */
-	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
-
-		List<Lecture> lectures = schedule.getLectures();
-		ObjectMapper mapper = new ObjectMapper();
-
-		ArrayNode lecturesArray = mapper.createArrayNode();
-
-		for (Lecture lecture : lectures) {
-			ObjectNode lectureNode = mapper.createObjectNode();
-
-			String[] attrArray = new String[11];
-			attrArray[0] = lecture.getAcademicInfo().getDegree();
-			attrArray[1] = lecture.getAcademicInfo().getCourse();
-			attrArray[2] = lecture.getAcademicInfo().getShift();
-			attrArray[3] = lecture.getAcademicInfo().getClassGroup();
-			attrArray[5] = lecture.getTimeSlot().getWeekDay();
-			attrArray[6] = lecture.getTimeSlot().getTimeBeginString();
-			attrArray[7] = lecture.getTimeSlot().getTimeEndString();
-			attrArray[8] = lecture.getTimeSlot().getDateString();
-			attrArray[9] = lecture.getRoom().getName();
-
-			for (int i = 0; i < attrArray.length; i++) {
-				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
-					//attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
-					attrArray[i] = "";
-				}
-			}
-			if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
-				//attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
-				attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
-			
-			if (lecture.getRoom().getCapacity() != null)
-				//attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
-				attrArray[10] = lecture.getRoom().getCapacity().toString();
-
-			lectureNode.put("Curso", attrArray[0]);
-			lectureNode.put("Unidade Curricular", attrArray[1]);
-			lectureNode.put("Turno", attrArray[2]);
-			lectureNode.put("Turma", attrArray[3]);
-			lectureNode.put("Inscritos no turno", attrArray[4]);
-			lectureNode.put("Dia da semana", attrArray[5]);
-			lectureNode.put("Hora inicio da aula", attrArray[6]);
-			lectureNode.put("Hora fim da aula", attrArray[7]);
-			lectureNode.put("Data da aula", attrArray[8]);
-			lectureNode.put("Sala atribuída à aula", attrArray[9]);
-			lectureNode.put("Lotação da sala", attrArray[10]);
-
-			lecturesArray.add(lectureNode);
-		}
-
-		try {
-			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
-			FileWriter fileWriter = new FileWriter(fileName);
-			fileWriter.write(json);
-			fileWriter.close();
-		} catch (IOException e) {
-			throw new IOException(SAVE_FILE_EXCEPTION);
-		}
 	}
 
 	/**
@@ -443,9 +326,11 @@ final class Schedule {
 				finalArr[i] = null;
 			}
 		}
-		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
-		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
-		Room room = new Room(finalArr[9], finalArr[10]);
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE], finalArr[INDEX_SHIFT],
+				finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
+		TimeSlot timeSlot = new TimeSlot(finalArr[INDEX_WEEKDAY], finalArr[INDEX_DATE], finalArr[INDEX_TIMEBEGIN],
+				finalArr[INDEX_TIMEEND]);
+		Room room = new Room(finalArr[INDEX_ROOM], finalArr[INDEX_CAPACITY]);
 		return new Lecture(academicInfo, timeSlot, room);
 	}
 
@@ -454,13 +339,12 @@ final class Schedule {
 	 * null values
 	 *
 	 * @param array vector with the parsed csv file entry
-	 * @return returns a String[]
+	 * @return a String[]
 	 */
 	private static String[] buildLine(String[] array) {
 		String[] finalArr = new String[NUMBER_COLUMNS];
 		for (int i = 0; i < array.length; i++) {
-			//System.out.println(array[i]);
-			if (array[i].equals("")) {
+			if ("".equals(array[i])) {
 				finalArr[i] = null;
 			} else {
 				finalArr[i] = array[i];
@@ -468,6 +352,62 @@ final class Schedule {
 		}
 		return finalArr;
 	}
+
+	/**
+	 * Method that saves a Schedule object to a CSV file.
+	 * 
+	 * @param schedule A schedule to be saved
+	 * @param fileName A name for the CSV file
+	 * @throws IOException if an I/O error occurs while writing to the file
+	 */
+	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
+		File file = new File(fileName);
+		try (FileWriter writer = new FileWriter(file, StandardCharsets.ISO_8859_1)) {
+			writer.write(HEADER + "\n");
+			for (Lecture lecture : schedule.getLectures()) {
+				String[] attrArray = buildLineToSaveCSV(lecture);
+				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s%n", attrArray[INDEX_DEGREE], attrArray[INDEX_COURSE],
+						attrArray[INDEX_SHIFT], attrArray[INDEX_CLASSGROUP], attrArray[INDEX_STUDENTSENROLLED],
+						attrArray[INDEX_WEEKDAY], attrArray[INDEX_TIMEBEGIN], attrArray[INDEX_TIMEEND],
+						attrArray[INDEX_DATE], attrArray[INDEX_ROOM], attrArray[INDEX_CAPACITY]));
+			}
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * Method to build the entry to save in the file csv
+	 * 
+	 * @param lecture A lecture to build the entry
+	 * @return a String[]
+	 */
+	private static String[] buildLineToSaveCSV(Lecture lecture) {
+		String[] attrArray = new String[NUMBER_COLUMNS];
+		attrArray[INDEX_DEGREE] = lecture.getAcademicInfo().getDegree();
+		attrArray[INDEX_COURSE] = lecture.getAcademicInfo().getCourse();
+		attrArray[INDEX_SHIFT] = lecture.getAcademicInfo().getShift();
+		attrArray[INDEX_CLASSGROUP] = lecture.getAcademicInfo().getClassGroup();
+		attrArray[INDEX_WEEKDAY] = lecture.getTimeSlot().getWeekDay();
+		attrArray[INDEX_TIMEBEGIN] = lecture.getTimeSlot().getTimeBeginString();
+		attrArray[INDEX_TIMEEND] = lecture.getTimeSlot().getTimeEndString();
+		attrArray[INDEX_DATE] = lecture.getTimeSlot().getDateString();
+		attrArray[INDEX_ROOM] = lecture.getRoom().getName();
+		for (int i = 0; i < attrArray.length; i++) {
+			if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+				attrArray[i] = "";
+			}
+		}
+		if (lecture.getAcademicInfo().getStudentsEnrolled() != null) {
+			attrArray[INDEX_STUDENTSENROLLED] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+		}
+		if (lecture.getRoom().getCapacity() != null) {
+			attrArray[INDEX_CAPACITY] = lecture.getRoom().getCapacity().toString();
+		}
+		return attrArray;
+	}
+	
+	
 
 	/**
 	 * This method allows to load a schedule via a json file
@@ -489,7 +429,6 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_JSON);
 		}
 		Schedule schedule = new Schedule();
-		//String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
 		String[] headerArr = HEADER.split(DELIMITER);
 		try {
 			Reader reader = new InputStreamReader(new FileInputStream(path));
@@ -513,27 +452,77 @@ final class Schedule {
 	 * @param headerArray vector with the parsed header
 	 * @return a lecture object from the json file entry given as input
 	 */
-	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) throws IOException {
+	private static Lecture buildLecture(Map<String, Object> entry, String[] headerArr) {
 		String[] finalArr = new String[NUMBER_COLUMNS];
 		for (int j = 0; j < NUMBER_COLUMNS; j++) {
 			String aux = (String) entry.get(headerArr[j]);
-			//System.out.println(aux);
-			if (aux.equals("")) {
+			if ("".equals(aux)) {
 				finalArr[j] = null;
 			} else {
 				finalArr[j] = aux;
-//				try {
-//					//finalArr[j] = new String(aux.getBytes(ENCODE_FROM), ENCODE_TO);
-//					
-//				} catch (UnsupportedEncodingException e) {
-//					throw new IOException(READ_EXCEPTION);
-//				}
 			}
 		}
-		AcademicInfo academicInfo = new AcademicInfo(finalArr[0], finalArr[1], finalArr[2], finalArr[3], finalArr[4]);
-		TimeSlot timeSlot = new TimeSlot(finalArr[5], finalArr[8], finalArr[6], finalArr[7]);
-		Room room = new Room(finalArr[9], finalArr[10]);
+		AcademicInfo academicInfo = new AcademicInfo(finalArr[INDEX_DEGREE], finalArr[INDEX_COURSE], finalArr[INDEX_SHIFT],
+				finalArr[INDEX_CLASSGROUP], finalArr[INDEX_STUDENTSENROLLED]);
+		TimeSlot timeSlot = new TimeSlot(finalArr[INDEX_WEEKDAY], finalArr[INDEX_DATE], finalArr[INDEX_TIMEBEGIN],
+				finalArr[INDEX_TIMEEND]);
+		Room room = new Room(finalArr[INDEX_ROOM], finalArr[INDEX_CAPACITY]);
 		return new Lecture(academicInfo, timeSlot, room);
+	}
+
+	/**
+	 * This method saves a Schedule object to a JSON file.
+	 * 
+	 * @param schedule A Schedule object to be saved.
+	 * @param fileName A name for the file to save the Schedule object.
+	 * @throws IOException if an I/O error occurs while writing the JSON file.
+	 */
+	public static void saveToJSON(Schedule schedule, String fileName) throws IOException {
+		List<Lecture> lectures = schedule.getLectures();
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode lecturesArray = mapper.createArrayNode();
+		for (Lecture lecture : lectures) {
+			ObjectNode lectureNode = mapper.createObjectNode();
+			String[] attrArray = new String[NUMBER_COLUMNS];
+			attrArray[INDEX_DEGREE] = lecture.getAcademicInfo().getDegree();
+			attrArray[INDEX_COURSE] = lecture.getAcademicInfo().getCourse();
+			attrArray[INDEX_SHIFT] = lecture.getAcademicInfo().getShift();
+			attrArray[INDEX_CLASSGROUP] = lecture.getAcademicInfo().getClassGroup();
+			attrArray[INDEX_WEEKDAY] = lecture.getTimeSlot().getWeekDay();
+			attrArray[INDEX_TIMEBEGIN] = lecture.getTimeSlot().getTimeBeginString();
+			attrArray[INDEX_TIMEEND] = lecture.getTimeSlot().getTimeEndString();
+			attrArray[INDEX_DATE] = lecture.getTimeSlot().getDateString();
+			attrArray[INDEX_ROOM] = lecture.getRoom().getName();
+			for (int i = 0; i < attrArray.length; i++) {
+				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
+					attrArray[i] = "";
+				}
+			}
+			if (lecture.getAcademicInfo().getStudentsEnrolled() != null) {
+				attrArray[INDEX_STUDENTSENROLLED] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+			}
+			if (lecture.getRoom().getCapacity() != null) {
+				attrArray[INDEX_CAPACITY] = lecture.getRoom().getCapacity().toString();
+			}
+			lectureNode.put("Curso", attrArray[INDEX_DEGREE]);
+			lectureNode.put("Unidade Curricular", attrArray[INDEX_COURSE]);
+			lectureNode.put("Turno", attrArray[INDEX_SHIFT]);
+			lectureNode.put("Turma", attrArray[INDEX_CLASSGROUP]);
+			lectureNode.put("Inscritos no turno", attrArray[INDEX_STUDENTSENROLLED]);
+			lectureNode.put("Dia da semana", attrArray[INDEX_WEEKDAY]);
+			lectureNode.put("Hora inicio da aula", attrArray[INDEX_TIMEBEGIN]);
+			lectureNode.put("Hora fim da aula", attrArray[INDEX_TIMEEND]);
+			lectureNode.put("Data da aula", attrArray[INDEX_DATE]);
+			lectureNode.put("Sala atribuída à aula", attrArray[INDEX_ROOM]);
+			lectureNode.put("Lotação da sala", attrArray[INDEX_CAPACITY]);
+			lecturesArray.add(lectureNode);
+		}
+		try (FileWriter fileWriter = new FileWriter(fileName)) {
+			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
+			fileWriter.write(json);
+		} catch (IOException e) {
+			throw new IOException(SAVE_FILE_EXCEPTION);
+		}
 	}
 
 	/**
@@ -550,22 +539,21 @@ final class Schedule {
 	static void convertCSV2JSON(String csvSourcePath, String jsonDestinationPath, Character delimiter)
 			throws IOException {
 		validateArguments(csvSourcePath, jsonDestinationPath, delimiter, FILE_FORMAT_CSV, FILE_FORMAT_JSON);
-
 		File csvFile = new File(csvSourcePath);
-		File jsonFile = new File(jsonDestinationPath);
-
-		if (!csvFile.isFile())
+		if (!csvFile.isFile()) {
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
-		if (!jsonFile.getParentFile().isDirectory())
+		}
+		File jsonFile = new File(jsonDestinationPath);
+		if (!jsonFile.getParentFile().isDirectory()) {
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
-		if (jsonFile.isFile())
+		}
+		if (jsonFile.isFile()) {
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
-
-		String destinationTempFilePath = "src/resources/tmpfile.csv";
+		}
+		String destinationTempFilePath = PATH_TMP;
 
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath));
-				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath));) {
-
+				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!line.isBlank()) {
@@ -574,16 +562,13 @@ final class Schedule {
 				}
 			}
 		}
-		try (InputStream inputStream = new FileInputStream(destinationTempFilePath)) {
 
+		try (InputStream inputStream = new FileInputStream(destinationTempFilePath)) {
 			CsvMapper csvMapper = new CsvMapper();
 			CsvSchema csvSchema = CsvSchema.builder().setColumnSeparator(delimiter).setUseHeader(true).build();
-
 			List<Object> csvData = csvMapper.readerFor(Map.class).with(csvSchema)
 					.readValues(new InputStreamReader(inputStream)).readAll();
-
 			Files.deleteIfExists(Paths.get(destinationTempFilePath));
-
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, csvData);
 		} catch (IOException e) {
@@ -602,38 +587,34 @@ final class Schedule {
 	 * @throws IllegalArgumentException if any of the input arguments are null or
 	 *                                  invalid.
 	 */
+	@SuppressWarnings("unchecked")
 	static void convertJSON2CSV(String jsonSourcePath, String csvDestinationPath, Character delimiter)
 			throws IOException {
 		validateArguments(jsonSourcePath, csvDestinationPath, delimiter, FILE_FORMAT_JSON, FILE_FORMAT_CSV);
-
 		File jsonFile = new File(jsonSourcePath);
-		File csvFile = new File(csvDestinationPath);
-
-		if (!jsonFile.isFile())
+		if (!jsonFile.isFile()) {
 			throw new IllegalArgumentException(FILE_NOT_EXISTS_EXCEPTION);
-		if (!csvFile.getParentFile().isDirectory())
+		}
+		File csvFile = new File(csvDestinationPath);
+		if (!csvFile.getParentFile().isDirectory()) {
 			throw new IllegalArgumentException(FOLDER_NOT_EXISTS_EXCEPTION);
-		if (csvFile.isFile())
+		}
+		if (csvFile.isFile()) {
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
+		}
 
 		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile));
 				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile))) {
-
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
-
 			CsvMapper csvMapper = new CsvMapper();
-
 			Map<String, Object> firstRecord = (Map<String, Object>) data.get(0);
 			CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder().setUseHeader(true).disableQuoteChar();
-
-			for (String columnName : firstRecord.keySet())
+			for (String columnName : firstRecord.keySet()) {
 				csvSchemaBuilder.addColumn(columnName);
-
+			}
 			CsvSchema csvSchema = csvSchemaBuilder.build().withColumnSeparator(delimiter);
-
 			csvMapper.writerFor(List.class).with(csvSchema).writeValue(writer, data);
-
 		} catch (Exception e) {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
@@ -655,14 +636,18 @@ final class Schedule {
 	 */
 	static void validateArguments(String sourcePath, String destinationPath, Character delimiter, String sourceFormat,
 			String destinationFormat) {
-		if (sourcePath == null || destinationPath == null)
+		if (sourcePath == null || destinationPath == null) {
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		if (delimiter == null)
+		}
+		if (delimiter == null) {
 			throw new IllegalArgumentException(DELIMITER_NULL_EXCEPTION);
-		if (!sourcePath.endsWith(sourceFormat))
+		}	
+		if (!sourcePath.endsWith(sourceFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + sourceFormat);
-		if (!destinationPath.endsWith(destinationFormat))
+		}
+		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
+		}
 	}
 
 	/**
@@ -673,25 +658,25 @@ final class Schedule {
 	 */
 	@Override
 	public String toString() {
-		String str = "";
+		StringBuilder str = new StringBuilder();
 		if (studentName == null) {
-			str += "Unknown Student Name\n";
+			str.append("Unknown Student Name\n");
 		} else {
-			str += "Student Name: " + studentName + "\n";
+			str.append("Student Name: " + studentName + "\n");
 		}
 		if (studentNumber == null) {
-			str += "Unknown Student Number\n";
+			str.append("Unknown Student Number\n");
 		} else {
-			str += "Student Number: " + studentNumber + "\n";
+			str.append("Student Number: " + studentNumber + "\n");
 		}
 		if (lectures.isEmpty()) {
-			str += "Schedule is empty";
+			str.append("Schedule is empty");
 		} else {
-			str += "Schedule:\n";
+			str.append("Schedule:\n");
 			for (Lecture lecture : lectures) {
-				str += lecture + "\n";
+				str.append(lecture + "\n");
 			}
 		}
-		return str;
+		return str.toString();
 	}
 }
