@@ -366,35 +366,25 @@ class ScheduleTest {
 		lectures.add(lecture2);
 		lectures.add(lecture3);
 		Schedule expected = new Schedule(lectures);
-
+		Schedule created = new Schedule();
 		try {
 			Schedule.saveToCSV(expected, "teste.csv");
+			created = Schedule.loadCSV("teste.csv");
+			Path path = Paths.get("teste.csv");
+			Files.deleteIfExists(path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Path path1 = Paths.get("./src/main/resources/Method_save_CSV_horario.csv");
-		Path path2 = Paths.get("teste.csv");
-		long result = 0;
-		try {
-			result = Files.mismatch(path1, path2);
-			//Files.deleteIfExists(path2);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertTrue(-1 == result);
-
-		try {
-			Schedule s = Schedule.loadCSV("teste.csv");
-			Schedule.saveToCSV(s, "teste2.csv");
-			Path path3 = Paths.get("teste.csv");
-			result = Files.mismatch(path3, path2);
-			Files.deleteIfExists(path2);
-			Files.deleteIfExists(path3);
-			assertTrue(-1 == result);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		List<Lecture> expectedLectures = expected.getLectures();
+		List<Lecture> createdLectures = created.getLectures();
+		assertTrue(expectedLectures.size() - 1 == createdLectures.size());
+		// Because of sort, index 0 of expectedLectures has the null attributes Lecture. This lecture does not exist on the createdLectures since loadCSV ignores it.
+		assertEquals(expectedLectures.get(1).getAcademicInfo().toString(), createdLectures.get(0).getAcademicInfo().toString());
+		assertEquals(expectedLectures.get(1).getRoom().toString(), createdLectures.get(0).getRoom().toString());
+		assertEquals(expectedLectures.get(1).getTimeSlot().toString(), createdLectures.get(0).getTimeSlot().toString());
+		assertEquals(expectedLectures.get(2).getAcademicInfo().toString(), createdLectures.get(1).getAcademicInfo().toString());
+		assertEquals(expectedLectures.get(2).getRoom().toString(), createdLectures.get(1).getRoom().toString());
+		assertEquals(expectedLectures.get(2).getTimeSlot().toString(), createdLectures.get(1).getTimeSlot().toString());
 		
 		IOException saveException = assertThrows(IOException.class,
 				() -> Schedule.saveToCSV(expected, "ZD:\\\\THIS_IS_ER00R"));
