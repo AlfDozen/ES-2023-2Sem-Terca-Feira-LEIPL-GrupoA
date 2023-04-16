@@ -67,7 +67,6 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
-	static final String SAVE_FILE_EXCEPTION = "The file could not be saved";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -315,28 +314,57 @@ final class Schedule {
 	 * @throws IOException				is thrown if an error is given when the file is read
 	 */
 	static Schedule loadCSV(String filePath) throws IOException {
+		
+		System.out.println("0");
+		
 		if (filePath == null) {
+			System.out.println("1");
 			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		}
 		if (!filePath.endsWith(FILE_FORMAT_CSV) && !filePath.endsWith(FILE_FORMAT_CSV.toUpperCase())) {
+			System.out.println("2");
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
 		try {
+			
+			System.out.println("2.1");
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-			String line = "";
-			while ((line = br.readLine()) != null) {
+			String line234 = "";
+			
+			while ((line234 = br.readLine()) != null) {
+				String line = new String(line234.getBytes("ISO-8859-1"), "UTF-8");
+				
 				if (!line.isBlank() && !line.equals(HEADER) && !line.equals(EMPTY_ROW)) {
+					
+					System.out.println("Linha:" + line);
+					
 					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
 				}
 			}
+			
+			System.out.println("2.2");
 			br.close();
 		} catch (IOException e) {
+			System.out.println("3");
 			throw new IOException(READ_EXCEPTION);
 		}
 		return schedule;
 	}
+	
+	public static void main(String[] args) {
+		
+		try {
+			Schedule abc = loadCSV("./src/main/resources/horario_exemplo_completo.csv");
+			System.out.println(abc.toString());
+		
+		} catch (IOException e) {
+			}
+		
+	}
+	
 
 	/**
 	 * This method saves a Schedule object to a JSON file.

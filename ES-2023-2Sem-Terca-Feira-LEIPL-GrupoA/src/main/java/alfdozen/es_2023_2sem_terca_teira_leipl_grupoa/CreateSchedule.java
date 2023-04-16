@@ -10,7 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,16 +27,16 @@ public class CreateSchedule implements Initializable{
 
 	@FXML
 	private Button backButton, save, selectAll, clearAll;
-	
+
 	@FXML
 	private TextField studentName, studentNumber;	
-	
+
 	@FXML
 	private GridPane lectures, calendar; 
-	
+
 	@FXML
 	private AnchorPane window; 
-	
+
 	@FXML
 	private void createSchedule() {
 
@@ -42,15 +44,15 @@ public class CreateSchedule implements Initializable{
 
 	@FXML
 	private void clearAll() {
-	
-		
+
+
 	}
-	
+
 	@FXML
 	private void selectAll() {
-	
+
 	}
-	
+
 	@FXML
 	private void returnHome() {
 		try {
@@ -68,16 +70,23 @@ public class CreateSchedule implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
-		
+
 		List<Lecture> lecturesList = App.getAllLectures();
+		Set<String> courses = new HashSet<String>();
+
+
+		for(Lecture lec : lecturesList) {
+
+			courses.add(lec.getAcademicInfo().getCourse());
+		}
+
+		int row = 0;
 		
-		for(int row = 0; row < lecturesList.size() ; row++) {
-			
-			Lecture lec = lecturesList.get(row);
-			CheckBox item = new CheckBox(lec.getAcademicInfo().getCourse());
-			
+		for(String s: courses) {
+						
+			CheckBox item = new CheckBox(s);
 			lectures.add(item, 0, row);
-			
+			row++;
 		}
 
 	}

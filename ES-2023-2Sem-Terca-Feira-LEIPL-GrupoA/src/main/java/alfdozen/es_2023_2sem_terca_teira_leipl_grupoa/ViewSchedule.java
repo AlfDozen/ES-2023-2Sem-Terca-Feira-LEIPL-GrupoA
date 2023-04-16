@@ -6,19 +6,25 @@ import java.net.URL;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 
 public class ViewSchedule implements Initializable{
 
 
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
+
+	private List<String> hours = new ArrayList();
 
 	@FXML 
 	private Tab monthTab, dayTab, weekTab;
@@ -34,9 +40,8 @@ public class ViewSchedule implements Initializable{
 
 	@FXML
 	private TabPane window; 
-	
-	
-	@FXML
+
+
 	private void clearGridContent(GridPane paneCalendar) {
 		// clear the GridPane
 		paneCalendar.getChildren().clear();
@@ -44,17 +49,15 @@ public class ViewSchedule implements Initializable{
 		paneCalendar.getColumnConstraints().clear();
 	}
 
-	@FXML
 	private void defineGridLayout(GridPane paneCalendar) {
-		paneCalendar.setHgap(50);
-		paneCalendar.setVgap(50);
+		paneCalendar.setHgap(100);
+		paneCalendar.setVgap(100);
 
-//		paneCalendar.prefWidthProperty().bind(monthTab.App.scene.widthProperty());
-//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
+		//		paneCalendar.prefWidthProperty().bind(monthTab.App.scene.widthProperty());
+		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
 
 	}
 
-	@FXML
 	private void allMonthLayout(GridPane paneCalendar) {
 		paneCalendar.setHgap(80);
 		paneCalendar.setVgap(80);
@@ -65,16 +68,55 @@ public class ViewSchedule implements Initializable{
 	}
 
 
-	@FXML
 	private void setDefaultHours(GridPane paneCalendar) {
 
 		int startingHour = 8;
 		int row = 1;
+		int previous = 8;
 
-		for(int i = startingHour; i < 24 ; i++) {
+		for(double i = startingHour+0.5; i < 23.5 ; i+=0.5) {
 
-			Label dayLabel = new Label(i+":00-"+(i+1)+":00");
-			paneCalendar.add(dayLabel, 0,row);
+			if((int) i == previous) {
+
+				if((int) i < 10) {
+					Label dayLabel = new Label("0"+(int)i +":00-0"+ (int)i +":30");
+					paneCalendar.add(dayLabel, 0,row);
+					hours.add("0"+(int)i +":00");
+
+				}else {
+
+					Label dayLabel = new Label((int)i +":00-"+ (int)i +":30");
+					paneCalendar.add(dayLabel, 0,row);
+					hours.add((int)i +":00");
+				}
+
+			}else {
+
+				if((int) i < 10) {
+
+					Label dayLabel = new Label("0"+previous +":30-0"+ (int)i +":00");
+					paneCalendar.add(dayLabel, 0,row);
+					previous++;
+					hours.add("0"+previous +":30");
+
+				}else {
+
+					if(previous < 10) {
+
+						Label dayLabel = new Label("0"+previous +":30-"+ (int)i +":00");
+						paneCalendar.add(dayLabel, 0,row);
+						previous++;
+						hours.add("0"+previous +":30");
+
+					}else {
+
+						Label dayLabel = new Label(previous +":30-"+ (int)i +":00");
+						paneCalendar.add(dayLabel, 0,row);
+						previous++;
+						hours.add(previous +":30");
+					}
+				}
+			}
 			row++;
 		}
 	}
@@ -118,6 +160,8 @@ public class ViewSchedule implements Initializable{
 
 			DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
 
+
+			//cabeçalho apresentar o dia
 			for (int col = dayOfWeek.getValue()-1; col < numCols; col++) {
 				Label dateLabel = new Label(Integer.toString(dayOfMonth));
 				paneCalendarMonth.add(dateLabel, col, 1);
@@ -153,7 +197,6 @@ public class ViewSchedule implements Initializable{
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 			LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
 
-			datePickerWeek.getValue().plusDays(1);
 
 			for (int i = 0; i < daysOfWeek.length; i++) {
 
@@ -162,6 +205,60 @@ public class ViewSchedule implements Initializable{
 				dayLabel.setMinHeight(50);
 
 				paneCalendarWeek.add(dayLabel, i+1, 0);
+			}
+
+			for(Lecture lec : App.getAllLectures()) {
+
+				if(lec.getTimeSlot().getDateString().equals(Schedule.FOR_NULL)) {
+					continue;
+				}
+
+				if(lec.getTimeSlot().getDate().compareTo(startOfWeek.plusDays(7)) > 0 ) {
+					System.out.println(lec.getTimeSlot().getDateString());
+					break;
+				}
+
+
+				if(lec.getTimeSlot().getDate().compareTo(startOfWeek) >= 0 ) {
+
+					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5));
+					int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5));
+
+					System.out.println(lec.getTimeSlot().getTimeBeginString().substring(0,5)+"-"+lec.getTimeSlot().getTimeEndString().substring(0,5));
+
+					int day = lec.getTimeSlot().getDate().compareTo(startOfWeek)+1;
+
+					System.out.println("row: " + hourBegin + " collumn: " + day);
+					System.out.println("row: " + hourEnd + " collumn: " + day);
+
+
+
+					for(int row = hourBegin; row <= hourEnd; row++) {
+
+						if(lec.getRoom().getName() == null ) {
+						
+//							TextArea hourClass = new TextArea(lec.getAcademicInfo().getCourseAbbreviation() + "- sem sala" ); 
+							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "- sem sala" );
+							hourClass.setWrapText(true);
+							hourClass.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, new Insets(3))));
+							hourClass.setTextFill(Color.color(0.0, 0.0, 0.0));
+							hourClass.setMaxWidth(50);
+							hourClass.setMaxHeight(50);
+							paneCalendarWeek.add(hourClass, day, row);
+							
+						}else {
+							
+//							TextArea hourClass = new TextArea(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName()); 
+							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
+							hourClass.setWrapText(true);
+							hourClass.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, new Insets(3))));
+							hourClass.setTextFill(Color.color(0.0, 0.0, 0.0));
+							hourClass.setMinWidth(50);
+							hourClass.setMinHeight(50);
+							paneCalendarWeek.add(hourClass, day, row);
+						}
+					}
+				}
 			}
 
 			defineGridLayout(paneCalendarWeek);
@@ -219,7 +316,7 @@ public class ViewSchedule implements Initializable{
 
 
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
-		
+
 		datePickerDay.setValue(LocalDate.now());
 		datePickerMonth.setValue(LocalDate.now());
 		datePickerWeek.setValue(LocalDate.now());

@@ -27,7 +27,7 @@ public class UploadSchedule implements Initializable{
 
 	@FXML
 	private Label fileChosen;
-	
+
 	FileChooser fileChooser  = new FileChooser();
 	File filePath;
 
@@ -39,7 +39,7 @@ public class UploadSchedule implements Initializable{
 	private void viewSchedule() throws IOException {
 		App.setRoot("/fxml/ViewSchedule");
 	}
-	
+
 	@FXML
 	private void getFile() {
 
@@ -47,9 +47,9 @@ public class UploadSchedule implements Initializable{
 
 		filePath = fileChooser.showOpenDialog(new Stage());
 		System.out.println("Path " + filePath);
-		
+
 		fileChosen.setText(filePath.getName());
-		
+
 		save.setVisible(true);
 	}
 
@@ -58,51 +58,79 @@ public class UploadSchedule implements Initializable{
 
 		if(filePath != null) {
 
-			String filename = filePath.getName();
+			String filename = filePath.getAbsolutePath();
 			System.out.println("absolute " + filename);
-			
+
 			String extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
 
-//			System.out.println(filename + " " + extension);
+			//			System.out.println(filename + " " + extension);
 
-			if(extension.equals("json") || extension.equals("csv")) {
+			Schedule abc = null;
+
+			if(extension.equals("json")) {
 
 				try {
-					
-					App.addSCHEDULE(Schedule.loadCSV(filename));
-					
+
+
+					abc = Schedule.loadJSON(filename);
+
+					System.out.println(abc.toString());
+
 					viewSchedule.setVisible(true);
-					
-				}catch(IllegalArgumentException e1) {
-					
-					JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+
+				}catch(Exception e1) {
+
+					JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 				}
+
+				App.addSCHEDULE(abc);
+
+
+			}else 
 				
-			}else {
+				if(extension.equals("csv")) {
 
-				JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+			try {
+
+
+				abc = Schedule.loadCSV(filename);
+
+				System.out.println(abc.toString());
+
+				viewSchedule.setVisible(true);
+
+			}catch(Exception e1) {
+
+				JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 			}
+
+			App.addSCHEDULE(abc);
+
+		}else {
+
+			JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+}
 
 
-	@FXML
-	private void returnHome() {
-		try {
-			App.setRoot("/fxml/Main");
-		} catch (IOException e) {
-			System.err.println("Erro ao tentar retornar");
-		}
-
+@FXML
+private void returnHome() {
+	try {
+		App.setRoot("/fxml/Main");
+	} catch (IOException e) {
+		System.err.println("Erro ao tentar retornar");
 	}
 
-	//  ######################### MAIN #################################################### //
+}
+
+//  ######################### MAIN #################################################### //
 
 
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+@Override
+public void initialize(URL arg0, ResourceBundle arg1) {
 
-		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
-		
-	}
+	App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+
+}
 }
