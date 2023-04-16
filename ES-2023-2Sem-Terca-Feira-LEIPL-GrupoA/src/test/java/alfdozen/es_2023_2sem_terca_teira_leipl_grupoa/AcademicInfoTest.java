@@ -2,14 +2,7 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
 
 class AcademicInfoTest {
 
@@ -213,5 +206,4 @@ class AcademicInfoTest {
 						+ " - Class " + Lecture.FOR_NULL + " - " + Lecture.FOR_NULL + " Enrolled Students",
 				academicInfoNull.toString());
 	}
-
 }
