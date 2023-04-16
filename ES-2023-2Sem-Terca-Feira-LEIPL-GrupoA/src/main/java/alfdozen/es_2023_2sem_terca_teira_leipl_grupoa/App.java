@@ -41,7 +41,7 @@ public class App extends Application implements Initializable{
 
 	private static Scene SCENE;
 	private static Stage STAGE;
-	
+
 	public static Stage getSTAGE() {
 		return STAGE;
 	}
@@ -57,17 +57,15 @@ public class App extends Application implements Initializable{
 		List<Lecture> lectures = new ArrayList<>();
 
 		for(Schedule sch : SCHEDULES) {
-			for(Lecture lec : sch.getLectures()) {
-				if(!lectures.contains(lec)) {
-					lectures.add(lec);
-				}
-			}
+			lectures.addAll(sch.getLectures());
 		}
 
 		return lectures;
 	}
 
 	public static void addSCHEDULE(Schedule sch) {
+		
+		if(!SCHEDULES.contains(sch))
 		SCHEDULES.add(sch);
 	}
 

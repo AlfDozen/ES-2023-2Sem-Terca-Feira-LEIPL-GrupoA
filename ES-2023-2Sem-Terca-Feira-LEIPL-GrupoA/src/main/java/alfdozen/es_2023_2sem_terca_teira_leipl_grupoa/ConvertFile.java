@@ -14,74 +14,119 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 
 public class ConvertFile implements Initializable{
 
 
 	@FXML
-	private Button convert, backButton, getFile ;
+	private Button convertJSON2CSV, convertCSV2JSON, backButton, getFileJSON, getFileCSV ;
+
+	@FXML
+	private TextField delimiter;
 	
 	@FXML
+	private Label label;
+
+	@FXML
 	private AnchorPane window;
-	
+
 	@FXML
 	private Label fileChosen;
 
-	FileChooser fileChooser  = new FileChooser();
-	File filePath;
+	private FileChooser fileChooser  = new FileChooser();
+	private FileChooser fileChooserToSave  = new FileChooser();
+	private File filePath, filePathToSave;
+	private String filename, filenameToSave;
 
 	@FXML
-	private void getFile() {
+	private void getFileJSON() {
 
-		fileChooser.setTitle("Open Resource File");
+		//PARA ABRIR
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JSON", "*.json"));
+		fileChooser.setTitle("Open JSON File");
 
 		filePath = fileChooser.showOpenDialog(new Stage());
+		filename = filePath.getAbsolutePath();
 
+		//TEXTO DA LABEL
 		fileChosen.setText(filePath.getName());
-
-		convert.setVisible(true);
+		
+		delimiter.setVisible(true);
+		label.setVisible(true);
 	}
 
 	@FXML
-	private void convert() {
+	private void getFileCSV() {
 
-		if(filePath != null) {
+		//PARA ABRIR
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", "*.csv"));
+		fileChooser.setTitle("Open CSV File");
 
-			String filename = filePath.getName();
-			String extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+		filePath = fileChooser.showOpenDialog(new Stage());
+		filename = filePath.getAbsolutePath();
 
-			System.out.println(filename + " " + extension);
-
-			if(extension.equals("json")) {
-
-				try {
-
-					Schedule.convertJSON2CSV(filename, filename, ',');
-					JOptionPane.showMessageDialog(null, "Ficheiro convertido com sucesso!", "Sucesso" , JOptionPane.INFORMATION_MESSAGE);
-					
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-				}
-			}else 
-				if(extension.equals("csv")) {
-
-					System.out.println("o path é csv");
-					
-					try {
-						Schedule.convertCSV2JSON(filename, filename, ';');
-						JOptionPane.showMessageDialog(null, "Ficheiro convertido com sucesso!", "Sucesso" , JOptionPane.INFORMATION_MESSAGE);
-						
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-					}
+		//TEXTO DA LABEL
+		fileChosen.setText(filePath.getName());
+		
+		delimiter.setVisible(true);
+		label.setVisible(true);
+	}
 
 
-				}else {
+	@FXML
+	private void delimiter() {
+		
+		
 
-					JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-				}
+		if(filename.endsWith(".json")) {
+			convertJSON2CSV.setVisible(true);
+		}else {
+			convertCSV2JSON.setVisible(true);
 		}
+	}
+
+	@FXML
+	private void convertJSON2CSV() {
+
+
+		//PARA GRAVAR
+		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".csv"));
+		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
+
+		filenameToSave = filePathToSave.getAbsolutePath();
+
+		try {
+
+			Schedule.convertJSON2CSV(filename, filenameToSave, delimiter.getText().charAt(0));
+
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao converter para ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		JOptionPane.showMessageDialog(null, "Ficheiro convertido com sucesso!", "Sucesso" , JOptionPane.INFORMATION_MESSAGE);
+	}
+
+
+	@FXML
+	private void convertCSV2JSON() {
+
+		//PARA GRAVAR
+		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
+		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
+
+		filenameToSave = filePathToSave.getAbsolutePath();
+
+		try {
+
+			Schedule.convertCSV2JSON(filename, filenameToSave, delimiter.getText().charAt(0));
+
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao converter para ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		JOptionPane.showMessageDialog(null, "Ficheiro convertido com sucesso!", "Sucesso" , JOptionPane.INFORMATION_MESSAGE);
 	}
 
 
@@ -100,7 +145,7 @@ public class ConvertFile implements Initializable{
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 	}
 }

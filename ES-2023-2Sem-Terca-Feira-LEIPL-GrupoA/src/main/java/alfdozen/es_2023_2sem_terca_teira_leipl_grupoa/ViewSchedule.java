@@ -10,13 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 
 public class ViewSchedule implements Initializable{
@@ -24,7 +23,7 @@ public class ViewSchedule implements Initializable{
 
 	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
 
-	private List<String> hours = new ArrayList();
+	private List<String> hours = new ArrayList<String>();
 
 	@FXML 
 	private Tab monthTab, dayTab, weekTab;
@@ -50,8 +49,8 @@ public class ViewSchedule implements Initializable{
 	}
 
 	private void defineGridLayout(GridPane paneCalendar) {
-		paneCalendar.setHgap(100);
-		paneCalendar.setVgap(100);
+		paneCalendar.setHgap(50);
+		paneCalendar.setVgap(50);
 
 		//		paneCalendar.prefWidthProperty().bind(monthTab.App.scene.widthProperty());
 		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
@@ -76,47 +75,19 @@ public class ViewSchedule implements Initializable{
 
 		for(double i = startingHour+0.5; i < 23.5 ; i+=0.5) {
 
-			if((int) i == previous) {
+			int truncHour = (int)  Math.floor(i);
 
-				if((int) i < 10) {
-					Label dayLabel = new Label("0"+(int)i +":00-0"+ (int)i +":30");
+			if(truncHour == previous) {
+
+					Label dayLabel = new Label(truncHour+":00-"+ truncHour+":30");
 					paneCalendar.add(dayLabel, 0,row);
-					hours.add("0"+(int)i +":00");
-
-				}else {
-
-					Label dayLabel = new Label((int)i +":00-"+ (int)i +":30");
-					paneCalendar.add(dayLabel, 0,row);
-					hours.add((int)i +":00");
-				}
 
 			}else {
 
-				if((int) i < 10) {
-
-					Label dayLabel = new Label("0"+previous +":30-0"+ (int)i +":00");
+					Label dayLabel = new Label(previous+":30-"+ truncHour +":00");
 					paneCalendar.add(dayLabel, 0,row);
 					previous++;
-					hours.add("0"+previous +":30");
-
-				}else {
-
-					if(previous < 10) {
-
-						Label dayLabel = new Label("0"+previous +":30-"+ (int)i +":00");
-						paneCalendar.add(dayLabel, 0,row);
-						previous++;
-						hours.add("0"+previous +":30");
-
-					}else {
-
-						Label dayLabel = new Label(previous +":30-"+ (int)i +":00");
-						paneCalendar.add(dayLabel, 0,row);
-						previous++;
-						hours.add(previous +":30");
-					}
 				}
-			}
 			row++;
 		}
 	}
@@ -136,6 +107,19 @@ public class ViewSchedule implements Initializable{
 
 	//  ######################### MÊS #################################################### //
 
+	
+	@FXML
+	public void bootCalendarMonth() {
+		
+		clearGridContent(paneCalendarMonth);
+		setDefaultHours(paneCalendarMonth);
+		procedureForHours(paneCalendarMonth);
+
+		System.out.println("array hours " + hours.toString());
+	}
+	
+	
+	
 	@FXML
 	public void showCalendarMonth() {
 
@@ -143,9 +127,9 @@ public class ViewSchedule implements Initializable{
 
 			clearGridContent(paneCalendarMonth);
 
-			for (int i = 0; i < daysOfWeek.length; i++) {
+			for (int i = 1; i < daysOfWeek.length; i++) {
 
-				Label dayLabel = new Label(daysOfWeek[i]);
+				Label dayLabel = new Label(daysOfWeek[i-1]);
 
 				paneCalendarMonth.add(dayLabel, i, 0);
 			}
@@ -183,18 +167,65 @@ public class ViewSchedule implements Initializable{
 		}
 	}
 
+	//  ######################### APOIO #################################################### //
+
+	public Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
+		Node result = null;
+		ObservableList<Node> children = gridPane.getChildren();
+
+		for (Node node : children) {
+			if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+				result = node;
+				break;
+			}
+		}
+
+		return result;
+	}
+	
+	
+	public void procedureForHours(GridPane gridPane) {
+		
+		hours.clear();
+		
+		ObservableList<Node> children = gridPane.getChildren();
+
+		for (Node node : children) {
+			if (GridPane.getRowIndex(node) > 0 && GridPane.getColumnIndex(node) == 0) {
+				hours.add(((Label) node).getText().substring(0,5));
+			}
+		}
+	}
+	
+
+	
+
 	//  ######################### SEMANA #################################################### //
+	
+	@FXML
+	public void bootCalendarWeek() {
+		
+		clearGridContent(paneCalendarWeek);
+		setDefaultHours(paneCalendarWeek);
+		procedureForHours(paneCalendarDay);
+
+		System.out.println("array hours " + hours.toString());
+	}
+	
 
 	@FXML
 	public void showCalendarWeek() {
-
+		
+		clearGridContent(paneCalendarWeek);
+		setDefaultHours(paneCalendarWeek);
+		
+		
 		if(datePickerWeek.getValue() != null) {
-
-			clearGridContent(paneCalendarWeek);
-			setDefaultHours(paneCalendarWeek);
 
 			LocalDate selectedDate = datePickerWeek.getValue();
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
+			System.out.println("dia da semana " + selectedDate +" day of the week " + dayOfWeek + " valor: " + dayOfWeek.getValue());
+
 			LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
 
 
@@ -209,52 +240,49 @@ public class ViewSchedule implements Initializable{
 
 			for(Lecture lec : App.getAllLectures()) {
 
-				if(lec.getTimeSlot().getDateString().equals(Schedule.FOR_NULL)) {
+				System.out.println(lec.getTimeSlot().getDate());
+				
+				if(lec.getTimeSlot().getDate() == null) {
 					continue;
 				}
 
-				if(lec.getTimeSlot().getDate().compareTo(startOfWeek.plusDays(7)) > 0 ) {
-					System.out.println(lec.getTimeSlot().getDateString());
+				//Validar que a data da Lecture a ver está dentro da semana que está a ser mostrada no ecrã definida pelo DatePicker (seleccao da data)
+				if(lec.getTimeSlot().getDate().compareTo(startOfWeek.plusDays(7)) >= 0 ) {
+					System.out.println(lec.getTimeSlot().getDateString() + "BREAK");
 					break;
 				}
 
-
 				if(lec.getTimeSlot().getDate().compareTo(startOfWeek) >= 0 ) {
 
-					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5));
+					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5))+1;
 					int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5));
 
 					System.out.println(lec.getTimeSlot().getTimeBeginString().substring(0,5)+"-"+lec.getTimeSlot().getTimeEndString().substring(0,5));
 
-					int day = lec.getTimeSlot().getDate().compareTo(startOfWeek)+1;
+					int day = lec.getTimeSlot().getDate().getDayOfWeek().getValue();
 
 					System.out.println("row: " + hourBegin + " collumn: " + day);
-					System.out.println("row: " + hourEnd + " collumn: " + day);
-
-
 
 					for(int row = hourBegin; row <= hourEnd; row++) {
 
-						if(lec.getRoom().getName() == null ) {
-						
-//							TextArea hourClass = new TextArea(lec.getAcademicInfo().getCourseAbbreviation() + "- sem sala" ); 
-							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "- sem sala" );
-							hourClass.setWrapText(true);
-							hourClass.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, new Insets(3))));
-							hourClass.setTextFill(Color.color(0.0, 0.0, 0.0));
-							hourClass.setMaxWidth(50);
-							hourClass.setMaxHeight(50);
-							paneCalendarWeek.add(hourClass, day, row);
-							
-						}else {
-							
-//							TextArea hourClass = new TextArea(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName()); 
+
+						Node content =getNodeByRowColumnIndex(row, day, paneCalendarWeek);
+
+						if(content == null ) {
+
 							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
-							hourClass.setWrapText(true);
-							hourClass.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, new Insets(3))));
-							hourClass.setTextFill(Color.color(0.0, 0.0, 0.0));
-							hourClass.setMinWidth(50);
-							hourClass.setMinHeight(50);
+							ListView<Label> lecList = new ListView<>();
+							lecList.getItems().add(hourClass);
+							
+							paneCalendarWeek.add(lecList, day, row);
+
+						}else {
+
+							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
+							((ListView<Label>) content).getItems().add(hourClass);
+
+							//							hourClass.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, new Insets(3))));
+							//							hourClass.setTextFill(Color.color(0.0, 0.0, 0.0));
 							paneCalendarWeek.add(hourClass, day, row);
 						}
 					}
@@ -268,6 +296,16 @@ public class ViewSchedule implements Initializable{
 	//  ######################### DIA #################################################### //
 
 	@FXML
+	public void bootCalendarDay() {
+		
+		clearGridContent(paneCalendarDay);
+		setDefaultHours(paneCalendarDay);
+		procedureForHours(paneCalendarDay);
+
+		System.out.println("array hours " + hours.toString());
+	}
+	
+	@FXML
 	public void showCalendarDay() {
 
 		if(datePickerDay.getValue() != null) {
@@ -278,15 +316,55 @@ public class ViewSchedule implements Initializable{
 			LocalDate selectedDate = datePickerDay.getValue();
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 
-			Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-			dayLabel.setMinHeight(50);
-			dayLabel.setMinHeight(50);
+			//LAMBER HORARIO DE AULAS PARA O DIA
+			for(Lecture lec : App.getAllLectures()) {
 
-			paneCalendarDay.add(dayLabel, 1, 0);
+				System.out.println(lec.getTimeSlot().getDate());
+				
+				if(lec.getTimeSlot().getDate() == null) {
+					continue;
+				}
 
+				if(lec.getTimeSlot().getDate().compareTo(selectedDate) == 0 ) {
+
+					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5))+1;
+					int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5));
+
+					//POR CABECALHO DO DIA
+					Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+					dayLabel.setMinHeight(50);
+					dayLabel.setMinHeight(50);
+					paneCalendarDay.add(dayLabel, 1, 0);
+					
+					
+					//VER HORAS DE INICIO E FIM
+					for(int row = hourBegin; row <= hourEnd; row++) {
+
+						Node content =getNodeByRowColumnIndex(row, 1, paneCalendarDay);
+
+						if(content == null ) {
+
+							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
+							ListView<Label> lecList = new ListView<>();
+							lecList.getItems().add(hourClass);
+							
+							paneCalendarDay.add(lecList, 1, row);
+
+						}else {
+
+							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
+							((ListView<Label>) content).getItems().add(hourClass);
+
+						}
+					}
+				}
+			}
+			
 			defineGridLayout(paneCalendarDay);
 		}
 	}
+	
+	
 
 	public boolean validateEntry(int value, int option) {
 

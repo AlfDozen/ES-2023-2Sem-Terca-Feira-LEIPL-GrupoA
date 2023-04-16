@@ -1,25 +1,17 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 
 public class CreateSchedule implements Initializable{
@@ -32,8 +24,11 @@ public class CreateSchedule implements Initializable{
 	private TextField studentName, studentNumber;	
 
 	@FXML
-	private GridPane lectures, calendar; 
+	private GridPane calendar; 
 
+	@FXML
+	private ListView<String> lectures;
+	
 	@FXML
 	private AnchorPane window; 
 
@@ -44,13 +39,11 @@ public class CreateSchedule implements Initializable{
 
 	@FXML
 	private void clearAll() {
-
-
 	}
 
 	@FXML
 	private void selectAll() {
-
+		lectures.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
 	@FXML
@@ -74,19 +67,12 @@ public class CreateSchedule implements Initializable{
 		List<Lecture> lecturesList = App.getAllLectures();
 		Set<String> courses = new HashSet<String>();
 
-
 		for(Lecture lec : lecturesList) {
-
 			courses.add(lec.getAcademicInfo().getCourse());
 		}
 
-		int row = 0;
-		
 		for(String s: courses) {
-						
-			CheckBox item = new CheckBox(s);
-			lectures.add(item, 0, row);
-			row++;
+			lectures.getItems().add(s);
 		}
 
 	}
