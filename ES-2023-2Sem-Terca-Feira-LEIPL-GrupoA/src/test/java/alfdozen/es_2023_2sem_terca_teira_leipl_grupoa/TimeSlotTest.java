@@ -4,15 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.TimeSlot;
 
 class TimeSlotTest {
 
@@ -109,23 +101,17 @@ class TimeSlotTest {
 		TimeSlot timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 20), LocalTime.of(3, 2, 32),
 				LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 21), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 21), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 22), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 22), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 24), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 24), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 25), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 25), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
-		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 26), LocalTime.of(3, 2, 32),
-				LocalTime.of(11, 23, 4));
+		timeSlot = new TimeSlot("Qui", LocalDate.of(2023, 2, 26), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4));
 		assertEquals("Seg", timeSlot.getWeekDay());
 	}
 
@@ -385,10 +371,10 @@ class TimeSlotTest {
 		TimeSlot timeSlotSame = new TimeSlot("Sex", LocalDate.of(2023, 2, 23), LocalTime.of(11, 23, 4),
 				LocalTime.of(11, 23, 4));
 		assertFalse(timeSlotSame.isValidInterval());
-		
+
 		TimeSlot timeSlotNull = new TimeSlot("Sex", null, null, LocalTime.of(11, 23, 4));
 		assertFalse(timeSlotNull.isValidInterval());
-		
+
 		TimeSlot timeSlotNull2 = new TimeSlot("Sex", null, LocalTime.of(3, 2, 32), null);
 		assertFalse(timeSlotNull2.isValidInterval());
 	}
@@ -471,7 +457,5 @@ class TimeSlotTest {
 
 		TimeSlot timeSlotNull = new TimeSlot(null, (String) null, (String) null, (String) null);
 		assertEquals(Lecture.FOR_NULL + " - " + Lecture.FOR_NULL + "-" + Lecture.FOR_NULL, timeSlotNull.toString());
-
 	}
-
 }

@@ -6,26 +6,23 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
+ * The TimeSlot class is used to define the beginning and ending time of a
+ * lecture. The lecture is intended to begin and end on the same date. The class
+ * accepts an ending time that is earlier than the beginning, but this can be
+ * checked by using isValidInterval function. Since the information used to
+ * instantiate this class will frequently come from documents, the constructor
+ * accepts all arguments as Strings. If given as a String, the accepted format
+ * for date is day/month/year and for time is hour:minute:second. Although the
+ * day of the week is accepted as a constructor argument, it is checked against
+ * the calendar using the date attribute and corrected if necessary. As such, it
+ * has not setter method. Also, the getWasWeekDayCorrect function informs if the
+ * day of the week was corrected by the constructor. Null arguments are accepted
+ * by the constructor and setters. With the function isComplete it can be
+ * checked if there are still null attributes. TimeSlot can be sorted: First by
+ * date, then by beginning time and finally by ending time. Null attributes are
+ * always considered to be before non-null attributes.
+ *
  * @author alfdozen
- * 
- *         The TimeSlot class is used to define the beginning and ending time of
- *         a lecture. The lecture is intended to begin and end on the same date.
- *         The class accepts an ending time that is earlier than the beginning,
- *         but this can be checked by using isValidInterval function. Since the
- *         information used to instantiate this class will frequently come from
- *         documents, the constructor accepts all arguments as Strings. If given
- *         as a String, the accepted format for date is day/month/year and for
- *         time is hour:minute:second. Although the day of the week is accepted
- *         as a constructor argument, it is checked against the calendar using
- *         the date attribute and corrected if necessary. As such, it has not
- *         setter method. Also, the getWasWeekDayCorrect function informs if the
- *         day of the week was corrected by the constructor. Null arguments are
- *         accepted by the constructor and setters. With the function isComplete
- *         it can be checked if there are still null attributes. TimeSlot can be
- *         sorted: First by date, then by beginning time and finally by ending
- *         time. Null attributes are always considered to be before non-null
- *         attributes.
- * 
  * @version 1.0.0
  */
 final class TimeSlot implements Comparable<TimeSlot> {

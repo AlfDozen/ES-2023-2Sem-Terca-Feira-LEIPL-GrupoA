@@ -4,17 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.AcademicInfo;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Room;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.TimeSlot;
 
 class LectureTest {
 

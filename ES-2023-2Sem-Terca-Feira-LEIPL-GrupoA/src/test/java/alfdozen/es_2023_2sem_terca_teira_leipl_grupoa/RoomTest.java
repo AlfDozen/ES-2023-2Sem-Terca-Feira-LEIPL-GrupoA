@@ -1,15 +1,7 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Lecture;
-import alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Room;
 
 class RoomTest {
 
@@ -132,5 +124,4 @@ class RoomTest {
 		Room roomNull = new Room(null, (Integer) null);
 		assertEquals("Room " + Lecture.FOR_NULL + " (Capacity " + Lecture.FOR_NULL + ")", roomNull.toString());
 	}
-
 }
