@@ -41,6 +41,11 @@ public class App extends Application implements Initializable{
 
 	private static Scene SCENE;
 	private static Stage STAGE;
+	
+	public static Stage getSTAGE() {
+		return STAGE;
+	}
+
 	private static List<Schedule> SCHEDULES = new ArrayList<>(); 
 
 	public static List<Schedule> getSCHEDULES() {

@@ -10,23 +10,26 @@
 
 <AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.UploadSchedule">
    <children>
-      <Label fx:id="header" alignment="CENTER" layoutX="174.0" layoutY="227.0" prefHeight="74.0" prefWidth="443.0" text="Escolha o ficheiro .CSV ou .JSON a importar" />
-      <Button fx:id="uploadSchedule" layoutX="304.0" layoutY="310.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFile" prefHeight="74.0" prefWidth="150.0" text="Carregar ficheiro de Horário" textAlignment="CENTER" wrapText="true">
+      <Label alignment="CENTER" layoutX="213.0" layoutY="157.0" prefHeight="74.0" prefWidth="443.0" text="Escolha o ficheiro .CSV ou .JSON a importar" />
+      <Button fx:id="getFile" layoutX="360.0" layoutY="231.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFile" prefHeight="74.0" prefWidth="150.0" text="Seleccionar ficheiro a fazer upload" textAlignment="CENTER" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
       <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
-      <Button fx:id="save" layoutX="313.0" layoutY="477.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="62.0" prefWidth="131.0" text="Guardar" textAlignment="CENTER" visible="false">
+      <Button fx:id="saveFileCSV" layoutX="264.0" layoutY="471.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="62.0" prefWidth="144.0" text="Guardar em CSV" textAlignment="CENTER" visible="false" />
+      <Label fx:id="fileChosen" alignment="CENTER" layoutX="224.0" layoutY="316.0" prefHeight="74.0" prefWidth="223.0" />
+      <Button fx:id="viewSchedule" layoutX="445.0" layoutY="471.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="uploadFileCSV" layoutX="463.0" layoutY="322.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#uploadFileCSV" prefHeight="62.0" prefWidth="144.0" text="Carregar ficheiro" textAlignment="CENTER" visible="false">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Label fx:id="fileChosen" alignment="CENTER" layoutX="174.0" layoutY="396.0" prefHeight="74.0" prefWidth="443.0" />
-      <Button fx:id="viewSchedule" layoutX="313.0" layoutY="555.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true">
+      <Button fx:id="uploadFileJSON" layoutX="463.0" layoutY="322.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#uploadFileJSON" prefHeight="62.0" prefWidth="144.0" text="Carregar ficheiro" textAlignment="CENTER" visible="false">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
+      <Button fx:id="saveFileJSON" layoutX="264.0" layoutY="471.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="62.0" prefWidth="144.0" text="Guardar em JSON" textAlignment="CENTER" visible="false" />
    </children>
 </AnchorPane>

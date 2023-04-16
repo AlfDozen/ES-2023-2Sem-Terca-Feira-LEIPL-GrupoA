@@ -4,9 +4,6 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -16,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 
@@ -23,13 +21,15 @@ public class UploadSchedule implements Initializable{
 
 
 	@FXML
-	private Button save, backButton, uploadSchedule, viewSchedule;
+	private Button saveFileCSV, saveFileJSON, backButton, getFile, viewSchedule, uploadFileCSV, uploadFileJSON;
 
 	@FXML
 	private Label fileChosen;
 
-	FileChooser fileChooser  = new FileChooser();
-	File filePath;
+	private FileChooser fileChooser  = new FileChooser();
+	private File filePath, filePathToSave;
+	private String extension, filename, filenameToSave;
+	private Schedule scheduleUploaded = null;
 
 	@FXML
 	private AnchorPane window; 
@@ -49,88 +49,110 @@ public class UploadSchedule implements Initializable{
 		System.out.println("Path " + filePath);
 
 		fileChosen.setText(filePath.getName());
+		filename = filePath.getAbsolutePath();
+		extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
 
-		save.setVisible(true);
-	}
+		if(extension.equals("csv")) {
+			uploadFileCSV.setVisible(true);
 
-	@FXML
-	private void uploadFile() {
-
-		if(filePath != null) {
-
-			String filename = filePath.getAbsolutePath();
-			System.out.println("absolute " + filename);
-
-			String extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-
-			//			System.out.println(filename + " " + extension);
-
-			Schedule abc = null;
-
-			if(extension.equals("json")) {
-
-				try {
-
-
-					abc = Schedule.loadJSON(filename);
-
-					System.out.println(abc.toString());
-
-					viewSchedule.setVisible(true);
-
-				}catch(Exception e1) {
-
-					JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-				}
-
-				App.addSCHEDULE(abc);
-
-
-			}else 
-				
-				if(extension.equals("csv")) {
-
-			try {
-
-
-				abc = Schedule.loadCSV(filename);
-
-				System.out.println(abc.toString());
-
-				viewSchedule.setVisible(true);
-
-			}catch(Exception e1) {
-
-				JOptionPane.showMessageDialog(null, "O ficheiro importado deu cócó CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-			}
-
-			App.addSCHEDULE(abc);
+		}else if(extension.equals("json")){
+			uploadFileJSON.setVisible(true);
 
 		}else {
-
 			JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-}
 
 
-@FXML
-private void returnHome() {
-	try {
-		App.setRoot("/fxml/Main");
-	} catch (IOException e) {
-		System.err.println("Erro ao tentar retornar");
+	@FXML
+	private void saveFileCSV() {
+
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".csv"));
+		filePathToSave = fileChooser.showSaveDialog(new Stage());
+
+		filenameToSave = filePathToSave.getAbsolutePath();
+
+		try {
+			Schedule.saveToCSV(scheduleUploaded, filenameToSave);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
-}
+	@FXML
+	private void saveFileJSON() {
 
-//  ######################### MAIN #################################################### //
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
+		filePathToSave = fileChooser.showSaveDialog(new Stage());
+
+		filenameToSave = filePathToSave.getAbsolutePath();
+
+		try {
+			Schedule.saveToJSON(scheduleUploaded, filenameToSave);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 
-@Override
-public void initialize(URL arg0, ResourceBundle arg1) {
+	@FXML
+	private void uploadFileCSV() {
 
-	App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+		try {
 
-}
+			scheduleUploaded = Schedule.loadCSV(filename);
+
+			//			System.out.println(scheduleUploaded.toString());
+
+			viewSchedule.setVisible(true);
+			saveFileJSON.setVisible(true);
+
+		}catch(Exception e1) {
+
+			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		App.addSCHEDULE(scheduleUploaded);
+	}
+
+
+	@FXML
+	private void uploadFileJSON() {
+
+		try {
+
+			scheduleUploaded = Schedule.loadJSON(filename);
+
+			viewSchedule.setVisible(true);
+			saveFileCSV.setVisible(true);
+
+
+		}catch(Exception e1) {
+
+			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		App.addSCHEDULE(scheduleUploaded);
+	}
+
+
+	@FXML
+	private void returnHome() {
+		try {
+			App.setRoot("/fxml/Main");
+		} catch (IOException e) {
+			System.err.println("Erro ao tentar retornar");
+		}
+
+	}
+
+	//  ######################### MAIN #################################################### //
+
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+
+		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+
+	}
 }
