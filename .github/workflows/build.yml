@@ -36,3 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=AlfDozen_ES-2023-Sem2-Terca-Feira-LEIPL-GrupoA
+      - name: javadoc with Maven
+        working-directory: ${{ github.workspace }}/ES-2023-2Sem-Terca-Feira-LEIPL-GrupoA
+        run: mvn -B javadoc:javadoc --file pom.xml
