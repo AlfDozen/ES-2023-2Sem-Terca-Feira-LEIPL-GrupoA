@@ -79,6 +79,7 @@ final class Schedule {
 	static final Integer INDEX_ROOM = 9;
 	static final Integer INDEX_CAPACITY = 10;
 
+
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -282,6 +283,7 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + FILE_FORMAT_CSV);
 		}
 		Schedule schedule = new Schedule();
+
 		try (BufferedReader br = new BufferedReader(
 				new InputStreamReader(new FileInputStream(filePath), StandardCharsets.ISO_8859_1))) {
 			String line = "";
@@ -299,7 +301,7 @@ final class Schedule {
 		}
 		return schedule;
 	}
-
+	
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
