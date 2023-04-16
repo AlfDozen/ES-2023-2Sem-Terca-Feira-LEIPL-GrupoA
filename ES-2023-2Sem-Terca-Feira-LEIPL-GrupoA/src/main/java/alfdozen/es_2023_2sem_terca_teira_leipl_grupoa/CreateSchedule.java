@@ -51,7 +51,7 @@ public class CreateSchedule implements Initializable{
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			System.err.println("Erro ao tentar retornar");
+			e.printStackTrace();
 		}
 
 	}

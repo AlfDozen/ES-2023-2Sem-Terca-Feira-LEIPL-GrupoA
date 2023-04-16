@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javax.swing.JOptionPane;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -25,7 +23,6 @@ public class UploadSchedule implements Initializable{
 
 	@FXML
 	private Label fileChosen;
-
 	private FileChooser fileChooser  = new FileChooser();
 	private File filePath, filePathToSave;
 	private String extension, filename, filenameToSave;
@@ -33,7 +30,6 @@ public class UploadSchedule implements Initializable{
 
 	@FXML
 	private AnchorPane window; 
-
 
 	@FXML
 	private void viewSchedule() throws IOException {
@@ -44,10 +40,7 @@ public class UploadSchedule implements Initializable{
 	private void getFile() {
 
 		fileChooser.setTitle("Open Resource File");
-
 		filePath = fileChooser.showOpenDialog(new Stage());
-		System.out.println("Path " + filePath);
-
 		fileChosen.setText(filePath.getName());
 		filename = filePath.getAbsolutePath();
 		extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
@@ -69,7 +62,6 @@ public class UploadSchedule implements Initializable{
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".csv"));
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
-
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
@@ -84,7 +76,6 @@ public class UploadSchedule implements Initializable{
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
-
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
@@ -99,11 +90,7 @@ public class UploadSchedule implements Initializable{
 	private void uploadFileCSV() {
 
 		try {
-
 			scheduleUploaded = Schedule.loadCSV(filename);
-
-			//			System.out.println(scheduleUploaded.toString());
-
 			viewSchedule.setVisible(true);
 			saveFileJSON.setVisible(true);
 
@@ -120,18 +107,12 @@ public class UploadSchedule implements Initializable{
 	private void uploadFileJSON() {
 
 		try {
-
 			scheduleUploaded = Schedule.loadJSON(filename);
-
 			viewSchedule.setVisible(true);
 			saveFileCSV.setVisible(true);
-
-
 		}catch(Exception e1) {
-
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
-
 		App.addSCHEDULE(scheduleUploaded);
 	}
 
@@ -143,7 +124,6 @@ public class UploadSchedule implements Initializable{
 		} catch (IOException e) {
 			System.err.println("Erro ao tentar retornar");
 		}
-
 	}
 
 	//  ######################### MAIN #################################################### //
@@ -151,8 +131,6 @@ public class UploadSchedule implements Initializable{
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
-
 	}
 }

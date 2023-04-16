@@ -62,7 +62,7 @@
             </AnchorPane>
         </content>
       </Tab>
-      <Tab fx:id="monthTab" closable="false" onSelectionChanged="#bootCalendarMonth" text="Mês">
+      <Tab fx:id="monthTab" closable="false" text="Mês">
          <content>
             <AnchorPane>
                <children>

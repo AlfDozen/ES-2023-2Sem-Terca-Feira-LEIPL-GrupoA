@@ -8,9 +8,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-
 import javax.swing.JOptionPane;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -30,29 +28,20 @@ public class Webcal implements Initializable{
 
 	@FXML
 	private AnchorPane window;
-	
+
 	@FXML
 	private void webcallLink() {
-
 		if(webcal.getText().length() > 7) {
-
 			String domain = webcal.getText().substring(0, 8);
-
 			if(domain.equals("webcal://")) {
-
 				//usar ficheiro para criar calendario
-				
 				viewSchedule.setVisible(true);
-
 			}else {
-
 				JOptionPane.showMessageDialog(null, "O link inserido: "+ domain + " não começa por webcal://", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-
 	}
 
-	
 	@FXML
 	private void viewSchedule() throws IOException {
 		App.setRoot("/fxml/ViewSchedule");
@@ -63,7 +52,7 @@ public class Webcal implements Initializable{
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			System.err.println("Erro ao tentar retornar");
+			e.printStackTrace();
 		}
 
 	}
@@ -73,7 +62,6 @@ public class Webcal implements Initializable{
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 	}
 }

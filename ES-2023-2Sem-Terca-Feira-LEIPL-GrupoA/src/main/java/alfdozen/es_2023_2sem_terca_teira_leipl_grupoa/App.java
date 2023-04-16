@@ -7,8 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -121,27 +119,20 @@ public class App extends Application implements Initializable{
 		App.setRoot("/fxml/ConvertFile");
 	}
 
-
 	@FXML
 	private void closeWindow() throws IOException {
 		STAGE.close();
 	}
-
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 
-
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
-
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 		image.setImage(photo);
 		header.setText("Bem vindo à plataforma de gestão de horários para alunos ISCTE");
-
 	}
 }
