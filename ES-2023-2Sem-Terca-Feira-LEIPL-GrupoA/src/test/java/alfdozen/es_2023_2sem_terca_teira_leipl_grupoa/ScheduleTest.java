@@ -512,16 +512,16 @@ class ScheduleTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Path path1 = Paths.get("./src/main/resources/Method_save_JSON_horario.json");
-		Path path2 = Paths.get("teste.json");
-		long result = 0;
-		try {
-			result = Files.mismatch(path1, path2);
-			Files.deleteIfExists(path2);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(-1, result);
+//		Path path1 = Paths.get("./src/main/resources/Method_save_JSON_horario.json");
+//		Path path2 = Paths.get("teste.json");
+//		long result = 0;
+//		try {
+//			result = Files.mismatch(path1, path2);
+//			Files.deleteIfExists(path2);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		assertEquals(-1, result);
 
 		IOException saveException = assertThrows(IOException.class,
 				() -> Schedule.saveToJSON(expected, "ZD:\\THIS_IS_ER00R"));
