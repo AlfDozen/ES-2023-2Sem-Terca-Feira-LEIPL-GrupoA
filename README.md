@@ -11,3 +11,5 @@ Identificação dos elementos do grupo: Pedro Almeida (Nº: 97960, username GitH
 Identificação e descrição de erros: Não foram identificados erros
 
 Funcionalidade não implementadas ou incompletas: 1) do backlog, encontra-se por implementar (criação do horário de estudantes a partir dos dados do Fénix; criação de horário através da selecção de UC's de outro horário previamente carregado; visualização das aulas em sobreposição de um horário previamente carregado; visualização das aulas em sobrelotação de um horário previamente carregado); 2) a interface encontra-se incompleta, mas cumpre os objectivos os Sprint 1
+
+Nota Adicional: As classes da interface gráfica não foram revistas para fazer documentação e corrigir code smells uma vez que ainda representa um esboço.
