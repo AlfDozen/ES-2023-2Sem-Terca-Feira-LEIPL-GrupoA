@@ -377,16 +377,28 @@ class ScheduleTest {
 		long result = 0;
 		try {
 			result = Files.mismatch(path1, path2);
-			Files.deleteIfExists(path2);
+			//Files.deleteIfExists(path2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		assertTrue(-1 == result);
 
+		try {
+			Schedule s = Schedule.loadCSV("teste.csv");
+			Schedule.saveToCSV(s, "teste2.csv");
+			Path path3 = Paths.get("teste.csv");
+			result = Files.mismatch(path3, path2);
+			Files.deleteIfExists(path2);
+			Files.deleteIfExists(path3);
+			assertTrue(-1 == result);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		IOException saveException = assertThrows(IOException.class,
 				() -> Schedule.saveToCSV(expected, "ZD:\\\\THIS_IS_ER00R"));
 		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
-
 	}
 
 	@Test
@@ -503,7 +515,6 @@ class ScheduleTest {
 		IOException saveException = assertThrows(IOException.class,
 				() -> Schedule.saveToJSON(expected, "ZD:\\THIS_IS_ER00R"));
 		assertEquals(Schedule.SAVE_FILE_EXCEPTION, saveException.getMessage());
-
 	}
 
 	@Test

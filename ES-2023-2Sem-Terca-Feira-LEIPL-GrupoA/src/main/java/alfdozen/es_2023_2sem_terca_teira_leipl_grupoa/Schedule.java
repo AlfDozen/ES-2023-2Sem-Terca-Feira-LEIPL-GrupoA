@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -268,9 +269,10 @@ final class Schedule {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileWriter writer = new FileWriter(file);
-			String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
-			writer.write(header + "\n");
+			//Files.newBufferedWriter(file.toPath(), "ISO-8859-15");
+			FileWriter writer = new FileWriter(file, StandardCharsets.ISO_8859_1);
+			//String header = new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO);
+			writer.write(HEADER + "\n");
 			for (Lecture lecture : schedule.getLectures()) {
 
 				String[] attrArray = new String[11];
@@ -286,14 +288,17 @@ final class Schedule {
 
 				for (int i = 0; i < attrArray.length; i++) {
 					if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
-						attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
+						//attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
+						attrArray[i] = "";
 					}
 				}
 				if (lecture.getAcademicInfo().getStudentsEnrolled() != null)
-					attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
+					attrArray[4] = lecture.getAcademicInfo().getStudentsEnrolled().toString();
+					//attrArray[4] = new String(lecture.getAcademicInfo().getStudentsEnrolled().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 
 				if (lecture.getRoom().getCapacity() != null)
-					attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
+					attrArray[10] = lecture.getRoom().getCapacity().toString();
+					//attrArray[10] = new String(lecture.getRoom().getCapacity().toString().getBytes(ENCODE_FROM), ENCODE_TO);
 
 				writer.write(String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", attrArray[0], attrArray[1],
 						attrArray[2], attrArray[3], attrArray[4], attrArray[5], attrArray[6], attrArray[7],
@@ -325,11 +330,17 @@ final class Schedule {
 		}
 		Schedule schedule = new Schedule();
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-			String lineRaw = "";
-			while ((lineRaw = br.readLine()) != null) {
-				String line = new String(lineRaw.getBytes(ENCODE_FROM), ENCODE_TO);
-				if (!line.isBlank() && !line.equals(new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO)) && !line.equals(EMPTY_ROW)) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.ISO_8859_1));;
+			Boolean isEmpty = true;
+			String line = "";
+			while(br.readLine().isBlank()) {
+				continue;
+			}
+			while ((line = br.readLine()) != null) {
+				//String line = new String(lineRaw.getBytes(ENCODE_FROM), ENCODE_TO);
+				// new String(HEADER.getBytes(ENCODE_FROM), ENCODE_TO)
+				if (!line.isBlank() && !line.equals(EMPTY_ROW)) {
+					//System.out.println(line);
 					Lecture lecture = buildLecture(line);
 					schedule.addLecture(lecture);
 				}
@@ -372,7 +383,7 @@ final class Schedule {
 
 			for (int i = 0; i < attrArray.length; i++) {
 				if (attrArray[i] == null || attrArray[i].equals(FOR_NULL)) {
-					attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
+					//attrArray[i] = new String("".getBytes(ENCODE_FROM), ENCODE_TO);
 					attrArray[i] = "";
 				}
 			}
@@ -448,6 +459,7 @@ final class Schedule {
 	private static String[] buildLine(String[] array) {
 		String[] finalArr = new String[NUMBER_COLUMNS];
 		for (int i = 0; i < array.length; i++) {
+			//System.out.println(array[i]);
 			if (array[i].equals("")) {
 				finalArr[i] = null;
 			} else {
