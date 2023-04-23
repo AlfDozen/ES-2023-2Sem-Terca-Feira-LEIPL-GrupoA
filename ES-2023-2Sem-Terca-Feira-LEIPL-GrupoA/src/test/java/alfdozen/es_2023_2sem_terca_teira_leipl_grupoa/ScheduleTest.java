@@ -285,23 +285,23 @@ class ScheduleTest {
 	@ParameterizedTest
 	@CsvSource({
 			// null json
-			"src/resources/horario_exemplo.csv,,';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo.csv,,';', IllegalArgumentException",
 			// null csv
-			", src/resources/horario-exemplo-output.json, ';', IllegalArgumentException",
+			", src/main/resources/horario-exemplo-output.json, ';', IllegalArgumentException",
 			// falta extensão .csv
-			"src/resources/horario_exemplo, src/resources/horario-exemplo-output.json, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo, src/main/resources/horario-exemplo-output.json, ';', IllegalArgumentException",
 			// falta extensão .json
-			"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-output, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo.csv, src/main/resources/horario-exemplo-output, ';', IllegalArgumentException",
 			// nao existe parent directory json
-			"src/resources/horario_exemplo.csv, src/resources/naoexiste/horario-exemplo-output.json, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo.csv, src/main/resources/naoexiste/horario-exemplo-output.json, ';', IllegalArgumentException",
 			// sucesso
-			"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json, ';', N/A",
+			"src/main/resources/horario_exemplo.csv, src/main/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json, ';', N/A",
 			// json já existe
-			"src/resources/horario_exemplo.csv, src/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo.csv, src/main/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",
 			// não existe csv
-			"src/resources/horario_exemplo_csv_nao_existe.csv, src/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_csv_nao_existe.csv, src/main/resources/horario-exemplo_completo.json, ';', IllegalArgumentException",
 			// delimiter null
-			"src/resources/horario_exemplo.csv, src/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json,, IllegalArgumentException", })
+			"src/main/resources/horario_exemplo.csv, src/main/resources/horario-exemplo-APAGAR-APÓS-CORRER2.json,, IllegalArgumentException", })
 	final void testConvertCSV2JSONArguments(String csvSourcePath, String jsonDestinationPath, Character delimiter,
 			String expectedException) {
 		if (expectedException.equals("IllegalArgumentException")) {
@@ -322,23 +322,23 @@ class ScheduleTest {
 	@ParameterizedTest
 	@CsvSource({
 			// null csv
-			"src/resources/horario_exemplo_json_completo.json,, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo.json,, ';', IllegalArgumentException",
 			// null json
-			", src/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
+			", src/main/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
 			// falta extensão .json
-			"src/resources/horario_exemplo_json_completo, src/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo, src/main/resources/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
 			// falta extensão .csv
-			"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo.json, src/main/resources/horario_exemplo_csv_outputJSON2CSV, ';', IllegalArgumentException",
 			// nao existe parent directory csv
-			"src/resources/horario_exemplo_json_completo.json, src/resources/naoexiste/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo.json, src/main/resources/naoexiste/horario_exemplo_csv_outputJSON2CSV.csv, ';', IllegalArgumentException",
 			// csv já existe
-			"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo.csv, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo.json, src/main/resources/horario_exemplo.csv, ';', IllegalArgumentException",
 			// json não existe
-			"src/resources/horario_exemplo_json_completo_nao_existe.json, src/resources/horario_exemplo_csv_iso.csv, ';', IllegalArgumentException",
+			"src/main/resources/horario_exemplo_json_completo_nao_existe.json, src/main/resources/horario_exemplo_csv_iso.csv, ';', IllegalArgumentException",
 			// sucesso
-			"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER1.csv, ';', N/A",
+			"src/main/resources/horario_exemplo_json_completo.json, src/main/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER1.csv, ';', N/A",
 			// delimiter null
-			"src/resources/horario_exemplo_json_completo.json, src/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER2.csv,, IllegalArgumentException", })
+			"src/main/resources/horario_exemplo_json_completo.json, src/main/resources/horario_exemplo_csv_outputJSON2CSV-APAGAR-APÓS-CORRER2.csv,, IllegalArgumentException", })
 	final void testConvertJSON2CSVArguments(String jsonSourcePath, String csvDestinationPath, Character delimiter,
 			String expectedException) {
 		if (expectedException.equals("IllegalArgumentException")) {
@@ -573,5 +573,93 @@ class ScheduleTest {
 		Schedule expected5 = new Schedule(lectures5);
 		assertEquals(expected5.toString(),
 				Schedule.loadJSON("./src/main/resources/horario_exemplo_json2.JSON").toString());
+	}
+	
+	@Test
+	final void testEncoding() throws IOException {
+		
+	    // Teste 1 - Converter JSON para CSV para JSON novamente
+		Schedule schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
+		Lecture firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted.csv");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test_converted.csv", "./src/main/resources/horario_encoding_test_converted2.json", ';');
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted2.json");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.json"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		
+	    // Teste 2 - Converter CSV para JSON para CSV novamente
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted.json");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test_converted.json", "./src/main/resources/horario_encoding_test_converted2.csv", ';');
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted2.csv");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.csv"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		
+		// Teste 3 - Ler JSON, guardar em CSV e JSON, ler o novo CSV e guardar em JSON
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
+		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved.json");
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved.json");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.json"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
+		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved_json.csv");
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved_json.csv");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_json.csv"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved2.json");
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved2.json");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.json"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		
+		// Teste 4 - Ler CSV, guardar em JSON e CSV, ler o novo JSON e guardar em CSV
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
+		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved.csv");
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved.csv");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.csv"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
+		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved_csv.json");
+		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved_csv.json");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_csv.json"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved2.csv");
+		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved2.csv");
+		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.csv"));
+		firstLecture = schedule.getLectures().get(0);
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
 }

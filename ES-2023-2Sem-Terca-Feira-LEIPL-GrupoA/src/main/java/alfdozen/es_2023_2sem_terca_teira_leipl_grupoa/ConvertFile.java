@@ -14,7 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-
+// PARA APAGAR: CLASSE DE PAGINA DE CONVERTER DE CSV PARA JSON E VICE VERSA
 public class ConvertFile implements Initializable{
 
 
@@ -33,8 +33,8 @@ public class ConvertFile implements Initializable{
 	@FXML
 	private Label fileChosen;
 
-	private FileChooser fileChooser  = new FileChooser();
-	private FileChooser fileChooserToSave  = new FileChooser();
+	private FileChooser fileChooser;
+	private FileChooser fileChooserToSave;
 	private File filePath, filePathToSave;
 	private String filename, filenameToSave;
 
@@ -42,6 +42,7 @@ public class ConvertFile implements Initializable{
 	private void getFileJSON() {
 
 		//PARA ABRIR
+		fileChooser  = new FileChooser();
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JSON", "*.json"));
 		fileChooser.setTitle("Open JSON File");
 
@@ -59,6 +60,7 @@ public class ConvertFile implements Initializable{
 	private void getFileCSV() {
 
 		//PARA ABRIR
+		fileChooser  = new FileChooser();
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", "*.csv"));
 		fileChooser.setTitle("Open CSV File");
 
@@ -84,6 +86,7 @@ public class ConvertFile implements Initializable{
 	@FXML
 	private void convertJSON2CSV() {
 		//PARA GRAVAR
+		fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".csv"));
 		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 		filenameToSave = filePathToSave.getAbsolutePath();
@@ -99,6 +102,7 @@ public class ConvertFile implements Initializable{
 	@FXML
 	private void convertCSV2JSON() {
 		//PARA GRAVAR
+		fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
 		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 		filenameToSave = filePathToSave.getAbsolutePath();

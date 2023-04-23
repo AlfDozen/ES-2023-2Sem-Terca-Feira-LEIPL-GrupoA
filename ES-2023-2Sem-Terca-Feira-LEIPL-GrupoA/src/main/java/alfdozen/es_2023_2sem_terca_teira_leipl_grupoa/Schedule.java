@@ -62,9 +62,7 @@ final class Schedule {
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
 	static final String EMPTY_ROW = ";;;;;;;;;;";
-	static final String ENCODE_TO = "ISO-8859-1";
-	static final String ENCODE_FROM = "UTF-8";
-	static final String PATH_TMP = "src/resources/tmpfile.csv";
+	static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
 	static final Integer NUMBER_COLUMNS = 11;
 	static final Integer INDEX_DEGREE = 0;
@@ -285,7 +283,7 @@ final class Schedule {
 		Schedule schedule = new Schedule();
 
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(new FileInputStream(filePath), StandardCharsets.ISO_8859_1))) {
+				new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
 			String line = "";
 			while (br.readLine().isBlank()) {
 				continue;
@@ -361,7 +359,7 @@ final class Schedule {
 	 */
 	public static void saveToCSV(Schedule schedule, String fileName) throws IOException {
 		File file = new File(fileName);
-		try (FileWriter writer = new FileWriter(file, StandardCharsets.ISO_8859_1)) {
+		try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
 			writer.write(HEADER + "\n");
 			for (Lecture lecture : schedule.getLectures()) {
 				String[] attrArray = buildLineToSaveCSV(lecture);
@@ -429,7 +427,7 @@ final class Schedule {
 		Schedule schedule = new Schedule();
 		String[] headerArr = HEADER.split(DELIMITER);
 		try {
-			Reader reader = new InputStreamReader(new FileInputStream(path));
+			Reader reader = new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8);
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 			for (int i = 0; i < data.size(); i++) {
@@ -508,14 +506,14 @@ final class Schedule {
 			lectureNode.put("Turma", attrArray[INDEX_CLASSGROUP]);
 			lectureNode.put("Inscritos no turno", attrArray[INDEX_STUDENTSENROLLED]);
 			lectureNode.put("Dia da semana", attrArray[INDEX_WEEKDAY]);
-			lectureNode.put("Hora inicio da aula", attrArray[INDEX_TIMEBEGIN]);
+			lectureNode.put("Hora início da aula", attrArray[INDEX_TIMEBEGIN]);
 			lectureNode.put("Hora fim da aula", attrArray[INDEX_TIMEEND]);
 			lectureNode.put("Data da aula", attrArray[INDEX_DATE]);
 			lectureNode.put("Sala atribuída à aula", attrArray[INDEX_ROOM]);
 			lectureNode.put("Lotação da sala", attrArray[INDEX_CAPACITY]);
 			lecturesArray.add(lectureNode);
 		}
-		try (FileWriter fileWriter = new FileWriter(fileName)) {
+		try (FileWriter fileWriter = new FileWriter(fileName, StandardCharsets.UTF_8)) {
 			String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lecturesArray);
 			fileWriter.write(json);
 		} catch (IOException e) {
@@ -550,8 +548,8 @@ final class Schedule {
 		}
 		String destinationTempFilePath = PATH_TMP;
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath));
-				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
+				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath, StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!line.isBlank()) {
@@ -565,7 +563,7 @@ final class Schedule {
 			CsvMapper csvMapper = new CsvMapper();
 			CsvSchema csvSchema = CsvSchema.builder().setColumnSeparator(delimiter).setUseHeader(true).build();
 			List<Object> csvData = csvMapper.readerFor(Map.class).with(csvSchema)
-					.readValues(new InputStreamReader(inputStream)).readAll();
+					.readValues(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).readAll();
 			Files.deleteIfExists(Paths.get(destinationTempFilePath));
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, csvData);
@@ -601,8 +599,8 @@ final class Schedule {
 			throw new IllegalArgumentException(FILE_EXISTS_EXCEPTION);
 		}
 
-		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile));
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile))) {
+		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8);
+				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 			CsvMapper csvMapper = new CsvMapper();

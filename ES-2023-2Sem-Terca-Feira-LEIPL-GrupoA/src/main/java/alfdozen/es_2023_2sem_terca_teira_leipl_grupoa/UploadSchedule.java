@@ -14,7 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-
+//PARA APAGAR: CLASSE DE PAGINA DE IR BUSCAR HORÁRIO AO CSV, JSON OU FICHEIRO NA NET
 public class UploadSchedule implements Initializable{
 
 
@@ -99,7 +99,7 @@ public class UploadSchedule implements Initializable{
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 
-		App.addSCHEDULE(scheduleUploaded);
+		App.SCHEDULE = scheduleUploaded;
 	}
 
 
@@ -113,7 +113,7 @@ public class UploadSchedule implements Initializable{
 		}catch(Exception e1) {
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
-		App.addSCHEDULE(scheduleUploaded);
+		App.SCHEDULE = scheduleUploaded;
 	}
 
 

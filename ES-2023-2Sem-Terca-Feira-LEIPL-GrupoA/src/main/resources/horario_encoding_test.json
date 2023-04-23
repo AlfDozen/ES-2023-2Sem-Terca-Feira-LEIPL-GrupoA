@@ -1,0 +1,25 @@
+[ {
+  "Curso" : "LEI-PL",
+  "Unidade Curricular" : "Interacção Pessoa-Máquina",
+  "Turno" : "L1723T01",
+  "Turma" : "EI-PL-C1, EI-PL-C2",
+  "Inscritos no turno" : "31",
+  "Dia da semana" : "Sex",
+  "Hora início da aula" : "21:00:00",
+  "Hora fim da aula" : "22:30:00",
+  "Data da aula" : "14/04/2023",
+  "Sala atribuída à aula" : "C5.06",
+  "Lotação da sala" : "40"
+}, {	
+  "Curso" : "LEI-PL",
+  "Unidade Curricular" : "Projeto de Integração de Sistemas de Informação Distribuídos",
+  "Turno" : "P1233T01",
+  "Turma" : "EI-PL-C1, EI-PL-C2",
+  "Inscritos no turno" : "35",
+  "Dia da semana" : "Qua",
+  "Hora início da aula" : "21:00:00",
+  "Hora fim da aula" : "22:30:00",
+  "Data da aula" : "12/04/2023",
+  "Sala atribuída à aula" : "C5.08",
+  "Lotação da sala" : "38"
+} ]

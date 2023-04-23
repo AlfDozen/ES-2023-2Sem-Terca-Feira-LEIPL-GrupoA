@@ -18,7 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-
+//PARA APAGAR: CLASSE DE PAGINA DE CONSULTAR HORÁRIO
 public class ViewSchedule implements Initializable{
 
 
@@ -122,7 +122,7 @@ public class ViewSchedule implements Initializable{
 			monthItems.put(i, listvu);
 		}
 		
-		for(Lecture lec : App.getAllLectures()) {
+		for(Lecture lec : App.SCHEDULE.getLectures()) {
 			
 			if(lec.getTimeSlot().getDate() != null
 					&& lec.getTimeSlot().getDate().getMonthValue() == month
@@ -253,7 +253,7 @@ public class ViewSchedule implements Initializable{
 				paneCalendarWeek.add(dayLabel, i+1, 0);
 			}
 
-			for(Lecture lec : App.getAllLectures()) {
+			for(Lecture lec : App.SCHEDULE.getLectures()) {
 
 				if(lec.getTimeSlot().getDate() == null) {
 					continue;
@@ -319,7 +319,7 @@ public class ViewSchedule implements Initializable{
 			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
 
 			//LAMBER HORARIO DE AULAS PARA O DIA
-			for(Lecture lec : App.getAllLectures()) {
+			for(Lecture lec : App.SCHEDULE.getLectures()) {
 
 				if(lec.getTimeSlot().getDate() == null) {
 					continue;

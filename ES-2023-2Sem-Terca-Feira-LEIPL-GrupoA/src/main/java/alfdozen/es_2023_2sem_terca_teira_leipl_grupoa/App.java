@@ -44,28 +44,7 @@ public class App extends Application implements Initializable{
 		return STAGE;
 	}
 
-	private static List<Schedule> SCHEDULES = new ArrayList<>(); 
-
-	public static List<Schedule> getSCHEDULES() {
-		return SCHEDULES;
-	}
-
-	public static List<Lecture> getAllLectures() {
-
-		List<Lecture> lectures = new ArrayList<>();
-
-		for(Schedule sch : SCHEDULES) {
-			lectures.addAll(sch.getLectures());
-		}
-
-		return lectures;
-	}
-
-	public static void addSCHEDULE(Schedule sch) {
-		
-		if(!SCHEDULES.contains(sch))
-		SCHEDULES.add(sch);
-	}
+	public static Schedule SCHEDULE = new Schedule(); 
 
 	public static void setStageSize(double width, double height) {
 		STAGE.setWidth(width);

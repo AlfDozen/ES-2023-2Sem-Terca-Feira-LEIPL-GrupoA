@@ -13,7 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-
+//PARA APAGAR: CLASSE DE PAGINA DE CRIAR HORARIO (A SEGUNDA PÁGINA, NÃO A DE IR BUSCAR O HORÁRIO PRIMEIRO)
 public class CreateSchedule implements Initializable{
 
 
@@ -64,7 +64,7 @@ public class CreateSchedule implements Initializable{
 
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 
-		List<Lecture> lecturesList = App.getAllLectures();
+		List<Lecture> lecturesList = App.SCHEDULE.getLectures();
 		Set<String> courses = new HashSet<String>();
 
 		for(Lecture lec : lecturesList) {
