@@ -34,7 +34,7 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <DatePicker fx:id="datePickerDay" layoutX="649.0" layoutY="79.0" onAction="#showCalendarDay" />
+                  <DatePicker fx:id="datePickerDay" layoutX="939.0" layoutY="72.0" onAction="#bootCalendarDay" />
                   <Button fx:id="backButtonDay" layoutX="80.0" layoutY="64.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="46.0" prefWidth="88.0" text="Voltar" />
                </children>
             </AnchorPane>
@@ -44,7 +44,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="741.0" prefWidth="1120.0">
                <children>
-                  <DatePicker fx:id="datePickerWeek" layoutX="939.0" layoutY="87.0" onAction="#showCalendarWeek" />
+                  <DatePicker fx:id="datePickerWeek" layoutX="939.0" layoutY="87.0" onAction="#bootCalendarWeek" />
                   <ScrollPane layoutY="168.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="46.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="177.0">
                      <content>
                         <GridPane fx:id="paneCalendarWeek" gridLinesVisible="true" hgap="1.0" prefHeight="524.0" prefWidth="1108.0" vgap="1.0">
@@ -62,7 +62,7 @@
             </AnchorPane>
         </content>
       </Tab>
-      <Tab fx:id="monthTab" closable="false" text="Mês">
+      <Tab fx:id="monthTab" closable="false" onSelectionChanged="#showCalendarMonth" text="Mês">
          <content>
             <AnchorPane>
                <children>
@@ -78,7 +78,7 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <DatePicker fx:id="datePickerMonth" layoutX="649.0" layoutY="79.0" onAction="#showCalendarMonth" />
+                  <DatePicker fx:id="datePickerMonth" layoutX="939.0" layoutY="79.0" onAction="#showCalendarMonth" />
                   <Button fx:id="backButtonMonth" layoutX="80.0" layoutY="64.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="46.0" prefWidth="88.0" text="Voltar" />
                </children>
             </AnchorPane>
