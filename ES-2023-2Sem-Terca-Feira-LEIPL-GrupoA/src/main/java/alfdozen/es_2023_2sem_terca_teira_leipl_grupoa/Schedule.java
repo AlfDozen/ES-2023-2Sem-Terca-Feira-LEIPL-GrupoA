@@ -648,7 +648,11 @@ final class Schedule {
 		}
 	}
 	
-	
+	/**
+	 * Returns a set with the unique lecture's name of an object shedule
+	 * 
+	 * @return A set of unique lecture's name
+	 */
 	public Set<String> getUniqueLectures() {
 		Set<String> uniqueCourses = new HashSet<String>();
 		for(Lecture l : lectures) {
