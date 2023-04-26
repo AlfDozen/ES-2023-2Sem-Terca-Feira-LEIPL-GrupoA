@@ -15,10 +15,14 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -51,13 +55,15 @@ final class Schedule {
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String READ_WRITE_EXCEPTION = "Error: File read or write";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
-	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String FILE_NULL_EXCEPTION = "The file cannot be null";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
-	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
-	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
-	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
-	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
-	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+	static final String FILE_EXISTS_EXCEPTION = "The file already exists";
+	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist";
+	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null";
+	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist";
+	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled";
+	static final String URI_NULL_EXCEPTION = "The URI cannot be null";
+	static final String URI_NOT_WEBCAL_EXCEPTION = "The URI is not a webcal scheme";
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
@@ -643,6 +649,46 @@ final class Schedule {
 		}
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
+		}
+	}
+	
+	static void loadWebcal(String URI) throws IOException {
+		if (URI == null) {
+			throw new IllegalArgumentException(URI_NULL_EXCEPTION);
+		}
+		System.out.println("The webcalURI is:" + URI);
+		if (!URI.startsWith("webcal")) {
+			throw new IllegalArgumentException(URI_NOT_WEBCAL_EXCEPTION);
+		}
+		String httpURI = URI.replaceFirst("webcal", "https");
+		System.out.println("The httpURI is:" + httpURI);
+
+		Schedule schedule = new Schedule();	
+
+		try {
+			URL httpURL = new URL(httpURI);
+			URLConnection connection = httpURL.openConnection();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			System.out.println("HERE I AM");
+			String nextLine = reader.readLine();
+			while(nextLine != null) {
+				System.out.print(nextLine);  //TENHO DE APROVEITAR AS LINHAS PARA FAZER ALGO
+				nextLine = reader.readLine();
+			}
+			System.out.println("READ EVERYTHING");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException();
+		} catch (IOException e) {
+			throw new IOException(); 
+		}
+
+		try {
+			InputStream in = new URL(httpURI).openStream();
+			Files.copy(in, Paths.get("estaravazio.txt"), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
