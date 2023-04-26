@@ -17,8 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -644,6 +646,15 @@ final class Schedule {
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
+	}
+	
+	
+	public Set<String> getUniqueLectures() {
+		Set<String> uniqueCourses = new HashSet<String>();
+		for(Lecture l : lectures) {
+			uniqueCourses.add(l.getAcademicInfo().getCourse());
+		}
+		return uniqueCourses;
 	}
 
 	/**
