@@ -2,17 +2,25 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import java.io.BufferedReader;
 
 class ScheduleTest {
 	@Test
@@ -577,7 +585,6 @@ class ScheduleTest {
 	
 	@Test
 	final void testEncoding() throws IOException {
-		
 	    // Teste 1 - Converter JSON para CSV para JSON novamente
 		Schedule schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Lecture firstLecture = schedule.getLectures().get(0);
@@ -661,5 +668,150 @@ class ScheduleTest {
 		firstLecture = schedule.getLectures().get(0);
 		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
+	}
+	
+	@Test
+	final void testLoadWebcal() throws IOException {
+		// null uri
+		IllegalArgumentException nullException = assertThrows(IllegalArgumentException.class, () -> Schedule.loadWebcal(null));
+		assertEquals(Schedule.URI_NULL_EXCEPTION, nullException.getMessage());
+		// uri não começa por webcal
+		IllegalArgumentException notWebcalException = assertThrows(IllegalArgumentException.class, () -> Schedule.loadWebcal("http"));
+		assertEquals(Schedule.URI_NOT_WEBCAL_EXCEPTION, notWebcalException.getMessage());
+		// uri não se transforma em url válido
+		MalformedURLException notURIException = assertThrows(MalformedURLException.class, () -> Schedule.loadWebcal("webcalNotURI"));
+		assertEquals(Schedule.URI_NOT_VALID_EXCEPTION, notURIException.getMessage());
+		// não é possível conectar ao uri
+		IOException saveException = assertThrows(IOException.class, () -> Schedule.loadWebcal("webcal://localhost/Random/Non/Sense"));
+		assertEquals(Schedule.CONNECTING_TO_INTERNET_EXCEPTION, saveException.getMessage());
+	}
+	
+	@Test
+	final void testReadICalendar() throws IOException {
+		// ficheiro sem início do formato iCalendar
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_begin_calendar.ics"), StandardCharsets.UTF_8));
+		IllegalArgumentException noBeginException = assertThrows(IllegalArgumentException.class, () -> Schedule.readICalendar(reader));
+		assertEquals(Schedule.WEBCAL_NOT_VCALENDAR_EXCEPTION, noBeginException.getMessage());
+		reader.close();
+		// ficheiro sem linha de utilizador
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_userline_calendar.ics"), StandardCharsets.UTF_8));
+		assertTrue(Schedule.readICalendar(reader2).getLectures().isEmpty());
+		reader2.close();
+		// linha de utilizador sem @
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_user_at_calendar.ics"), StandardCharsets.UTF_8));
+		Schedule schedule = Schedule.readICalendar(reader3);
+		assertNull(schedule.getStudentName());
+		assertTrue(!schedule.getLectures().isEmpty());
+		reader3.close();
+		// ficheiro sem eventos
+		BufferedReader reader4 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		assertTrue(Schedule.readICalendar(reader4).getLectures().isEmpty());
+		reader4.close();
+		// ficheiro com utilizador e dois eventos válidos
+		BufferedReader reader5 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		Schedule schedule2 = Schedule.readICalendar(reader5);
+		Lecture lecture = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer)null),
+				new TimeSlot(null, LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00), LocalTime.of(22, 30, 00)),
+				new Room("C5.08", (String)null));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, "Agentes Autónomos", "03727TP07", null, (Integer)null),
+				new TimeSlot(null, LocalDate.of(2022, 10, 18), LocalTime.of(19, 30, 00), LocalTime.of(21, 00, 00)),
+				new Room("C5.08", (Integer)null));
+		Schedule schedule3 = new Schedule();
+		schedule3.setStudentName("pmaaa2");
+		schedule3.addLecture(lecture);
+		schedule3.addLecture(lecture2);
+		assertEquals(schedule3.toString(), schedule2.toString());
+		reader5.close();
+	}
+	
+	@Test
+	final void testSkipReadUntilStartsWith() throws IOException {
+		// padrão não encontrado
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		assertNull(Schedule.skipReadUntilStartsWith(reader, Pattern.compile("VERSION2:", Pattern.LITERAL)));
+		reader.close();
+		// padrão encontrado
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		assertEquals("2.0", Schedule.skipReadUntilStartsWith(reader2, Pattern.compile("VERSION:", Pattern.LITERAL)));
+		reader2.close();
+		// ficheiro vazio
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
+		assertNull(Schedule.skipReadUntilStartsWith(reader3, Pattern.compile("NOMATTER", Pattern.LITERAL)));
+		reader3.close();
+	}
+	
+	@Test
+	final void testTransformEventToLecture() throws IOException {
+		// evento com todos os atributos esperados
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		Lecture lecture = Schedule.transformEventToLecture(reader);
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer)null),
+				new TimeSlot(null, LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00), LocalTime.of(22, 30, 00)),
+				new Room("C5.08", (String)null));
+		assertEquals(lecture2.toString(), lecture.toString());
+		// sem evento
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
+		assertNull(Schedule.transformEventToLecture(reader2));
+		reader2.close();
+		// course vazio
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_course_calendar.ics"), StandardCharsets.UTF_8));
+		assertNull(Schedule.transformEventToLecture(reader3));
+		reader3.close();
+		// datatimes, location e shift vazios
+		BufferedReader reader4 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_dates_location_shift_calendar.ics"), StandardCharsets.UTF_8));
+		Lecture lecture3 = Schedule.transformEventToLecture(reader4);
+		Lecture lecture4 = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", null, null, (Integer)null),
+				new TimeSlot(null, null, null, (LocalTime)null),
+				new Room(null, (String)null));
+		assertEquals(lecture4.toString(), lecture3.toString());
+		reader4.close();
+		// sem o description pattern
+		BufferedReader reader5 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"), StandardCharsets.UTF_8));
+		assertNull(Schedule.transformEventToLecture(reader5));
+		reader5.close();
+	}
+	
+	@Test
+	final void testBuildDateTimeInformation() {
+		// datas válidas
+		LocalDateTime[] dateTimes = Schedule.buildDateTimeInformation("20230515T200000Z", "20230515T213000Z");
+		assertEquals(LocalDateTime.of(LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00)), dateTimes[0]);
+		assertEquals(LocalDateTime.of(LocalDate.of(2023, 5, 15), LocalTime.of(22, 30, 00)),dateTimes[1]);
+		// datas inválias
+		LocalDateTime[] dateTimes2 = Schedule.buildDateTimeInformation("20230515T200000A", "20230515E213000Z");
+		assertNull(dateTimes2[0]);
+		assertNull(dateTimes2[1]);
+		LocalDateTime[] dateTimes3 = Schedule.buildDateTimeInformation("202392T200000Z", "20230220T21300Z");
+		assertNull(dateTimes3[0]);
+		assertNull(dateTimes3[1]);
+		// datas null
+		LocalDateTime[] dateTimes4 = Schedule.buildDateTimeInformation(null, null);
+		assertNull(dateTimes4[0]);
+		assertNull(dateTimes4[1]);
+	}
+	
+	@Test
+	final void testBuildInformation() throws IOException {
+		// sem o description pattern
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"), StandardCharsets.UTF_8));
+		String[] info = Schedule.buildInformation(reader);
+		assertNull(info[0]);
+		assertNull(info[1]);
+		assertNull(info[2]);
+		reader.close();
+		// com toda a informação
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		String[] info2 = Schedule.buildInformation(reader2);
+		assertEquals("Interacção Pessoa-Máquina", info2[0]);
+		assertEquals("L5316TP03", info2[1]);
+		assertEquals("C5.08", info2[2]);
+		reader2.close();
+		// com description pattern mas sem informação
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_info_calendar.ics"), StandardCharsets.UTF_8));
+		String[] info3 = Schedule.buildInformation(reader3);
+		assertNull(info3[0]);
+		assertNull(info3[1]);
+		assertNull(info3[2]);
+		reader3.close();
 	}
 }
