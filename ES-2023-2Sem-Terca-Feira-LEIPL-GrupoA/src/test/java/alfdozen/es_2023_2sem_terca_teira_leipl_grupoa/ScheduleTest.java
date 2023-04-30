@@ -662,4 +662,28 @@ class ScheduleTest {
 		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
+	
+	@Test
+    final void testIsOverloaded() {
+		
+	        Lecture lecture1 = new Lecture(
+					new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+					new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
+					new Room("AA2.23", 50));
+			Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+					new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+			Lecture lecture3 = new Lecture(
+					new AcademicInfo("LETI, LEI, LEI-PL, LIGE, LIGE-PL", "Fundamentos de Arquitectura de Computadores",
+							"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
+					new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+					new Room("AA2.23", 40));
+			List<Lecture> lectures = new ArrayList<>();
+			lectures.add(lecture1);
+			lectures.add(lecture2);
+			lectures.add(lecture3);
+			Schedule schedule = new Schedule(lectures);
+			assertTrue(schedule.isOverloaded());
+			schedule.removeLecture(lecture3);
+		    assertFalse(schedule.isOverloaded());
+	}
 }

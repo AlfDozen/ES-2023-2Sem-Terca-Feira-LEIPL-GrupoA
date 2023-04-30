@@ -77,7 +77,6 @@ final class Schedule {
 	static final Integer INDEX_ROOM = 9;
 	static final Integer INDEX_CAPACITY = 10;
 
-
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -299,7 +298,7 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
+
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
@@ -548,7 +547,8 @@ final class Schedule {
 		}
 		String destinationTempFilePath = PATH_TMP;
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
+		try (BufferedWriter writer = new BufferedWriter(
+				new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
 				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath, StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -600,7 +600,8 @@ final class Schedule {
 		}
 
 		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8);
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
+				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile),
+						StandardCharsets.UTF_8)) {
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 			CsvMapper csvMapper = new CsvMapper();
@@ -644,6 +645,21 @@ final class Schedule {
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
+	}
+
+	
+	/**
+	 * Checks if at least one of the lectures in this schedule is overloaded.
+	 *
+	 * @return true if at least one lecture is overloaded, return false otherwise.
+	 */
+	public boolean isOverloaded() {
+		for (Lecture lecture : lectures) {
+			if (lecture.isOverloaded()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
