@@ -79,7 +79,9 @@ public class UploadSchedule implements Initializable{
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
+			if(filenameToSave != null) {
 			Schedule.saveToJSON(scheduleUploaded, filenameToSave);
+			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}

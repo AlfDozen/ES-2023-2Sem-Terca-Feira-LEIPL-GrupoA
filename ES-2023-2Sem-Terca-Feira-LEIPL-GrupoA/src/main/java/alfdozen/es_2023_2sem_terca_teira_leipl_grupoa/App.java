@@ -40,8 +40,12 @@ public class App extends Application implements Initializable{
 	private static Scene SCENE;
 	private static Stage STAGE;
 
-	public static Stage getSTAGE() {
+	public static Stage getStage() {
 		return STAGE;
+	}
+	
+	public static Scene getScene() {
+		return SCENE;
 	}
 
 	public static Schedule SCHEDULE = new Schedule(); 
@@ -56,6 +60,7 @@ public class App extends Application implements Initializable{
 		try {
 
 			STAGE = primaryStage;
+			STAGE.setResizable(true);
 
 			SCENE = new Scene(loadFXML("/fxml/Main"));
 			System.out.println("Scene created " + SCENE.toString());
