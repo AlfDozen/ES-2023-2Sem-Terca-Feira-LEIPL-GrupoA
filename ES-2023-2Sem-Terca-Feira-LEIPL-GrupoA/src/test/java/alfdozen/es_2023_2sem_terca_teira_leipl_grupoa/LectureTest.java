@@ -104,6 +104,23 @@ class LectureTest {
 	}
 
 	@Test
+	final void testIsOverloaded() {
+		AcademicInfo academicInfo1 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+		TimeSlot timeSlot1 = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		Room room1 = new Room("ES23", 20);
+		Lecture lecture1 = new Lecture(academicInfo1, timeSlot1, room1);
+		
+		AcademicInfo academicInfo2 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 25);
+		TimeSlot timeSlot2 = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		Room room2 = new Room("ES23", 20);
+		Lecture lecture2 = new Lecture(academicInfo2, timeSlot2, room2);
+		assertFalse(lecture1.isOverloaded());		
+		assertTrue(lecture2.isOverloaded());
+	}
+
+	@Test
 	final void testCompareTo() {
 		TimeSlot timeSlotSameBeginTime = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
 				LocalTime.of(11, 23, 4));
