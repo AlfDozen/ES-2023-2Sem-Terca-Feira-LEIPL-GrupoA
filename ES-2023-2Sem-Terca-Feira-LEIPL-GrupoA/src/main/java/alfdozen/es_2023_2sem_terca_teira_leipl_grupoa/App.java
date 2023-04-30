@@ -48,13 +48,13 @@ public class App extends Application implements Initializable{
 		return SCENE;
 	}
 
-	public static Schedule SCHEDULE = new Schedule(); 
+	public static Schedule SCHEDULE = new Schedule();
 
 	public static void setStageSize(double width, double height) {
 		STAGE.setWidth(width);
 		STAGE.setHeight(height);
 	}
-
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
