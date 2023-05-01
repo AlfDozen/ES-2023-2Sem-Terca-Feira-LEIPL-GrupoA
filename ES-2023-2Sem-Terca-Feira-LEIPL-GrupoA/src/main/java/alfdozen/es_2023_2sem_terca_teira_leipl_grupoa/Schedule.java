@@ -653,7 +653,7 @@ final class Schedule {
 	 * 
 	 * @return A set of unique lecture's name
 	 */
-	public Set<String> getUniqueLectures() {
+	public Set<String> getUniqueLecturesCourses() {
 		Set<String> uniqueCourses = new HashSet<String>();
 		for(Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());

@@ -667,11 +667,17 @@ class ScheduleTest {
 	
 	
 	@Test
-	final void testGetUniqueLectures() throws IOException {
+	final void testGetUniqueLecturesCourses() throws IOException {
 		Schedule scd = Schedule.loadCSV("./src/main/resources/horario_exemplo_completo.csv");
-		Set<String> uc = scd.getUniqueLectures();
+		Set<String> uc = scd.getUniqueLecturesCourses();
 		String expected = "[Seminário de Projecto I (Piudhist), Teoria dos Jogos e dos Contratos, Gestão de Conflitos, Cálculo I, Competências Académicas I, Fundamentos de Arquitectura de Computadores, Investimentos II]";
 		assertEquals(expected, (String) uc.toString());
+		
+		scd = new Schedule();
+		uc = scd.getUniqueLecturesCourses();
+		expected = "[]";
+		assertEquals(expected, (String) uc.toString());
+		
 	}
 	
 }
