@@ -662,4 +662,33 @@ class ScheduleTest {
 		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
+	
+	  @Test
+	    public void testHasOverlappingLectures() {
+			Lecture lecture1 = new Lecture(
+					new AcademicInfo("LEI-PL", "IPM", "L0705TP23", "DHMCMG1", 10),
+					new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(14, 0, 0), LocalTime.of(15, 30, 0)),
+					new Room("AA2.23", 50));
+			Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+					new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+			Lecture lecture3 = new Lecture(
+					new AcademicInfo("LEI-PL", "FAC", "L0705TP23", "ET-A10", 44),
+					new TimeSlot("Sex", LocalDate.of(2022, 10, 31), LocalTime.of(14, 30, 0), LocalTime.of(16, 30, 0)),
+					new Room("AA2.23", 50));
+			Lecture lecture4 = new Lecture(
+					new AcademicInfo("LEI-PL", "DIAM", "L0705TP23", "ET-A10", 30),
+					new TimeSlot("Sex", LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)),
+					new Room("AA2.23", 50));
+			List<Lecture> lectures = new ArrayList<>();
+			lectures.add(lecture1);
+			lectures.add(lecture2);
+			lectures.add(lecture3);
+			lectures.add(lecture4);
+			Schedule schedule = new Schedule(lectures);
+	        assertTrue(schedule.hasOverlappingLectures());
+	        schedule.removeLecture(lecture3);
+	        assertFalse(schedule.hasOverlappingLectures());
+		  
+	  }
+	
 }
