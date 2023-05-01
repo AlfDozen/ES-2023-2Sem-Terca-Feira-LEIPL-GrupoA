@@ -15,6 +15,8 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +60,7 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
+	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list cannot be null or empty!";
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
@@ -615,6 +618,26 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
+	
+	/**
+	* Creates a new schedule containing lectures for the specified list of courses.
+	*
+	* @param courseList the list of academic information for the courses
+	* @return a new schedule containing lectures for the specified courses
+	* @throws IllegalArgumentException if the courseList is null or empty
+	*/
+	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
+		if (courseList == null || courseList.isEmpty())
+			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
+		Schedule newSchedule = new Schedule(studentName, studentNumber);
+		
+		for (Lecture lecture : lectures)
+			if(courseList.contains(lecture.getAcademicInfo()))
+					newSchedule.addLecture(lecture);
+		
+		return newSchedule;
+	}
+	
 
 	/**
 	 * Validates the input arguments for file conversion methods.
@@ -675,4 +698,6 @@ final class Schedule {
 		}
 		return str.toString();
 	}
+	
+	
 }
