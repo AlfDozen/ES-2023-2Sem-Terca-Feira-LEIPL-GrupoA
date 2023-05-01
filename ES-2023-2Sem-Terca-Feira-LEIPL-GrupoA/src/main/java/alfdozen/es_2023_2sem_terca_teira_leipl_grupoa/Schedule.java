@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -76,7 +79,6 @@ final class Schedule {
 	static final Integer INDEX_DATE = 8;
 	static final Integer INDEX_ROOM = 9;
 	static final Integer INDEX_CAPACITY = 10;
-
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -299,7 +301,7 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
+
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
@@ -548,7 +550,8 @@ final class Schedule {
 		}
 		String destinationTempFilePath = PATH_TMP;
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
+		try (BufferedWriter writer = new BufferedWriter(
+				new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
 				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath, StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -600,7 +603,8 @@ final class Schedule {
 		}
 
 		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8);
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
+				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile),
+						StandardCharsets.UTF_8)) {
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 			CsvMapper csvMapper = new CsvMapper();
@@ -614,6 +618,70 @@ final class Schedule {
 		} catch (Exception e) {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
+	}
+
+	public void downloadFileFromURL(String url) throws IOException {
+		URL fileURL = new URL(url);
+		String fileName = fileURL.getFile();
+		String fileExtension = getFileExtension(fileName);
+
+		// Create a File object for the downloaded file
+		File tempDir = new File("src/main/resources/temp/");
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
+		}
+		String tempFileName;
+		if (fileExtension.equals("csv")) {
+			tempFileName = "tempFile.csv";
+		} else if (fileExtension.equals("json")) {
+			tempFileName = "tempFile.json";
+		} else {
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+		File file = new File(tempDir, tempFileName);
+
+		// Delete the file if it already exists in the temp directory
+		if (file.exists()) {
+			file.delete();
+		}
+
+		// Download the file from the URL and save it to the temp directory
+		ReadableByteChannel rbc = Channels.newChannel(fileURL.openStream());
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		fos.close();
+		rbc.close();
+	}
+
+	public void load(String filePath) throws IOException {
+		// Check if file is CSV or JSON
+		String extension = getFileExtension(filePath);
+		switch (extension) {
+		case "csv":
+			loadCSV(filePath);
+			break;
+		case "json":
+			loadJSON(filePath);
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+
+		// Delete temporary file if it was downloaded from URL
+		if (filePath.endsWith("tempFile.csv") || filePath.endsWith("tempFile.json")) {
+			File file = new File(filePath);
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+	}
+
+	public static String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0) {
+			return fileName.substring(dotIndex + 1);
+		}
+		return "";
 	}
 
 	/**

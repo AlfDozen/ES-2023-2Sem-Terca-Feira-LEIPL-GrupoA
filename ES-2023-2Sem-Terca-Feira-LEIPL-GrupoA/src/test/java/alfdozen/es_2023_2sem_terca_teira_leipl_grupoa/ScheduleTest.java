@@ -2,7 +2,9 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,9 +12,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.core.util.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 class ScheduleTest {
 	@Test
@@ -574,92 +581,111 @@ class ScheduleTest {
 		assertEquals(expected5.toString(),
 				Schedule.loadJSON("./src/main/resources/horario_exemplo_json2.JSON").toString());
 	}
-	
+
 	@Test
 	final void testEncoding() throws IOException {
-		
-	    // Teste 1 - Converter JSON para CSV para JSON novamente
+
+		// Teste 1 - Converter JSON para CSV para JSON novamente
 		Schedule schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Lecture firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json",
+				"./src/main/resources/horario_encoding_test_converted.csv", ';');
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test_converted.csv", "./src/main/resources/horario_encoding_test_converted2.json", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json",
+				"./src/main/resources/horario_encoding_test_converted.csv", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test_converted.csv",
+				"./src/main/resources/horario_encoding_test_converted2.json", ';');
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted2.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
-	    // Teste 2 - Converter CSV para JSON para CSV novamente
+
+		// Teste 2 - Converter CSV para JSON para CSV novamente
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv",
+				"./src/main/resources/horario_encoding_test_converted.json", ';');
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test_converted.json", "./src/main/resources/horario_encoding_test_converted2.csv", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv",
+				"./src/main/resources/horario_encoding_test_converted.json", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test_converted.json",
+				"./src/main/resources/horario_encoding_test_converted2.csv", ';');
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted2.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
+
 		// Teste 3 - Ler JSON, guardar em CSV e JSON, ler o novo CSV e guardar em JSON
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved_json.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved_json.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_json.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved2.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved2.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
+
 		// Teste 4 - Ler CSV, guardar em JSON e CSV, ler o novo JSON e guardar em CSV
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved_csv.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved_csv.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_csv.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved2.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved2.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
+
 }
