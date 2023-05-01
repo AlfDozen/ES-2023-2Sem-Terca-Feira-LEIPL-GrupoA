@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -620,7 +621,21 @@ final class Schedule {
 		}
 	}
 
-	public void downloadFileFromURL(String url) throws IOException {
+	/**
+	 * 
+	 * Downloads a file from a given URL and saves it to the temporary directory.
+	 * 
+	 * @param url the URL of the file to download
+	 * @throws MalformedURLException    if the URL is malformed
+	 * @throws IllegalArgumentException if the file extension is invalid
+	 * @throws IOException              if there is an error downloading or saving
+	 *                                  the file
+	 */
+	static void downloadFileFromURL(String url) throws MalformedURLException, IllegalArgumentException, IOException {
+		if (url == null) {
+			throw new NullPointerException("URL is null");
+		}
+
 		URL fileURL = new URL(url);
 		String fileName = fileURL.getFile();
 		String fileExtension = getFileExtension(fileName);
@@ -644,24 +659,65 @@ final class Schedule {
 		if (file.exists()) {
 			file.delete();
 		}
-
+		file.createNewFile();
 		// Download the file from the URL and save it to the temp directory
-		ReadableByteChannel rbc = Channels.newChannel(fileURL.openStream());
-		FileOutputStream fos = new FileOutputStream(file);
-		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-		fos.close();
-		rbc.close();
+		ReadableByteChannel rbc = null;
+		try {
+			rbc = Channels.newChannel(fileURL.openStream());
+			readChannelToFile(rbc, file);
+		} catch (IOException e) {
+			System.out.println("Error downloading file from URL: " + url);
+		} finally {
+			if (rbc != null) {
+				try {
+					rbc.close();
+				} catch (IOException e) {
+					System.out.println("Error closing ReadableByteChannel: " + e.getMessage());
+				}
+			}
+		}
 	}
 
-	public void load(String filePath) throws IOException {
+	/**
+	 * 
+	 * Reads the contents of a ReadableByteChannel and writes them to a File.
+	 * 
+	 * @param rbc  the ReadableByteChannel to read from
+	 * @param file the File to write to
+	 * @throws IOException if there is an error reading from the channel or writing
+	 *                     to the file
+	 */
+	static void readChannelToFile(ReadableByteChannel rbc, File file) throws IOException {
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		} finally {
+			fos.close();
+		}
+	}
+
+	/**
+	 * 
+	 * Loads a Schedule from a given file path, which can be either a CSV or JSON
+	 * file.
+	 * 
+	 * @param filePath the path of the file to load
+	 * @return the loaded Schedule
+	 * @throws IllegalArgumentException if the file extension is invalid
+	 * @throws IOException              if there is an error reading or parsing the
+	 *                                  file
+	 */
+	static Schedule CallLoad(String filePath) throws IOException {
+		Schedule schedule;
+
 		// Check if file is CSV or JSON
 		String extension = getFileExtension(filePath);
 		switch (extension) {
 		case "csv":
-			loadCSV(filePath);
+			schedule = loadCSV(filePath);
 			break;
 		case "json":
-			loadJSON(filePath);
+			schedule = loadJSON(filePath);
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid file extension");
@@ -674,9 +730,18 @@ final class Schedule {
 				file.delete();
 			}
 		}
+		return schedule;
+
 	}
 
-	public static String getFileExtension(String fileName) {
+	/**
+	 * 
+	 * Gets the file extension from a given file name.
+	 * 
+	 * @param fileName the name of the file
+	 * @return the file extension
+	 */
+	static String getFileExtension(String fileName) {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex > 0) {
 			return fileName.substring(dotIndex + 1);

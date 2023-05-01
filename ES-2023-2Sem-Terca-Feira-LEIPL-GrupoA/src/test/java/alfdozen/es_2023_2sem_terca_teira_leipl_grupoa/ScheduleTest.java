@@ -4,17 +4,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.io.FileInputStream;
 
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -688,4 +695,147 @@ class ScheduleTest {
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
 
+	@Test
+	void downloadFileFromURL() throws MalformedURLException, IllegalArgumentException, IOException {
+		 // Test with null URL
+	    assertThrows(NullPointerException.class, () -> Schedule.downloadFileFromURL(null));
+		// Create a temporary CSV file
+		String csvUrl = "https://nao/existe.csv";
+		Schedule.downloadFileFromURL(csvUrl);
+		File csvFile = new File("src/main/resources/temp/tempFile.csv");
+		assertNotNull(csvFile);
+		assertTrue(csvFile.exists());
+		assertTrue(csvFile.isFile());
+		assertEquals("tempFile.csv", csvFile.getName());
+		// Create a temporary JSON file
+		String jsonUrl = "https://nao/existe.json";
+		Schedule.downloadFileFromURL(jsonUrl);
+		File jsonFile = new File("src/main/resources/temp/tempFile.json");
+		assertNotNull(jsonFile);
+		assertTrue(jsonFile.exists());
+		assertTrue(jsonFile.isFile());
+		assertEquals("tempFile.json", jsonFile.getName());
+	}
+	@Test
+	void testReadChannelToFileWithLocalFiles() throws IOException {
+	    // Load the CSV file
+	    File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
+	    FileInputStream csvFis = new FileInputStream(csvFile);
+	    ReadableByteChannel csvRbc = csvFis.getChannel();
+
+	    // Create a new file and write the contents of the channel to it
+	    File csvOutputFile = new File("src/main/resources/temp/tempFile.csv");
+	    Schedule.readChannelToFile(csvRbc, csvOutputFile);
+
+	    // Verify that the output file has the same content as the input file
+	    String csvContent = Files.readString(csvFile.toPath());
+	    String csvOutputContent = Files.readString(csvOutputFile.toPath());
+	    assertEquals(csvContent, csvOutputContent);
+
+	    // Load the JSON file
+	    File jsonFile = new File("src/main/resources/horario_exemplo_json2.json");
+	    FileInputStream jsonFis = new FileInputStream(jsonFile);
+	    ReadableByteChannel jsonRbc = jsonFis.getChannel();
+
+	    // Create a new file and write the contents of the channel to it
+	    File jsonOutputFile = new File("src/main/resources/temp/tempFile.json");
+	    Schedule.readChannelToFile(jsonRbc, jsonOutputFile);
+
+	    // Verify that the output file has the same content as the input file
+	    String jsonContent = Files.readString(jsonFile.toPath());
+	    String jsonOutputContent = Files.readString(jsonOutputFile.toPath());
+	    assertEquals(jsonContent, jsonOutputContent);
+	}
+
+	@Test
+	void testCallLoad() throws IOException {
+		// Create temp directory
+		File tempDir = new File("/src/main/resources/temp");
+		tempDir.mkdir();
+
+		// Copy CSV file to temp directory
+		Path csvSource = Paths.get("src/main/resources/horario_exemplo_9colunas.csv");
+		Path csvDest = Paths.get("src/main/resources/temp/tempFile.csv");
+		Files.copy(csvSource, csvDest, StandardCopyOption.REPLACE_EXISTING);
+
+		// Copy JSON file to temp directory
+		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json2.json");
+		Path jsonDest = Paths.get("src/main/resources/temp/tempFile.json");
+		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
+
+		// Load CSV file
+		Schedule schedule1 = Schedule.CallLoad("src/main/resources/temp/tempFile.csv");
+		assertNotNull(schedule1);
+
+		// Check if the temp file was deleted
+		File tempFile = new File("src/main/resources/temp/tempFile.csv");
+		assertFalse(tempFile.exists());
+
+		Lecture lecture1 = new Lecture(
+				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room(null, (Integer) null));
+		List<Lecture> lectures1 = new ArrayList<>();
+		lectures1.add(lecture1);
+		Schedule expected1 = new Schedule(lectures1);
+		assertEquals(expected1.toString(), schedule1.toString());
+
+		// schedule 2
+		Schedule schedule2 = Schedule.CallLoad("src/main/resources/temp/tempFile.json");
+		assertNotNull(schedule2);
+
+		// Check if the temp file was deleted
+		File tempFile2 = new File("src/main/resources/temp/tempFile.json");
+		assertFalse(tempFile2.exists());
+
+		Lecture lecture2 = new Lecture(
+				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room("AA2.25", 34));
+		List<Lecture> lectures2 = new ArrayList<>();
+		lectures2.add(lecture2);
+		Schedule expected2 = new Schedule(lectures2);
+		assertEquals(expected2.toString(), schedule2.toString());
+
+	}
+
+	@Test
+	void testLoadInvalidFileExtension() {
+		// Create a temporary file with an invalid extension
+		File invalidFile = new File("test.txt");
+		try {
+			Files.writeString(invalidFile.toPath(), "id,name\n1,Alice\n2,Bob\n3,Charlie\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Attempt to load the file
+		assertThrows(IllegalArgumentException.class, () -> Schedule.CallLoad(invalidFile.getAbsolutePath()));
+
+		// Assert that the temporary file was not deleted
+		assertTrue(invalidFile.exists());
+	}
+
+	@Test
+	void testLoadNonExistentFile() {
+		// Attempt to load a non-existent file
+		assertThrows(IOException.class, () -> Schedule.CallLoad("does_not_exist.csv"));
+	}
+
+	@Test
+	void testGetFileExtension() throws IOException {
+		// Test with valid file names
+		File csvFile = File.createTempFile("test", ".csv");
+		assertEquals("csv", Schedule.getFileExtension(csvFile.getName()));
+
+		File jsonFile = File.createTempFile("test", ".json");
+		assertEquals("json", Schedule.getFileExtension(jsonFile.getName()));
+
+		// Test with file names that do not have extensions
+		File noExtensionFile = File.createTempFile("test", "");
+		assertEquals("", Schedule.getFileExtension(noExtensionFile.getName()));
+
+		// Test with null file name
+		assertThrows(NullPointerException.class, () -> Schedule.getFileExtension(null));
+	}
 }
