@@ -35,7 +35,7 @@
          <content>
             <AnchorPane prefHeight="308.0" prefWidth="263.0">
                <children>
-                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" prefHeight="281.0" prefWidth="264.0" />
+                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" onMouseClicked="#setSelectedFields" prefHeight="281.0" prefWidth="264.0" />
                   <Label alignment="CENTER" layoutX="-3.0" layoutY="4.0" prefHeight="21.0" prefWidth="243.0" text="Unidades Curriculares" />
                </children>
             </AnchorPane>
@@ -52,7 +52,7 @@
       </Button>
       <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="336.0" layoutY="131.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="606.0" prefWidth="637.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="336.0" AnchorPane.rightAnchor="37.0" AnchorPane.topAnchor="131.0">
          <content>
-            <GridPane fx:id="paneCalendarWeek" alignment="CENTER" hgap="2.0" prefHeight="603.0" prefWidth="614.0" style="-fx-background-color: #ffffff; -fx-stroke: red;" vgap="2.0">
+            <GridPane fx:id="calendar" alignment="CENTER" hgap="2.0" prefHeight="603.0" prefWidth="614.0" style="-fx-background-color: #ffffff; -fx-stroke: red;" vgap="2.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />

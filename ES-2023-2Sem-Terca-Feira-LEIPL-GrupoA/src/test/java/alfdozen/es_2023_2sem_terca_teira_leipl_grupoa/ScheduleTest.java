@@ -662,4 +662,37 @@ class ScheduleTest {
 		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
+	
+	@Test
+	final void testgetCommonWeekLecture() throws IOException {
+		//primeiro teste - entrar e sair da função sem passar pelo for (nao ter nenhuma lecture) - linha 691
+		
+		Schedule horario = new Schedule();
+		String expected = "[]";
+		assertEquals(expected,horario.getCommonWeekLecture(new ArrayList<>()).toString());
+		
+		//entrar nos dois for e IF falso
+		List<String> courses =  new ArrayList<String>();
+		courses.add("Agentes Autonomos");
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_11colunas.csv");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
+		//entrar nos dois for e IF verdadeiro
+		
+		expected = "[6 - 13:00:00-14:30:00 - Investimentos II]";
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
+		courses.add("Investimentos II");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
+		//na função de baixo :
+			//nao entra no for 
+			//entra no for e entra no 1º IF
+			//entra no for e não entra no 1º IF
+			//entra no for e entra no 2º if
+			//entra no for e entra no else do 2º IF
+		
+	}
+	
+	
+	
 }

@@ -48,7 +48,15 @@ public class App extends Application implements Initializable{
 		return SCENE;
 	}
 
-	public static Schedule SCHEDULE = new Schedule();
+	private static Schedule SCHEDULE = new Schedule();
+
+	public static void setSchedule(Schedule Schedule) {
+		SCHEDULE = Schedule;
+	}
+	
+	public static Schedule getSchedule() {
+		return SCHEDULE ;
+	}
 
 	public static void setStageSize(double width, double height) {
 		STAGE.setWidth(width);

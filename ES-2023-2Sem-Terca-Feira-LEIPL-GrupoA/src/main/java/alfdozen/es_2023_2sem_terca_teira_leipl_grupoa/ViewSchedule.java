@@ -41,7 +41,7 @@ public class ViewSchedule implements Initializable{
 
 	private Map<Integer,ListView<Label>> monthItems = new HashMap<>();
 
-	private static final int NUM_COLUMNS = 7;
+	public static final int NUM_COLUMNS = 7;
 
 	private FileChooser fileChooserToSave;
 	private File filePathToSave;
@@ -92,7 +92,7 @@ public class ViewSchedule implements Initializable{
 
 		try {
 			if(filenameToSave != null) {
-				Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
+				Schedule.saveToCSV(App.getSchedule(), filenameToSave);
 			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
@@ -109,7 +109,7 @@ public class ViewSchedule implements Initializable{
 
 		try {
 			if(filenameToSave != null) {
-				Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
+				Schedule.saveToJSON(App.getSchedule(), filenameToSave);
 			}
 
 		} catch (IOException e) {
@@ -251,7 +251,7 @@ public class ViewSchedule implements Initializable{
 
 		setLabelWeekDays(NUM_COLUMNS*2, paneCalendarWeek, startOfWeek);
 
-		for(Lecture lec : App.SCHEDULE.getLectures()) {
+		for(Lecture lec : App.getSchedule().getLectures()) {
 
 			if(lec.getTimeSlot().getDate() == null) {
 				continue;
@@ -267,9 +267,9 @@ public class ViewSchedule implements Initializable{
 				int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5)) + 1;
 				int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5)) + 1 ;
 
-				System.out.println("Lecture " + lec.toString());
-				System.out.println("hourBegin " + hourBegin + " hourEnd " + hourEnd);
-				System.out.println("hours " + hours.toString());
+//				System.out.println("Lecture " + lec.toString());
+//				System.out.println("hourBegin " + hourBegin + " hourEnd " + hourEnd);
+//				System.out.println("hours " + hours.toString());
 
 				int day = lec.getTimeSlot().getDate().getDayOfWeek().getValue();
 
@@ -345,7 +345,7 @@ public class ViewSchedule implements Initializable{
 
 
 			//LAMBER HORARIO DE AULAS PARA O DIA
-			for(Lecture lec : App.SCHEDULE.getLectures()) {
+			for(Lecture lec : App.getSchedule().getLectures()) {
 
 				if(lec.getTimeSlot().getDate() == null) {
 					continue;
@@ -383,7 +383,7 @@ public class ViewSchedule implements Initializable{
 			monthItems.put(i, listvu);
 		}
 
-		for(Lecture lec : App.SCHEDULE.getLectures()) {
+		for(Lecture lec : App.getSchedule().getLectures()) {
 
 			if(lec.getTimeSlot().getDate() != null
 					&& lec.getTimeSlot().getDate().getMonthValue() == month

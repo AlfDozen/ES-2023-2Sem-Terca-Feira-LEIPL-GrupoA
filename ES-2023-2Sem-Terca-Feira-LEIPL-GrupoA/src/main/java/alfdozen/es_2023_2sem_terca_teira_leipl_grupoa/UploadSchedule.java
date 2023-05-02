@@ -62,10 +62,12 @@ public class UploadSchedule implements Initializable{
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".csv"));
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
-		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
+			if(filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
 			Schedule.saveToCSV(scheduleUploaded, filenameToSave);
+			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}
@@ -76,10 +78,10 @@ public class UploadSchedule implements Initializable{
 
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
-		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
-			if(filenameToSave != null) {
+			if(filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
 			Schedule.saveToJSON(scheduleUploaded, filenameToSave);
 			}
 		} catch (IOException e) {
@@ -101,7 +103,7 @@ public class UploadSchedule implements Initializable{
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 
-		App.SCHEDULE = scheduleUploaded;
+		App.setSchedule(scheduleUploaded);
 	}
 
 
@@ -115,7 +117,7 @@ public class UploadSchedule implements Initializable{
 		}catch(Exception e1) {
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
-		App.SCHEDULE = scheduleUploaded;
+		App.setSchedule(scheduleUploaded);
 	}
 
 

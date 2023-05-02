@@ -15,8 +15,10 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -299,7 +301,7 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
+
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
@@ -619,7 +621,7 @@ final class Schedule {
 	/**
 	 * Validates the input arguments for file conversion methods.
 	 *
-	 * @param sourcePath        the path of the source file to be converted.
+	 * @param sourcePath		the path of the source file to be converted.
 	 * @param destinationPath   the path of the destination file to be created.
 	 * @param delimiter         the delimiter character used in the CSV file (if
 	 *                          applicable).
@@ -675,4 +677,77 @@ final class Schedule {
 		}
 		return str.toString();
 	}
+
+	
+	/**
+	 * Returns a list of strings where each string is composed of weekday, hour and 
+	 * the course name when each lecture occurs. The returned list about the lectures
+	 * may be concern partially or the entire list of lectures belonging to a schedule.
+	 * 
+	 * @param courses			the list of strings with the course names of the 
+	 * 							lectures expected to receive the details from
+	 * 
+	 * @return a List of strings with detail of weekday and hour of all the courses 
+	 * mentioned in the list of strings given in the input occur.
+	 */
+	public List<String> getCommonWeekLecture(List<String> courses){
+
+		List<String> commonLectures = new ArrayList<>();
+
+		Map<String,Integer> map = getMapCourses();
+		
+		for(String course : courses) {
+			
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+				
+				String[] keySplit = entry.getKey().split(" - ");
+
+				if(keySplit[2].equals(course) && !commonLectures.contains(entry.getKey())) {
+					commonLectures.add(entry.getKey());
+				}
+			}
+	
+		}
+
+		return commonLectures;
+	}
+
+	/**Returns a Map where the key is the combination of weekday, hour and course name when 
+	 * it occurs, for each lecture in a schedule, and the value is the number of times that 
+	 * combination occurs.
+	 * 
+	 * @return a Map with string in the key and integer in the value.
+	 */
+	
+	private Map<String,Integer> getMapCourses(){
+
+		Map<String, Integer> mapLectures = new HashMap<>();
+
+		for(Lecture lec : lectures) {
+
+			if(lec.getTimeSlot().getDate() == null) {
+				continue;
+			}
+			
+			String[] day = lec.getTimeSlot().getDateString().split("/");
+			LocalDate date = LocalDate.of(Integer.parseInt(day[2]),Integer.parseInt(day[1]),Integer.parseInt(day[0]));
+
+			int weekDay = date.getDayOfWeek().getValue();
+			String hour = lec.getTimeSlot().getTimeBeginString()+"-"+lec.getTimeSlot().getTimeEndString();
+			String course = lec.getAcademicInfo().getCourse();			
+
+			String key = weekDay+" - "+hour+" - "+course;
+			
+			if(mapLectures.containsKey(key)) {
+				Integer value = mapLectures.get(key);
+				mapLectures.put(key, value+1);
+				
+			}else {
+				mapLectures.putIfAbsent(key,1);
+			}
+		}
+
+		return mapLectures;
+	}
+
 }
