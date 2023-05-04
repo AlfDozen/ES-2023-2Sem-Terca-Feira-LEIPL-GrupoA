@@ -48,6 +48,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  * @version 1.0.0
  */
 final class Schedule {
+	static final String NULL_URL_EXCEPTION_MESSAGE = "URL is null";
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
@@ -65,6 +66,9 @@ final class Schedule {
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
+	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
+	static final String TEMP_FILE_CSV = "tempFile.csv";
+	static final String TEMP_FILE_JSON = "tempFile.json";
 	static final String EMPTY_ROW = ";;;;;;;;;;";
 	static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
@@ -633,7 +637,7 @@ final class Schedule {
 	 */
 	static void downloadFileFromURL(String url) throws MalformedURLException, IllegalArgumentException, IOException {
 		if (url == null) {
-			throw new NullPointerException("URL is null");
+			throw new NullPointerException(NULL_URL_EXCEPTION_MESSAGE);
 		}
 
 		URL fileURL = new URL(url);
@@ -641,15 +645,15 @@ final class Schedule {
 		String fileExtension = getFileExtension(fileName);
 
 		// Create a File object for the downloaded file
-		File tempDir = new File("src/main/resources/temp/");
+		File tempDir = new File(TEMP_FILE_PATH);
 		if (!tempDir.exists()) {
 			tempDir.mkdirs();
 		}
 		String tempFileName;
-		if (fileExtension.equals("csv")) {
-			tempFileName = "tempFile.csv";
-		} else if (fileExtension.equals("json")) {
-			tempFileName = "tempFile.json";
+		if (fileExtension.equals(FILE_FORMAT_CSV)) {
+			tempFileName = TEMP_FILE_CSV;
+		} else if (fileExtension.equals(FILE_FORMAT_JSON)) {
+			tempFileName = TEMP_FILE_JSON;
 		} else {
 			throw new IllegalArgumentException("Invalid file extension");
 		}
@@ -713,10 +717,10 @@ final class Schedule {
 		// Check if file is CSV or JSON
 		String extension = getFileExtension(filePath);
 		switch (extension) {
-		case "csv":
+		case FILE_FORMAT_CSV:
 			schedule = loadCSV(filePath);
 			break;
-		case "json":
+		case FILE_FORMAT_JSON:
 			schedule = loadJSON(filePath);
 			break;
 		default:
@@ -724,7 +728,7 @@ final class Schedule {
 		}
 
 		// Delete temporary file if it was downloaded from URL
-		if (filePath.endsWith("tempFile.csv") || filePath.endsWith("tempFile.json")) {
+		if (filePath.endsWith(TEMP_FILE_CSV) || filePath.endsWith(TEMP_FILE_JSON)) {
 			File file = new File(filePath);
 			if (file.exists()) {
 				file.delete();
@@ -744,7 +748,7 @@ final class Schedule {
 	static String getFileExtension(String fileName) {
 		int dotIndex = fileName.lastIndexOf(".");
 		if (dotIndex > 0) {
-			return fileName.substring(dotIndex + 1);
+			return fileName.substring(dotIndex);
 		}
 		return "";
 	}

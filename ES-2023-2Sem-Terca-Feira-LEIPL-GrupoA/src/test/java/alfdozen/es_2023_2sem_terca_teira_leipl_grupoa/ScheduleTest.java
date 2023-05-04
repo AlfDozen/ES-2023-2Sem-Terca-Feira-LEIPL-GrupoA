@@ -826,10 +826,10 @@ class ScheduleTest {
 	void testGetFileExtension() throws IOException {
 		// Test with valid file names
 		File csvFile = File.createTempFile("test", ".csv");
-		assertEquals("csv", Schedule.getFileExtension(csvFile.getName()));
+		assertEquals(".csv", Schedule.getFileExtension(csvFile.getName()));
 
 		File jsonFile = File.createTempFile("test", ".json");
-		assertEquals("json", Schedule.getFileExtension(jsonFile.getName()));
+		assertEquals(".json", Schedule.getFileExtension(jsonFile.getName()));
 
 		// Test with file names that do not have extensions
 		File noExtensionFile = File.createTempFile("test", "");
