@@ -664,7 +664,7 @@ class ScheduleTest {
 	}
 	
 	@Test
-    final void testIsOverloaded() {
+    final void testHasOvercrowdedLecture() {
 		
 	        Lecture lecture1 = new Lecture(
 					new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
@@ -677,13 +677,19 @@ class ScheduleTest {
 							"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
 					new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
 					new Room("AA2.23", 40));
+			Lecture lecture4 = new Lecture(
+					new AcademicInfo(null, null, null,null, 44),
+					null,
+					new Room(null, 40));
 			List<Lecture> lectures = new ArrayList<>();
 			lectures.add(lecture1);
 			lectures.add(lecture2);
 			lectures.add(lecture3);
 			Schedule schedule = new Schedule(lectures);
-			assertTrue(schedule.isOverloaded());
+			assertTrue(schedule.hasOvercrowdedLecture());
 			schedule.removeLecture(lecture3);
-		    assertFalse(schedule.isOverloaded());
+		    assertFalse(schedule.hasOvercrowdedLecture());
+		    schedule.addLecture(lecture4);
+		    assertTrue(schedule.hasOvercrowdedLecture());
 	}
 }
