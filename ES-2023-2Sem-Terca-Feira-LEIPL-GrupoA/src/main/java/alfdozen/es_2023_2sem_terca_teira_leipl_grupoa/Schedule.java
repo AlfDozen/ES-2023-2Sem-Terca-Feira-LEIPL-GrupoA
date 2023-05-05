@@ -653,9 +653,9 @@ final class Schedule {
 	 *
 	 * @return true if at least one lecture is overloaded, return false otherwise.
 	 */
-	public boolean isOverloaded() {
+	public boolean hasOvercrowdedLecture() {
 		for (Lecture lecture : lectures) {
-			if (lecture.isOverloaded()) {
+			if (lecture.isOvercrowded()) {
 				return true;
 			}
 		}
