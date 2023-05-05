@@ -75,10 +75,10 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-
-	private static final String DELIMITER = ";";
-	private static final String FILE_FORMAT_CSV = ".csv";
-	private static final String FILE_FORMAT_JSON = ".json";
+	static final String DELIMITER = ";";
+	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
+	
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
