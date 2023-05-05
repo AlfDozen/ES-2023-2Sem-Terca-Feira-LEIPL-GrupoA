@@ -1,14 +1,9 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
-import java.lang.System.Logger;
 import java.net.URL;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -18,10 +13,10 @@ import javax.swing.JOptionPane;
 
 import java.util.HashSet;
 
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -179,7 +174,7 @@ public class CreateSchedule implements Initializable{
 		}
 
 		int columns = ViewSchedule.NUM_COLUMNS;
-		
+
 		System.out.println("lista selected " + lectures.getSelectionModel().getSelectedItems());
 
 		//função semana tipica
@@ -200,9 +195,9 @@ public class CreateSchedule implements Initializable{
 				int hourEnd = hours.indexOf(info[1].substring(9,14)) + 1 ;
 				String course = info[2];
 
-//				System.out.println("Lecture " + lec.toString());
+				//				System.out.println("Lecture " + lec.toString());
 				System.out.println("hourBegin " + hourBegin + " hourEnd " + hourEnd);
-				System.out.println("hours " + hours.toString());
+//				System.out.println("hours " + hours.toString());
 
 				buildHours(day,course,hourBegin,hourEnd, calendar);
 			}
@@ -270,35 +265,59 @@ public class CreateSchedule implements Initializable{
 	//DESENHAR AS HORAS (REPRESENTAR AS LISTIVIEWS) NO CALENDARIO
 	private void buildHours(int day, String course, int hourBegin, int hourEnd, GridPane paneCalendar) {
 
-		Label hourClass= new Label(course + " - " + hourBegin +"-"+ hourEnd);
+		List<ListView<Label>> content = getNodeByColumnIndex(day*2, course, hourBegin, hourEnd, paneCalendar);
 
-		//VER HORAS DE INICIO E FIM
-		for(int row = hourBegin; row <= hourEnd; row++) {
+		if(content.isEmpty()) {
+			paintListView(day, course, hourBegin, hourEnd, paneCalendar);
+		}else {
 
-			Node content = getNodeByRowColumnIndex(row, day*2, paneCalendar);
+			for(ListView<Label> labl : content) {
 
-			if(content == null ) {
-				ListView<Label> lecList = new ListView<Label>();
-				lecList.setPrefHeight(50);
-				lecList.getItems().add(hourClass);
-				paneCalendar.add(lecList, day*2, hourBegin,1, hourEnd-hourBegin);
-
-			}else {
-
-				((ListView<Label>) content).getItems().add(hourClass);
+				GridPane.setHalignment(labl, HPos.RIGHT);
+				labl.setMaxWidth(paneCalendar.getColumnConstraints().get(day*2).getPrefWidth()/content.size());
 			}
 		}
 	}
 
 
-	public Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
-		Node result = null;
+
+	private void paintListView(int day, String course, int hourBegin, int hourEnd, GridPane paneCalendar) {
+
+		Label hourClass= new Label(course + " - " + hourBegin +"-"+ hourEnd);
+
+		//VER HORAS DE INICIO E FIM
+		for(int row = hourBegin; row <= hourEnd; row++) {
+
+			ListView<Label> lecList = new ListView<>();
+			lecList.setPrefHeight(50);
+			lecList.getItems().add(hourClass);
+			paneCalendar.add(lecList, day*2, hourBegin,1, hourEnd-hourBegin);
+		}
+	}
+
+
+	public List<ListView<Label>> getNodeByColumnIndex(final int column, String course , int hourBegin, int hourEnd, GridPane gridPane) {
+
+		List<ListView<Label>> result = new ArrayList<>();
 		ObservableList<Node> children = gridPane.getChildren();
 
 		for (Node node : children) {
-			if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-				result = node;
-				break;
+
+			if (GridPane.getColumnIndex(node) == column ){
+
+				if (GridPane.getRowIndex(node) == hourBegin && GridPane.getRowSpan(node) +GridPane.getRowIndex(node) == hourEnd) {
+
+					Label hourClass= new Label(course + " - " + hours.get(hourBegin) +"-"+ hours.get(hourEnd));
+					((ListView<Label>) node).getItems().add(hourClass);
+				}else {
+
+					if(GridPane.getRowIndex(node) > hourBegin && GridPane.getRowIndex(node) < hourEnd) {
+						System.out.println("list view position " + GridPane.getRowIndex(node) + " span " + GridPane.getRowSpan(node));
+						result.add((ListView<Label>) node);
+						break;
+					}
+				}
+
 			}
 		}
 

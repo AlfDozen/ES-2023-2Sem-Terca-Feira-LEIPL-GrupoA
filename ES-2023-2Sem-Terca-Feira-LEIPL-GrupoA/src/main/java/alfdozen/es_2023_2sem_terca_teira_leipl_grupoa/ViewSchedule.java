@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -477,9 +478,11 @@ public class ViewSchedule implements Initializable{
 
 			if(content == null ) {
 				ListView<Label> lecList = new ListView<Label>();
+				lecList.setMaxWidth(paneCalendar.getColumnConstraints().get(day*2).getPrefWidth()/2);
 				lecList.setPrefHeight(50);
 				lecList.getItems().add(hourClass);
 				paneCalendar.add(lecList, day*2, hourBegin,1, hourEnd-hourBegin);
+				GridPane.setHalignment(lecList, HPos.RIGHT);
 
 			}else {
 

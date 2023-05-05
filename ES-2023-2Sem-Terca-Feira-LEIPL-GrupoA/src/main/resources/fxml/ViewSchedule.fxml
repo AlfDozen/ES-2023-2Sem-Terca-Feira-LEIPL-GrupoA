@@ -109,7 +109,7 @@
           <AnchorPane fx:id="anchorWeek" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="741.0" prefWidth="1200.0">
                <children>
                   <DatePicker fx:id="datePickerWeek" layoutX="512.0" layoutY="45.0" onAction="#bootCalendarWeek" prefHeight="36.0" prefWidth="243.0" />
-                  <ScrollPane fx:id="scrollCalendarWeek" fitToHeight="true" fitToWidth="true" layoutX="35.0" layoutY="150.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="555.0" prefViewportHeight="75.0" prefWidth="1140.0" style="-fx-background-color: #aaaaaa;" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="150.0">
+                  <ScrollPane fx:id="scrollCalendarWeek" fitToHeight="true" fitToWidth="true" layoutX="35.0" layoutY="150.0" prefHeight="555.0" prefViewportHeight="75.0" prefWidth="1140.0" style="-fx-background-color: #aaaaaa;" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="150.0">
                      <content>
                         <GridPane fx:id="paneCalendarWeek" alignment="CENTER" gridLinesVisible="true" hgap="2.0" prefHeight="600.0" prefWidth="1146.0" style="-fx-background-color: #ffffff; -fx-stroke: red;" vgap="2.0">
                            <columnConstraints>
