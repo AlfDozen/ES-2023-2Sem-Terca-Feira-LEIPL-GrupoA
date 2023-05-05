@@ -94,11 +94,6 @@
     <artifactId>javafx-web</artifactId>
     <version>16</version>
   </dependency>
-  <dependency>
-  	<groupId>pt.iscte-iul.istar</groupId>
-  	<artifactId>BattleshipGame</artifactId>
-  	<version>2.0</version>
-  </dependency>
   </dependencies>
 
   <build>
