@@ -696,25 +696,27 @@ class ScheduleTest {
 	}
 
 	@Test
-	void downloadFileFromURL() throws MalformedURLException, IllegalArgumentException, IOException {
+	void downloadFileFromURL() throws IllegalArgumentException, IOException  {
 		 // Test with null URL
 	    assertThrows(NullPointerException.class, () -> Schedule.downloadFileFromURL(null));
 		// Create a temporary CSV file
 		String csvUrl = "https://nao/existe.csv";
-		Schedule.downloadFileFromURL(csvUrl);
+		String csvReturnString=Schedule.downloadFileFromURL(csvUrl);
 		File csvFile = new File("src/main/resources/temp/tempFile.csv");
 		assertNotNull(csvFile);
 		assertTrue(csvFile.exists());
 		assertTrue(csvFile.isFile());
 		assertEquals("tempFile.csv", csvFile.getName());
+		assertNull(csvReturnString);
 		// Create a temporary JSON file
 		String jsonUrl = "https://nao/existe.json";
-		Schedule.downloadFileFromURL(jsonUrl);
+		String jsonReturnString=Schedule.downloadFileFromURL(jsonUrl);
 		File jsonFile = new File("src/main/resources/temp/tempFile.json");
 		assertNotNull(jsonFile);
 		assertTrue(jsonFile.exists());
 		assertTrue(jsonFile.isFile());
 		assertEquals("tempFile.json", jsonFile.getName());
+		assertNull(jsonReturnString);
 	}
 	@Test
 	void testReadChannelToFileWithLocalFiles() throws IOException {

@@ -626,16 +626,20 @@ final class Schedule {
 	}
 
 	/**
-	 * 
-	 * Downloads a file from a given URL and saves it to the temporary directory.
-	 * 
-	 * @param url the URL of the file to download
-	 * @throws MalformedURLException    if the URL is malformed
-	 * @throws IllegalArgumentException if the file extension is invalid
-	 * @throws IOException              if there is an error downloading or saving
-	 *                                  the file
+	 * Downloads a file from the specified URL and saves it to a temporary
+	 * directory.
+	 *
+	 * @param url The URL of the file to download.
+	 * @return The file name of the downloaded file (tempFile.csv or tempFile.json)
+	 *         if successful, or null if an IOException occurs.
+	 * @throws NullPointerException     If the URL is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue creating or deleting
+	 *                                  the temporary file, or if there is an error
+	 *                                  closing the ReadableByteChannel.
 	 */
-	static void downloadFileFromURL(String url) throws MalformedURLException, IllegalArgumentException, IOException {
+	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
 		if (url == null) {
 			throw new NullPointerException(NULL_URL_EXCEPTION_MESSAGE);
 		}
@@ -671,15 +675,18 @@ final class Schedule {
 			readChannelToFile(rbc, file);
 		} catch (IOException e) {
 			System.out.println("Error downloading file from URL: " + url);
+			return null;
 		} finally {
 			if (rbc != null) {
 				try {
 					rbc.close();
 				} catch (IOException e) {
 					System.out.println("Error closing ReadableByteChannel: " + e.getMessage());
+					return null;
 				}
 			}
 		}
+		return tempFileName;
 	}
 
 	/**
@@ -701,17 +708,22 @@ final class Schedule {
 	}
 
 	/**
-	 * 
-	 * Loads a Schedule from a given file path, which can be either a CSV or JSON
-	 * file.
-	 * 
-	 * @param filePath the path of the file to load
-	 * @return the loaded Schedule
-	 * @throws IllegalArgumentException if the file extension is invalid
-	 * @throws IOException              if there is an error reading or parsing the
-	 *                                  file
+	 * Loads a schedule from the specified file path, supporting both CSV and JSON
+	 * formats. If the file is a temporary file downloaded from a URL, it will be
+	 * deleted after loading the schedule.
+	 *
+	 * @param filePath The file path of the schedule file to load.
+	 * @return A Schedule object created from the data in the file.
+	 * @throws NullPointerException     If the file path is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue reading the file or
+	 *                                  deleting the temporary file.
 	 */
 	static Schedule CallLoad(String filePath) throws IOException {
+		if (filePath == null) {
+			throw new NullPointerException(FILE_NULL_EXCEPTION);
+		}
 		Schedule schedule;
 
 		// Check if file is CSV or JSON
