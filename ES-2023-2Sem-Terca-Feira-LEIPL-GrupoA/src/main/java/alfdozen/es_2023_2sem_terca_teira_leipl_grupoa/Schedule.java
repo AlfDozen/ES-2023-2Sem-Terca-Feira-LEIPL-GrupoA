@@ -77,7 +77,6 @@ final class Schedule {
 	static final Integer INDEX_ROOM = 9;
 	static final Integer INDEX_CAPACITY = 10;
 
-
 	private List<Lecture> lectures;
 	private String studentName;
 	private Integer studentNumber;
@@ -299,7 +298,7 @@ final class Schedule {
 		}
 		return schedule;
 	}
-	
+
 	/**
 	 * This method build a lecture object from a csv file entry
 	 *
@@ -548,7 +547,8 @@ final class Schedule {
 		}
 		String destinationTempFilePath = PATH_TMP;
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
+		try (BufferedWriter writer = new BufferedWriter(
+				new FileWriter(destinationTempFilePath, StandardCharsets.UTF_8));
 				BufferedReader reader = new BufferedReader(new FileReader(csvSourcePath, StandardCharsets.UTF_8))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -600,7 +600,8 @@ final class Schedule {
 		}
 
 		try (Reader reader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8);
-				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
+				OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(csvFile),
+						StandardCharsets.UTF_8)) {
 			ObjectMapper jsonMapper = new ObjectMapper();
 			List<Object> data = jsonMapper.readValue(reader, List.class);
 			CsvMapper csvMapper = new CsvMapper();
@@ -675,22 +676,21 @@ final class Schedule {
 		}
 		return str.toString();
 	}
-	
+
 	/**
 	 * Checks if there are overlapping lectures in this schedule.
 	 * 
 	 * @return true if there are any overlapping lectures, false otherwise.
 	 */
-    public boolean hasOverlappingLectures() {
-        int n = lectures.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

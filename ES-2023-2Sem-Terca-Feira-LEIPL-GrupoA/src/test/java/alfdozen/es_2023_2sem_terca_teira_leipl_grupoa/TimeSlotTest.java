@@ -467,6 +467,9 @@ class TimeSlotTest {
 		TimeSlot timeSlot4= new TimeSlot("Seg","01/05/2023", null, "12:00:00");
 		TimeSlot timeSlot5 = new TimeSlot("Ter","02/05/2023", "11:00:01", "12:00:00");
 		TimeSlot timeSlot6 = new TimeSlot("Seg","01/05/2023", "10:59:59", "12:00:00");
+		TimeSlot timeSlot7 = new TimeSlot(null,"01/05/2023",null, null);
+		TimeSlot timeSlot8 = new TimeSlot("Seg",null, null, "12:00:00");
+		
 
         assertTrue(timeSlot1.overlaps(timeSlot2));
         assertTrue(timeSlot1.overlaps(timeSlot6));
@@ -475,7 +478,7 @@ class TimeSlotTest {
         assertFalse(timeSlot1.overlaps(timeSlot4));
         assertFalse(timeSlot4.overlaps(timeSlot1));
         assertFalse(timeSlot5.overlaps(timeSlot3));
+        assertFalse(timeSlot7.overlaps(timeSlot8));
 	}
-	
 
 }
