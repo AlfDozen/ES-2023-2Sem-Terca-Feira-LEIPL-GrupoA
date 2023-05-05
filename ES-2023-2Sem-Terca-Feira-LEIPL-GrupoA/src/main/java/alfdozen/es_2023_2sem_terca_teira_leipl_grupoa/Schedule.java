@@ -21,15 +21,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.LocalDateTime;
-
+import java.util.Set;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -677,6 +677,19 @@ final class Schedule {
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
+	}
+	
+	/**
+	 * Returns a set with the unique lecture's name of an object shedule
+	 * 
+	 * @return A set of unique lecture's name
+	 */
+	public Set<String> getUniqueLecturesCourses() {
+		Set<String> uniqueCourses = new HashSet<String>();
+		for(Lecture l : lectures) {
+			uniqueCourses.add(l.getAcademicInfo().getCourse());
+		}
+		return uniqueCourses;
 	}
 
 	/**

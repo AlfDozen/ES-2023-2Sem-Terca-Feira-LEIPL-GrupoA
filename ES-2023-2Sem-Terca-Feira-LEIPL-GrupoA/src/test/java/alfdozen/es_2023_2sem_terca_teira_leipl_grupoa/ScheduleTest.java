@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -814,4 +814,24 @@ class ScheduleTest {
 		assertNull(info3[2]);
 		reader3.close();
 	}
+
+	@Test
+	final void testGetUniqueLecturesCourses() throws IOException {
+		Schedule scd = Schedule.loadCSV("./src/main/resources/horario_exemplo_completo.csv");
+		Set<String> uc = scd.getUniqueLecturesCourses();
+		String expected = "[Seminário de Projecto I (Piudhist), Teoria dos Jogos e dos Contratos, Gestão de Conflitos, Cálculo I, Competências Académicas I, Fundamentos de Arquitectura de Computadores, Investimentos II]";
+		assertEquals(expected, (String) uc.toString());
+		
+		scd = new Schedule();
+		uc = scd.getUniqueLecturesCourses();
+		expected = "[]";
+		assertEquals(expected, (String) uc.toString());	
+	}
 }
+
+
+
+
+
+
+
