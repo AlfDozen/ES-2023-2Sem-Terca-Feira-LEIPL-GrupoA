@@ -1,0 +1,19 @@
+BEGIN:VCALENDAR
+PRODID:-//ISCTE-IUL//fenix//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+X-WR-CALNAME:pmaaa2@iscte.pt_iscte-iul
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:
+DTEND:
+SUMMARY:Interacção Pessoa-Máquina - Human-Computer Interaction
+UID:847676220417007@fenix.iscte.pt
+DESCRIPTION:Semestre: 2022/2023 - 2.º Semestre\nInte
+ racção Pessoa-Máquina\nCódigo: L5316\n\nInício: 2023-05-
+ 15 21:00\nFim: 2023-05-15 22:30\nDocente: Pedro Cláudio de Faria Lopes\n
+ \nSemester: 2022/2023 - 2.º Semestre\nExecution course: Human-Computer I
+ nteraction\nCode: L5316\nShift: L5316TP03\nBegin: 2023-05-15 21:00\nEnd:
+  2023-05-15 22:30\nTeacher: Pedro Cláudio de Faria Lopes\n\n
+CATION:\, 5\, Edifício II (ISCTE-IUL)\, ISCTE-IUL
+END:VEVENT
