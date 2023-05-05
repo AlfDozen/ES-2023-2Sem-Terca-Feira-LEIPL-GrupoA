@@ -686,7 +686,7 @@ final class Schedule {
 				}
 			}
 		}
-		return tempFileName;
+		return file.getPath();
 	}
 
 	/**
@@ -720,7 +720,7 @@ final class Schedule {
 	 * @throws IOException              If there is an issue reading the file or
 	 *                                  deleting the temporary file.
 	 */
-	static Schedule CallLoad(String filePath) throws IOException {
+	static Schedule callLoad(String filePath) throws IOException {
 		if (filePath == null) {
 			throw new NullPointerException(FILE_NULL_EXCEPTION);
 		}

@@ -696,12 +696,12 @@ class ScheduleTest {
 	}
 
 	@Test
-	void downloadFileFromURL() throws IllegalArgumentException, IOException  {
-		 // Test with null URL
-	    assertThrows(NullPointerException.class, () -> Schedule.downloadFileFromURL(null));
+	void downloadFileFromURL() throws IllegalArgumentException, IOException {
+		// Test with null URL
+		assertThrows(NullPointerException.class, () -> Schedule.downloadFileFromURL(null));
 		// Create a temporary CSV file
 		String csvUrl = "https://nao/existe.csv";
-		String csvReturnString=Schedule.downloadFileFromURL(csvUrl);
+		String csvReturnString = Schedule.downloadFileFromURL(csvUrl);
 		File csvFile = new File("src/main/resources/temp/tempFile.csv");
 		assertNotNull(csvFile);
 		assertTrue(csvFile.exists());
@@ -710,7 +710,7 @@ class ScheduleTest {
 		assertNull(csvReturnString);
 		// Create a temporary JSON file
 		String jsonUrl = "https://nao/existe.json";
-		String jsonReturnString=Schedule.downloadFileFromURL(jsonUrl);
+		String jsonReturnString = Schedule.downloadFileFromURL(jsonUrl);
 		File jsonFile = new File("src/main/resources/temp/tempFile.json");
 		assertNotNull(jsonFile);
 		assertTrue(jsonFile.exists());
@@ -718,35 +718,36 @@ class ScheduleTest {
 		assertEquals("tempFile.json", jsonFile.getName());
 		assertNull(jsonReturnString);
 	}
+
 	@Test
 	void testReadChannelToFileWithLocalFiles() throws IOException {
-	    // Load the CSV file
-	    File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
-	    FileInputStream csvFis = new FileInputStream(csvFile);
-	    ReadableByteChannel csvRbc = csvFis.getChannel();
+		// Load the CSV file
+		File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
+		FileInputStream csvFis = new FileInputStream(csvFile);
+		ReadableByteChannel csvRbc = csvFis.getChannel();
 
-	    // Create a new file and write the contents of the channel to it
-	    File csvOutputFile = new File("src/main/resources/temp/tempFile.csv");
-	    Schedule.readChannelToFile(csvRbc, csvOutputFile);
+		// Create a new file and write the contents of the channel to it
+		File csvOutputFile = new File("src/main/resources/temp/tempFile.csv");
+		Schedule.readChannelToFile(csvRbc, csvOutputFile);
 
-	    // Verify that the output file has the same content as the input file
-	    String csvContent = Files.readString(csvFile.toPath());
-	    String csvOutputContent = Files.readString(csvOutputFile.toPath());
-	    assertEquals(csvContent, csvOutputContent);
+		// Verify that the output file has the same content as the input file
+		String csvContent = Files.readString(csvFile.toPath());
+		String csvOutputContent = Files.readString(csvOutputFile.toPath());
+		assertEquals(csvContent, csvOutputContent);
 
-	    // Load the JSON file
-	    File jsonFile = new File("src/main/resources/horario_exemplo_json2.json");
-	    FileInputStream jsonFis = new FileInputStream(jsonFile);
-	    ReadableByteChannel jsonRbc = jsonFis.getChannel();
+		// Load the JSON file
+		File jsonFile = new File("src/main/resources/horario_exemplo_json2.json");
+		FileInputStream jsonFis = new FileInputStream(jsonFile);
+		ReadableByteChannel jsonRbc = jsonFis.getChannel();
 
-	    // Create a new file and write the contents of the channel to it
-	    File jsonOutputFile = new File("src/main/resources/temp/tempFile.json");
-	    Schedule.readChannelToFile(jsonRbc, jsonOutputFile);
+		// Create a new file and write the contents of the channel to it
+		File jsonOutputFile = new File("src/main/resources/temp/tempFile.json");
+		Schedule.readChannelToFile(jsonRbc, jsonOutputFile);
 
-	    // Verify that the output file has the same content as the input file
-	    String jsonContent = Files.readString(jsonFile.toPath());
-	    String jsonOutputContent = Files.readString(jsonOutputFile.toPath());
-	    assertEquals(jsonContent, jsonOutputContent);
+		// Verify that the output file has the same content as the input file
+		String jsonContent = Files.readString(jsonFile.toPath());
+		String jsonOutputContent = Files.readString(jsonOutputFile.toPath());
+		assertEquals(jsonContent, jsonOutputContent);
 	}
 
 	@Test
@@ -766,7 +767,7 @@ class ScheduleTest {
 		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
 
 		// Load CSV file
-		Schedule schedule1 = Schedule.CallLoad("src/main/resources/temp/tempFile.csv");
+		Schedule schedule1 = Schedule.callLoad("src/main/resources/temp/tempFile.csv");
 		assertNotNull(schedule1);
 
 		// Check if the temp file was deleted
@@ -783,7 +784,7 @@ class ScheduleTest {
 		assertEquals(expected1.toString(), schedule1.toString());
 
 		// schedule 2
-		Schedule schedule2 = Schedule.CallLoad("src/main/resources/temp/tempFile.json");
+		Schedule schedule2 = Schedule.callLoad("src/main/resources/temp/tempFile.json");
 		assertNotNull(schedule2);
 
 		// Check if the temp file was deleted
@@ -812,7 +813,7 @@ class ScheduleTest {
 		}
 
 		// Attempt to load the file
-		assertThrows(IllegalArgumentException.class, () -> Schedule.CallLoad(invalidFile.getAbsolutePath()));
+		assertThrows(IllegalArgumentException.class, () -> Schedule.callLoad(invalidFile.getAbsolutePath()));
 
 		// Assert that the temporary file was not deleted
 		assertTrue(invalidFile.exists());
@@ -821,7 +822,7 @@ class ScheduleTest {
 	@Test
 	void testLoadNonExistentFile() {
 		// Attempt to load a non-existent file
-		assertThrows(IOException.class, () -> Schedule.CallLoad("does_not_exist.csv"));
+		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
 	}
 
 	@Test
