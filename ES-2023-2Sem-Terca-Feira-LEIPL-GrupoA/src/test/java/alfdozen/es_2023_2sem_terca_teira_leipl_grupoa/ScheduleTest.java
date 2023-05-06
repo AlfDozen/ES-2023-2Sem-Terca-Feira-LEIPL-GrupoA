@@ -690,9 +690,95 @@ class ScheduleTest {
 				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
+	
+	@Test
+	final void testCreateScheduleFromCourseList() {
+		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		Lecture lecture2 = new Lecture(new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+				new TimeSlot("Sex", null, null, LocalTime.of(14, 30, 0)), new Room(null, (Integer) null));
+		List<Lecture> lectures = new ArrayList<>();
+		lectures.add(lecture1);
+		lectures.add(lecture2);
+		Schedule schedule = new Schedule(lectures);
+		AcademicInfo ac1 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+		AcademicInfo ac2 = new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30);
+	
+		List<AcademicInfo> courseList = new ArrayList<>();
+		courseList.add(ac1);
+		courseList.add(ac2);
+		Schedule newSchedule = schedule.createScheduleFromCourseList(courseList);
+		ArrayList<AcademicInfo> emptyList = new ArrayList<>();
+		
+		assertThrows(IllegalArgumentException.class, () -> newSchedule.createScheduleFromCourseList(null));
+		assertThrows(IllegalArgumentException.class, () -> newSchedule.createScheduleFromCourseList(emptyList));
+		
+		assertEquals(1, newSchedule.getLectures().size());
+		
+		assertEquals(lecture1, newSchedule.getLectures().get(0));
+	}
+
+  @Test
+  final void testHasOvercrowdedLecture() {
+	    Lecture lecture1 = new Lecture(
+					new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+					new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
+					new Room("AA2.23", 50));
+			Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+					new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+			Lecture lecture3 = new Lecture(
+					new AcademicInfo("LETI, LEI, LEI-PL, LIGE, LIGE-PL", "Fundamentos de Arquitectura de Computadores",
+							"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
+					new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+					new Room("AA2.23", 40));
+			Lecture lecture4 = new Lecture(
+					new AcademicInfo(null, null, null,null, 44),
+					null,
+					new Room(null, 40));
+			List<Lecture> lectures = new ArrayList<>();
+			lectures.add(lecture1);
+			lectures.add(lecture2);
+			lectures.add(lecture3);
+			Schedule schedule = new Schedule(lectures);
+			assertTrue(schedule.hasOvercrowdedLecture());
+			schedule.removeLecture(lecture3);
+		    assertFalse(schedule.hasOvercrowdedLecture());
+		    schedule.addLecture(lecture4);
+		    assertTrue(schedule.hasOvercrowdedLecture());
+	}
 
 	@Test
-	void downloadFileFromURL() throws IllegalArgumentException, IOException {
+	final void testHasOverlappingLectures() {
+		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "IPM", "L0705TP23", "DHMCMG1", 10),
+				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(14, 0, 0), LocalTime.of(15, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+				new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+		Lecture lecture3 = new Lecture(new AcademicInfo("LEI-PL", "FAC", "L0705TP23", "ET-A10", 44),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 31), LocalTime.of(14, 30, 0), LocalTime.of(16, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture4 = new Lecture(new AcademicInfo("LEI-PL", "DIAM", "L0705TP23", "ET-A10", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture5 = new Lecture(null,
+				new TimeSlot(null, LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)), null);
+
+		Schedule schedule = new Schedule();
+		schedule.addLecture(lecture1);
+		schedule.addLecture(lecture2);
+		schedule.addLecture(lecture3);
+		schedule.addLecture(lecture4);
+
+		assertTrue(schedule.hasOverlappingLectures());
+		schedule.removeLecture(lecture3);
+		assertFalse(schedule.hasOverlappingLectures());
+		schedule.addLecture(lecture5);
+		assertTrue(schedule.hasOverlappingLectures());
+	}
+  
+  @Test
+	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
 		// Test with null URL
 		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null));
 		// Create a temporary CSV file
@@ -716,7 +802,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testReadChannelToFileWithLocalFiles() throws IOException {
+	final void testReadChannelToFileWithLocalFiles() throws IOException {
 		// Load the CSV file
 		File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
 		FileInputStream csvFis = new FileInputStream(csvFile);
@@ -748,7 +834,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testCallLoad() throws IOException {
+	final void testCallLoad() throws IOException {
 		// Create temp directory
 		File tempDir = new File("/src/main/resources/temp");
 		tempDir.mkdir();
@@ -796,11 +882,10 @@ class ScheduleTest {
 		lectures2.add(lecture2);
 		Schedule expected2 = new Schedule(lectures2);
 		assertEquals(expected2.toString(), schedule2.toString());
-
 	}
 
 	@Test
-	void testLoadInvalidFileExtension() {
+	final void testLoadInvalidFileExtension() {
 		// Create a temporary file with an invalid extension
 		File invalidFile = new File("test.txt");
 		try {
@@ -817,13 +902,13 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testLoadNonExistentFile() {
+	final void testLoadNonExistentFile() {
 		// Attempt to load a non-existent file
 		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
 	}
 
 	@Test
-	void testGetFileExtension() throws IOException {
+	final void testGetFileExtension() throws IOException {
 		// Test with valid file names
 		File csvFile = File.createTempFile("test", ".csv");
 		assertEquals(".csv", Schedule.getFileExtension(csvFile.getName()));
@@ -1021,5 +1106,28 @@ class ScheduleTest {
 		uc = scd.getUniqueLecturesCourses();
 		expected = "[]";
 		assertEquals(expected, (String) uc.toString());
+	}	
+	
+	@Test
+	final void testgetCommonWeekLecture() throws IOException {
+		//primeiro teste - entrar e sair da função sem passar pelo for (nao ter nenhuma lecture) - linha 691
+		
+		Schedule horario = new Schedule();
+		String expected = "[]";
+		assertEquals(expected,horario.getCommonWeekLecture(new ArrayList<>()).toString());
+		
+		//entrar nos dois for e IF falso
+		List<String> courses =  new ArrayList<String>();
+		courses.add("Agentes Autonomos");
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_11colunas.csv");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
+		//entrar nos dois for e IF verdadeiro
+		
+		expected = "[Unknown - 13:00:00-14:30:00 - Investimentos II -  - Room ]";
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
+		courses.add("Investimentos II");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
 	}
 }

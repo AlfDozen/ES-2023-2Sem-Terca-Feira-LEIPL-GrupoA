@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,6 +67,7 @@ final class Schedule {
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
+	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list of courses cannot be null or empty";
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist";
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null";
@@ -78,13 +80,13 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-
-	private static final String DELIMITER = ";";
-	private static final String FILE_FORMAT_CSV = ".csv";
-	private static final String FILE_FORMAT_JSON = ".json";
+	static final String DELIMITER = ";";
+	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
 	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
 	static final String TEMP_FILE_CSV = "tempFile.csv";
 	static final String TEMP_FILE_JSON = "tempFile.json";
+
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -114,6 +116,8 @@ final class Schedule {
 	private static final Pattern SHIFT_PATTERN = Pattern.compile("Turno:", Pattern.LITERAL);
 	private static final Pattern LOCATION_PATTERN = Pattern.compile("LOCATION:", Pattern.LITERAL);
 	private static final Pattern LOCATION_DELIMITER_PATTERN = Pattern.compile("\\,", Pattern.LITERAL);
+	private static final double FREQUENCY_LIMIT = 0.3;
+	private static final String LECTURE_DELIMITER = " - ";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -654,6 +658,26 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
+	
+	/**
+	* Creates a new schedule containing lectures for the specified list of courses.
+	*
+	* @param courseList the list of academic information for the courses
+	* @return a new schedule containing lectures for the specified courses
+	* @throws IllegalArgumentException if the courseList is null or empty
+	*/
+	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
+		if (courseList == null || courseList.isEmpty())
+			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
+		Schedule newSchedule = new Schedule(studentName, studentNumber);
+		
+		for (Lecture lecture : lectures)
+			if(courseList.contains(lecture.getAcademicInfo()))
+					newSchedule.addLecture(lecture);
+		
+		return newSchedule;
+	}
+	
 
 	/**
 	 * Downloads a file from the specified URL and saves it to a temporary
@@ -813,6 +837,20 @@ final class Schedule {
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
+	}
+
+	/**
+	 * Checks if at least one of the lectures in this schedule is overloaded.
+	 *
+	 * @return true if at least one lecture is overloaded, return false otherwise.
+	 */
+	public boolean hasOvercrowdedLecture() {
+		for (Lecture lecture : lectures) {
+			if (lecture.isOvercrowded()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -989,14 +1027,12 @@ final class Schedule {
 			if (dateTimeBegin != null) {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		return dateTimes;
 	}
 
@@ -1039,7 +1075,7 @@ final class Schedule {
 		}
 		return info;
 	}
-
+	
 	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.
@@ -1068,5 +1104,161 @@ final class Schedule {
 			}
 		}
 		return str.toString();
+	}
+
+	/**
+	 * Returns a list of lectures where each string is composed of weekday, hour and
+	 * the course name when each lecture usually occurs. The returned list about the
+	 * lectures may concern partially or to the entire list of lectures belonging to
+	 * a schedule.
+	 * 
+	 * @param courses the list of strings with the course names of the lectures
+	 *                expected to receive the details from
+	 * 
+	 * @return a List of lectures with detail of weekday and hour that all the
+	 *         courses typically occur, mentioned in the list of strings given in
+	 *         the input .
+	 */
+	public List<Lecture> getCommonWeekLecture(List<String> courses) {
+
+		List<String> commonLecturesString = new ArrayList<>();
+
+		if (!courses.isEmpty()) {
+
+			Map<String, Integer> map = getMapCourses(courses);
+			Map<String, Integer> mapCounter = getCourseDaysMap();
+
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+
+				String[] keySplit = entry.getKey().split(LECTURE_DELIMITER);
+
+				double ratio = entry.getValue() / (double) (mapCounter.get(keySplit[2]));
+
+				if (!commonLecturesString.contains(entry.getKey()) && (ratio > FREQUENCY_LIMIT)) {
+					commonLecturesString.add(entry.getKey());
+				}
+			}
+		}
+		return convertStringToLecture(commonLecturesString);
+	}
+
+	/**
+	 * Gets from input a list of strings with only the essential details from a
+	 * lecture and returns a list of lectures created with the data on each string
+	 * of the list.
+	 * 
+	 * @param list list of strings with weekday, hours and course name
+	 * @return list of lectures created using the info in each string of the
+	 *         parameter
+	 */
+	private List<Lecture> convertStringToLecture(List<String> list) {
+
+		List<Lecture> lecturesList = new ArrayList<>();
+
+		for (String str : list) {
+
+			String[] strSplit = str.split(LECTURE_DELIMITER);
+
+			String[] time = strSplit[1].split("-");
+			String timeBeg = time[0];
+			String timeEnd = time[1];
+
+			TimeSlot date = new TimeSlot(strSplit[0], null, timeBeg, timeEnd);
+			AcademicInfo course = new AcademicInfo("", strSplit[2], "", "", 0);
+			Room room = new Room("", 1);
+			lecturesList.add(new Lecture(course, date, room));
+		}
+		return lecturesList;
+	}
+
+	/**
+	 * Returns a Map where the key is the combination of weekday, hour and course
+	 * name when it occurs, for each lecture in a schedule, and the value is the
+	 * number of times that combination occurs.
+	 * 
+	 * @return a Map with string in the key and integer in the value.
+	 */
+
+	private Map<String, Integer> getMapCourses(List<String> courses) {
+
+		Map<String, Integer> mapLectures = new HashMap<>();
+
+		for (String course : courses) {
+
+			for (Lecture lec : lectures) {
+
+				if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
+						|| lec.getAcademicInfo().getCourse() == null) {
+					continue;
+				}
+
+				if (lec.getAcademicInfo().getCourse().equals(course)) {
+
+					String[] day = lec.getTimeSlot().getDateString().split("/");
+					LocalDate date = LocalDate.of(Integer.parseInt(day[2]), Integer.parseInt(day[1]),
+							Integer.parseInt(day[0]));
+
+					int weekDay = date.getDayOfWeek().getValue();
+					String hour = lec.getTimeSlot().getTimeBeginString() + "-" + lec.getTimeSlot().getTimeEndString();
+
+					String key = weekDay + LECTURE_DELIMITER + hour + LECTURE_DELIMITER + course;
+
+					if (mapLectures.containsKey(key)) {
+						Integer value = mapLectures.get(key);
+						mapLectures.put(key, value + 1);
+
+					} else {
+						mapLectures.putIfAbsent(key, 1);
+					}
+				}
+			}
+		}
+		return mapLectures;
+	}
+
+	/**
+	 * Returns a Map where the key is the course name and the value is the total
+	 * number of days that course appears throughout the schedule.
+	 * 
+	 * @return Map with the total number of times each course occurs in a schedule
+	 */
+	private Map<String, Integer> getCourseDaysMap() {
+
+		Map<String, Integer> mapDays = new HashMap<>();
+
+		for (Lecture lec : lectures) {
+
+			if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
+					|| lec.getAcademicInfo().getCourse() == null) {
+				continue;
+			}
+
+			String key = lec.getAcademicInfo().getCourse();
+
+			if (mapDays.containsKey(key)) {
+				Integer value = mapDays.get(key);
+				mapDays.put(key, value + 1);
+			} else {
+				mapDays.putIfAbsent(key, 1);
+			}
+		}
+		return mapDays;
+	}
+
+	/**
+	 * Checks if there are overlapping lectures in this schedule.
+	 * 
+	 * @return true if there are any overlapping lectures, false otherwise.
+	 */
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
