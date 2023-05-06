@@ -79,9 +79,9 @@ final class Schedule {
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
 
-	private static final String DELIMITER = ";";
-	private static final String FILE_FORMAT_CSV = ".csv";
-	private static final String FILE_FORMAT_JSON = ".json";
+	static final String DELIMITER = ";";
+	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
 	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
 	static final String TEMP_FILE_CSV = "tempFile.csv";
 	static final String TEMP_FILE_JSON = "tempFile.json";
