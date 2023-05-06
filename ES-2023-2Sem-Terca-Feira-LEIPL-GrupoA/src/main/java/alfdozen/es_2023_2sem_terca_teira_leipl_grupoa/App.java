@@ -82,8 +82,9 @@ public class App extends Application implements Initializable{
 
 	@FXML
 	private void createSchedule() throws IOException {
-		App.setRoot("/fxml/CreateSchedule");
+		App.setRoot("/fxml/LoadFileBeforeCreateSchedule");
 	}
+	//	CreateSchedule colocar na página que estou a criar
 
 	@FXML
 	private void uploadSchedule() throws IOException {
