@@ -110,8 +110,9 @@ final class Lecture implements Comparable<Lecture> {
 	 * @return true if the enrollment exceeds the capacity, false otherwise.
 	 * */
 	boolean isOvercrowded() {
-		if (academicInfo == null || academicInfo.getStudentsEnrolled() == null || room == null || room.getCapacity() == null)
+		if (academicInfo == null || academicInfo.getStudentsEnrolled() == null || room == null || room.getCapacity() == null) {
 			return false;
+		}
 		return (academicInfo.getStudentsEnrolled()> room.getCapacity());				
 	}
 
