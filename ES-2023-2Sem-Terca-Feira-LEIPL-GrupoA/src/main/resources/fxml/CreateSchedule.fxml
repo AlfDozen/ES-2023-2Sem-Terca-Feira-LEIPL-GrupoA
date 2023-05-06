@@ -8,19 +8,16 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.CreateSchedule">
    <children>
       <Label alignment="CENTER" layoutX="64.0" layoutY="113.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu número de aluno" />
-      <Button layoutX="845.0" layoutY="22.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createSchedule" prefHeight="57.0" prefWidth="120.0" text="Guardar" textAlignment="CENTER">
+      <Button fx:id="save" layoutX="842.0" layoutY="30.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="49.0" prefWidth="131.0" text="Guardar" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
       </Button>
+      <Button fx:id="backButton" layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
       <TextField fx:id="studentNumber" layoutX="50.0" layoutY="156.0" prefHeight="31.0" prefWidth="264.0" />
       <TextField fx:id="studentName" layoutX="50.0" layoutY="249.0" prefHeight="31.0" prefWidth="264.0" />
       <Label alignment="CENTER" layoutX="64.0" layoutY="200.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu nome completo" />
@@ -28,15 +25,12 @@
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
       </Button>
       <ScrollPane layoutX="50.0" layoutY="358.0" prefHeight="308.0" prefWidth="264.0">
          <content>
             <AnchorPane prefHeight="308.0" prefWidth="263.0">
                <children>
-                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" onMouseClicked="#setSelectedFields" prefHeight="281.0" prefWidth="264.0" />
+                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" prefHeight="281.0" prefWidth="264.0" />
                   <Label alignment="CENTER" layoutX="-3.0" layoutY="4.0" prefHeight="21.0" prefWidth="243.0" text="Unidades Curriculares" />
                </children>
             </AnchorPane>
@@ -47,39 +41,11 @@
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
       </Button>
-      <AnchorPane layoutX="336.0" layoutY="131.0" prefHeight="606.0" prefWidth="651.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="336.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="131.0">
-         <children>
-            <WeekPage fx:id="calendar" prefHeight="606.0" prefWidth="651.0" />
-         </children>
-      </AnchorPane>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="685.0" layoutY="22.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="150.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="539.0" layoutY="22.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="57.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="378.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveJSON" prefHeight="57.0" prefWidth="150.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveCSV" prefHeight="57.0" prefWidth="150.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="22.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="57.0" prefWidth="150.0" text="Voltar ao Menu Inicial" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
+      <ScrollPane layoutX="364.0" layoutY="131.0" prefHeight="606.0" prefWidth="609.0">
+         <content>
+            <WeekPage fx:id="calendar" prefHeight="595.0" prefWidth="606.0" />
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

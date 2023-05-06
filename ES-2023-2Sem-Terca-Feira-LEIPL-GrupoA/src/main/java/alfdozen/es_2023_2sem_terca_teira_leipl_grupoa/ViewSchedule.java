@@ -153,6 +153,9 @@ public class ViewSchedule implements Initializable{
 		updateTimeThread.setPriority(Thread.MIN_PRIORITY);
 		updateTimeThread.setDaemon(true);
 		updateTimeThread.start();
+	
+	
+//		calendarView.getDayPage().getAgendaView().
 	}
 
 
@@ -163,8 +166,6 @@ public class ViewSchedule implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(calendarView.getPrefWidth(),calendarView.getPrefHeight());
 		App.getStage().setTitle("Calendar");
-		App.getStage().setWidth(1300);
-		App.getStage().setHeight(1000);
 		App.getStage().centerOnScreen();
 		calendarView.setEnableTimeZoneSupport(true);
 
