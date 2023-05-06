@@ -759,7 +759,7 @@ class ScheduleTest {
 		Files.copy(csvSource, csvDest, StandardCopyOption.REPLACE_EXISTING);
 
 		// Copy JSON file to temp directory
-		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json2.json");
+		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json.json");
 		Path jsonDest = Paths.get("src/main/resources/temp/tempFile.json");
 		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
 
