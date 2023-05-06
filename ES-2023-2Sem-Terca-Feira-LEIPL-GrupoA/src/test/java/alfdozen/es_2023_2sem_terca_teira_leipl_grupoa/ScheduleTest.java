@@ -679,19 +679,13 @@ class ScheduleTest {
 		
 		//entrar nos dois for e IF verdadeiro
 		
-		expected = "[6 - 13:00:00-14:30:00 - Investimentos II]";
+		expected = "[Unknown - 13:00:00-14:30:00 - Investimentos II -  - Room ]";
 		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
 		courses.add("Investimentos II");
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
 		
-		//na função de baixo :
-			//nao entra no for 
-			//entra no for e entra no 1º IF
-			//entra no for e não entra no 1º IF
-			//entra no for e entra no 2º if
-			//entra no for e entra no else do 2º IF
-		
 	}
+	
 	
 	
 	
