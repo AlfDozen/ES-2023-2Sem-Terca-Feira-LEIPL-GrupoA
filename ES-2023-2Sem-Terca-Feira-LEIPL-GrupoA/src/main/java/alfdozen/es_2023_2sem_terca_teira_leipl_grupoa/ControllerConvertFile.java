@@ -133,8 +133,14 @@ public class ControllerConvertFile implements Initializable {
 	}
 
 	/**
-	 * This method initializes the GUI components and stage needed for the
+	 * This method is called after its root element has been completely processed
+	 * and initializes the GUI components and stage in the controller needed for the
 	 * ConvertFile scene.
+	 *
+	 * @param location  the location used to resolve relative paths for the root
+	 *                  object, or null if the location is not known.
+	 * @param resources the resources used to localize the root object, or null if
+	 *                  the root object was not localized.
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
