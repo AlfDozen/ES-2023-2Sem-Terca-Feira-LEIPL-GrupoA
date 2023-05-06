@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.CreateSchedule">
+   <children>
+      <Label alignment="CENTER" layoutX="64.0" layoutY="113.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu número de aluno" />
+      <Button layoutX="845.0" layoutY="22.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createSchedule" prefHeight="57.0" prefWidth="120.0" text="Guardar" textAlignment="CENTER">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <TextField fx:id="studentNumber" layoutX="50.0" layoutY="156.0" prefHeight="31.0" prefWidth="264.0" />
+      <TextField fx:id="studentName" layoutX="50.0" layoutY="249.0" prefHeight="31.0" prefWidth="264.0" />
+      <Label alignment="CENTER" layoutX="64.0" layoutY="200.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu nome completo" />
+      <Button fx:id="selectAll" layoutX="50.0" layoutY="680.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#selectAll" prefHeight="57.0" prefWidth="131.0" text="Seleccionar tudo" textAlignment="CENTER" wrapText="true">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <ScrollPane layoutX="50.0" layoutY="358.0" prefHeight="308.0" prefWidth="264.0">
+         <content>
+            <AnchorPane prefHeight="308.0" prefWidth="263.0">
+               <children>
+                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" onMouseClicked="#setSelectedFields" prefHeight="281.0" prefWidth="264.0" />
+                  <Label alignment="CENTER" layoutX="-3.0" layoutY="4.0" prefHeight="21.0" prefWidth="243.0" text="Unidades Curriculares" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <Label alignment="CENTER" layoutX="64.0" layoutY="299.0" prefHeight="49.0" prefWidth="237.0" text="Seleccione todas as disciplinas que pretenda inserir no seu horário" wrapText="true" />
+      <Button fx:id="clearAll" layoutX="187.0" layoutY="680.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearAll" prefHeight="57.0" prefWidth="131.0" text="Deseleccionar tudo" textAlignment="CENTER" wrapText="true">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="336.0" layoutY="131.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="606.0" prefWidth="637.0" AnchorPane.bottomAnchor="63.0" AnchorPane.leftAnchor="336.0" AnchorPane.rightAnchor="37.0" AnchorPane.topAnchor="131.0">
+         <content>
+            <GridPane fx:id="calendar" alignment="CENTER" hgap="2.0" prefHeight="603.0" prefWidth="614.0" style="-fx-background-color: #ffffff; -fx-stroke: red;" vgap="2.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="75.0" valignment="CENTER" vgrow="ALWAYS" />
+                  <RowConstraints vgrow="ALWAYS" />
+               </rowConstraints>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="685.0" layoutY="22.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="150.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="539.0" layoutY="22.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="57.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="378.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveJSON" prefHeight="57.0" prefWidth="150.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="212.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveCSV" prefHeight="57.0" prefWidth="150.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="22.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="57.0" prefWidth="150.0" text="Voltar ao Menu Inicial" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

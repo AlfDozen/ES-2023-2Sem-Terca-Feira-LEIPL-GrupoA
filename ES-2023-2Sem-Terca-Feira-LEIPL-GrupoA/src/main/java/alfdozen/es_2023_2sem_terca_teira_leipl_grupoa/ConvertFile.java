@@ -33,8 +33,7 @@ public class ConvertFile implements Initializable{
 	@FXML
 	private Label fileChosen;
 
-	private FileChooser fileChooser;
-	private FileChooser fileChooserToSave;
+	private FileChooser fileChooser, fileChooserToSave;
 	private File filePath, filePathToSave;
 	private String filename, filenameToSave;
 

@@ -1101,7 +1101,5 @@ class ScheduleTest {
 		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
 		courses.add("Investimentos II");
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
-		
 	}
-	
 }

@@ -42,22 +42,35 @@ public class App extends Application implements Initializable{
 	private static Scene SCENE;
 	private static Stage STAGE;
 
-	public static Stage getSTAGE() {
+	public static Stage getStage() {
 		return STAGE;
 	}
+	
+	public static Scene getScene() {
+		return SCENE;
+	}
 
-	public static Schedule SCHEDULE = new Schedule(); 
+	private static Schedule SCHEDULE = new Schedule();
+
+	public static void setSchedule(Schedule Schedule) {
+		SCHEDULE = Schedule;
+	}
+	
+	public static Schedule getSchedule() {
+		return SCHEDULE ;
+	}
 
 	public static void setStageSize(double width, double height) {
 		STAGE.setWidth(width);
 		STAGE.setHeight(height);
 	}
-
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 
 			STAGE = primaryStage;
+			STAGE.setResizable(true);
 
 			SCENE = new Scene(loadFXML("/fxml/Main"));
 			System.out.println("Scene created " + SCENE.toString());
