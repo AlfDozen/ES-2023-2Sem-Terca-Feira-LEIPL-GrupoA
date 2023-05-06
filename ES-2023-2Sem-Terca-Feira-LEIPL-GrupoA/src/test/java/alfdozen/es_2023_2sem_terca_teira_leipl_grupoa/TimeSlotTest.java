@@ -458,4 +458,27 @@ class TimeSlotTest {
 		TimeSlot timeSlotNull = new TimeSlot(null, (String) null, (String) null, (String) null);
 		assertEquals(Lecture.FOR_NULL + " - " + Lecture.FOR_NULL + "-" + Lecture.FOR_NULL, timeSlotNull.toString());
 	}
+	
+	@Test
+    final void testOverlaps() {
+		TimeSlot timeSlot1 = new TimeSlot("Seg","01/05/2023", "10:00:00", "11:00:00");
+		TimeSlot timeSlot2 = new TimeSlot("Seg","01/05/2023","09:00:00", "10:30:00");
+		TimeSlot timeSlot3 = new TimeSlot("Seg","01/05/2023", "11:00:01", "12:00:00");
+		TimeSlot timeSlot4= new TimeSlot("Seg","01/05/2023", null, "12:00:00");
+		TimeSlot timeSlot5 = new TimeSlot("Ter","02/05/2023", "11:00:01", "12:00:00");
+		TimeSlot timeSlot6 = new TimeSlot("Seg","01/05/2023", "10:59:59", "12:00:00");
+		TimeSlot timeSlot7 = new TimeSlot(null,"01/05/2023",null, null);
+		TimeSlot timeSlot8 = new TimeSlot("Seg",null, null, "12:00:00");
+		
+
+        assertTrue(timeSlot1.overlaps(timeSlot2));
+        assertTrue(timeSlot1.overlaps(timeSlot6));
+
+        assertFalse(timeSlot1.overlaps(timeSlot3));
+        assertFalse(timeSlot1.overlaps(timeSlot4));
+        assertFalse(timeSlot4.overlaps(timeSlot1));
+        assertFalse(timeSlot5.overlaps(timeSlot3));
+        assertFalse(timeSlot7.overlaps(timeSlot8));
+	}
+
 }

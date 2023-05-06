@@ -12,14 +12,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.regex.Pattern;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.LocalDateTime;
+import java.util.Set;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,6 +56,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  * @version 1.0.0
  */
 final class Schedule {
+	static final String NULL_URL_EXCEPTION_MESSAGE = "URL is null";
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
@@ -51,31 +64,56 @@ final class Schedule {
 	static final String READ_EXCEPTION = "Error: File read";
 	static final String READ_WRITE_EXCEPTION = "Error: File read or write";
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
-	static final String FILE_NULL_EXCEPTION = "The file cannot be null!";
+	static final String FILE_NULL_EXCEPTION = "The file cannot be null";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
-	static final String FILE_EXISTS_EXCEPTION = "The file already exists!";
-	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist!";
-	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
-	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
-	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
-	static final String DELIMITER = ";";
-	static final String FILE_FORMAT_CSV = ".csv";
-	static final String FILE_FORMAT_JSON = ".json";
-	static final String EMPTY_ROW = ";;;;;;;;;;";
-	static final String PATH_TMP = "src/main/resources/tmpfile.csv";
-	static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
-	static final Integer NUMBER_COLUMNS = 11;
-	static final Integer INDEX_DEGREE = 0;
-	static final Integer INDEX_COURSE = 1;
-	static final Integer INDEX_SHIFT = 2;
-	static final Integer INDEX_CLASSGROUP = 3;
-	static final Integer INDEX_STUDENTSENROLLED = 4;
-	static final Integer INDEX_WEEKDAY = 5;
-	static final Integer INDEX_TIMEBEGIN = 6;
-	static final Integer INDEX_TIMEEND = 7;
-	static final Integer INDEX_DATE = 8;
-	static final Integer INDEX_ROOM = 9;
-	static final Integer INDEX_CAPACITY = 10;
+	static final String FILE_EXISTS_EXCEPTION = "The file already exists";
+	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist";
+	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null";
+	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist";
+	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required"
+			+ " values filled";
+	static final String URI_NULL_EXCEPTION = "The URI cannot be null";
+	static final String URI_NOT_WEBCAL_EXCEPTION = "The URI is not a webcal scheme";
+	static final String WEBCAL_NOT_VCALENDAR_EXCEPTION = "The webcal URI does not lead to an ics file."
+			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
+	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
+	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
+  
+	private static final String DELIMITER = ";";
+	private static final String FILE_FORMAT_CSV = ".csv";
+	private static final String FILE_FORMAT_JSON = ".json";
+	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
+	static final String TEMP_FILE_CSV = "tempFile.csv";
+	static final String TEMP_FILE_JSON = "tempFile.json";
+	private static final String EMPTY_ROW = ";;;;;;;;;;";
+	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
+	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
+			+ "Hora início da aula;Hora fim da aula;Data da aula;Sala atribuída à aula;Lotação da sala";
+	private static final String WEBCAL_DATETIME_FORMAT = "yyyyMMdd\'T\'HHmmss\'Z\'";
+	private static final Integer NUMBER_COLUMNS = 11;
+	private static final Integer INDEX_DEGREE = 0;
+	private static final Integer INDEX_COURSE = 1;
+	private static final Integer INDEX_SHIFT = 2;
+	private static final Integer INDEX_CLASSGROUP = 3;
+	private static final Integer INDEX_STUDENTSENROLLED = 4;
+	private static final Integer INDEX_WEEKDAY = 5;
+	private static final Integer INDEX_TIMEBEGIN = 6;
+	private static final Integer INDEX_TIMEEND = 7;
+	private static final Integer INDEX_DATE = 8;
+	private static final Integer INDEX_ROOM = 9;
+	private static final Integer INDEX_CAPACITY = 10;
+	private static final Pattern WEBCAL_PATTERN = Pattern.compile("webcal", Pattern.LITERAL);
+	private static final Pattern BEGIN_VCALENDAR_PATTERN = Pattern.compile("BEGIN:VCALENDAR", Pattern.LITERAL);
+	private static final Pattern USER_PATTERN = Pattern.compile("X-WR-CALNAME:", Pattern.LITERAL);
+	private static final Pattern BEGIN_EVENT_PATTERN = Pattern.compile("BEGIN:VEVENT", Pattern.LITERAL);
+	private static final Pattern DATETIME_START_PATTERN = Pattern.compile("DTSTART:", Pattern.LITERAL);
+	private static final Pattern DATETIME_END_PATTERN = Pattern.compile("DTEND:", Pattern.LITERAL);
+	private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("DESCRIPTION:", Pattern.LITERAL);
+	private static final Pattern DESCRIPTION_DELIMITER_PATTERN = Pattern.compile("\\n", Pattern.LITERAL);
+	private static final Pattern COURSE_PATTERN = Pattern.compile("Unidade de execução:", Pattern.LITERAL);
+	private static final Pattern SHIFT_PATTERN = Pattern.compile("Turno:", Pattern.LITERAL);
+	private static final Pattern LOCATION_PATTERN = Pattern.compile("LOCATION:", Pattern.LITERAL);
+	private static final Pattern LOCATION_DELIMITER_PATTERN = Pattern.compile("\\,", Pattern.LITERAL);
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -618,6 +656,136 @@ final class Schedule {
 	}
 
 	/**
+	 * Downloads a file from the specified URL and saves it to a temporary
+	 * directory.
+	 *
+	 * @param url The URL of the file to download.
+	 * @return The file name of the downloaded file (tempFile.csv or tempFile.json)
+	 *         if successful, or null if an IOException occurs.
+	 * @throws NullPointerException     If the URL is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue creating or deleting
+	 *                                  the temporary file, or if there is an error
+	 *                                  closing the ReadableByteChannel.
+	 */
+	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
+		if (url == null) {
+			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
+		}
+
+		URL fileURL = new URL(url);
+		String fileName = fileURL.getFile();
+		String fileExtension = getFileExtension(fileName);
+
+		// Create a File object for the downloaded file
+		File tempDir = new File(TEMP_FILE_PATH);
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
+		}
+		String tempFileName;
+		if (fileExtension.equals(FILE_FORMAT_CSV)) {
+			tempFileName = TEMP_FILE_CSV;
+		} else if (fileExtension.equals(FILE_FORMAT_JSON)) {
+			tempFileName = TEMP_FILE_JSON;
+		} else {
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+		File file = new File(tempDir, tempFileName);
+
+		// Delete the file if it already exists in the temp directory
+		if (file.exists()) {
+			file.delete();
+		}
+		file.createNewFile();
+		// Download the file from the URL and save it to the temp directory
+		ReadableByteChannel rbc = null;
+		try {
+			rbc = Channels.newChannel(fileURL.openStream());
+			readChannelToFile(rbc, file);
+		} catch (IOException e) {
+			return null;
+		} finally {
+			if (rbc != null) {
+				rbc.close();
+			}
+		}
+		return file.getPath();
+	}
+
+	/**
+	 * 
+	 * Reads the contents of a ReadableByteChannel and writes them to a File.
+	 * 
+	 * @param rbc  the ReadableByteChannel to read from
+	 * @param file the File to write to
+	 * @throws IOException if there is an error reading from the channel or writing
+	 *                     to the file
+	 */
+	static void readChannelToFile(ReadableByteChannel rbc, File file) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		}
+	}
+
+	/**
+	 * Loads a schedule from the specified file path, supporting both CSV and JSON
+	 * formats. If the file is a temporary file downloaded from a URL, it will be
+	 * deleted after loading the schedule.
+	 *
+	 * @param filePath The file path of the schedule file to load.
+	 * @return A Schedule object created from the data in the file.
+	 * @throws NullPointerException     If the file path is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue reading the file or
+	 *                                  deleting the temporary file.
+	 */
+	static Schedule callLoad(String filePath) throws IOException {
+		if (filePath == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
+		Schedule schedule;
+
+		// Check if file is CSV or JSON
+		String extension = getFileExtension(filePath);
+		switch (extension) {
+		case FILE_FORMAT_CSV:
+			schedule = loadCSV(filePath);
+			break;
+		case FILE_FORMAT_JSON:
+			schedule = loadJSON(filePath);
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+
+		// Delete temporary file if it was downloaded from URL
+		if (filePath.endsWith(TEMP_FILE_CSV) || filePath.endsWith(TEMP_FILE_JSON)) {
+			File file = new File(filePath);
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+		return schedule;
+	}
+
+	/**
+	 * 
+	 * Gets the file extension from a given file name.
+	 * 
+	 * @param fileName the name of the file
+	 * @return the file extension
+	 */
+	static String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0) {
+			return fileName.substring(dotIndex);
+		}
+		return "";
+	}
+
+	/**
 	 * Validates the input arguments for file conversion methods.
 	 *
 	 * @param sourcePath        the path of the source file to be converted.
@@ -663,6 +831,231 @@ final class Schedule {
 	}
 
 	/**
+	 * Returns a set with the unique lecture's name of an object shedule
+	 * 
+	 * @return A set of unique lecture's name
+	 */
+	public Set<String> getUniqueLecturesCourses() {
+		Set<String> uniqueCourses = new HashSet<String>();
+		for (Lecture l : lectures) {
+			uniqueCourses.add(l.getAcademicInfo().getCourse());
+		}
+		return uniqueCourses;
+	}
+
+	/**
+	 * This method loads a schedule via a webcal URI. The webcal should lead to an
+	 * iCalendar file. If there are no compatible events inside the iCalendar file,
+	 * the method returns a Schedule without lectures.
+	 * 
+	 * @param uri the webcal URI that leads to an iCalendar file.
+	 * @return a schedule object with all lectures in the iCalendar.
+	 * @throws IllegalArgumentException is thrown if the URI is null or not a
+	 *                                  webcall URI.
+	 * @throws MalformedURLException    is thrown if the URI cannot be converted
+	 *                                  into an HTTPS URL.
+	 * @throws IOException              is thrown if an error is given when
+	 *                                  connecting or reading file with HTTPS
+	 *                                  protocol.
+	 * @see <a href="https://en.wikipedia.org/wiki/Webcal">Webcal Wikipedia
+	 *      Entry</a>
+	 */
+	static Schedule loadWebcal(String uri) throws IOException {
+		if (uri == null) {
+			throw new IllegalArgumentException(URI_NULL_EXCEPTION);
+		}
+		if (!WEBCAL_PATTERN.matcher(uri).lookingAt()) {
+			throw new IllegalArgumentException(URI_NOT_WEBCAL_EXCEPTION);
+		}
+		String httpsURI = WEBCAL_PATTERN.matcher(uri).replaceFirst("https");
+		try {
+			URL httpURL = new URL(httpsURI);
+			URLConnection connection = httpURL.openConnection();
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+			reader.close();
+			return readICalendar(reader);
+		} catch (MalformedURLException e) {
+			throw new MalformedURLException(URI_NOT_VALID_EXCEPTION);
+		} catch (IOException e) {
+			throw new IOException(CONNECTING_TO_INTERNET_EXCEPTION);
+		}
+	}
+
+	/**
+	 * This method reads an ICalendar file from the BufferedReader and parses it
+	 * into a schedule. If user information is found, it is added to the schedule.
+	 * Each event (if compatible) of the iCalendar is parsed into a lecture and
+	 * added into the schedule. The schedule is then returned.
+	 * 
+	 * @param reader the buffered reader used to read the iCalendar file.
+	 * @return a schedule object with all lectures in the iCalendar.
+	 * @throws IllegalArgumentException is thrown if the file does not have the
+	 *                                  standard iCalendar structure.
+	 * @throws IOException              is thrown if an error is given when reading
+	 *                                  file with HTTPS protocol.
+	 */
+	static Schedule readICalendar(BufferedReader reader) throws IOException {
+		if (skipReadUntilStartsWith(reader, BEGIN_VCALENDAR_PATTERN) == null) {
+			throw new IllegalArgumentException(WEBCAL_NOT_VCALENDAR_EXCEPTION);
+		}
+		Schedule schedule = new Schedule();
+		String userLine = skipReadUntilStartsWith(reader, USER_PATTERN);
+		if (userLine != null) {
+			Integer indexEndUser = userLine.indexOf("@");
+			if (indexEndUser != -1) {
+				schedule.setStudentName(userLine.substring(0, indexEndUser));
+			}
+		}
+		while (skipReadUntilStartsWith(reader, BEGIN_EVENT_PATTERN) != null) {
+			Lecture lecture = transformEventToLecture(reader);
+			if (lecture != null) {
+				schedule.addLecture(lecture);
+			}
+		}
+		return schedule;
+	}
+
+	/**
+	 * This method reads lines from the BufferedReader until it finds a line that
+	 * starts with the provided pattern. If found, the prefix matching the pattern
+	 * is removed from the line string and it is returned. Otherwise, returns null.
+	 * 
+	 * @param reader       the buffered reader used to find the line with the prefix
+	 *                     pattern.
+	 * @param startPattern the pattern that the prefix of the line must match.
+	 * @return a string of the line where the pattern matched the prefix, but
+	 *         without said prefix.
+	 * @throws IOException is thrown if an error is given when reading file with
+	 *                     HTTPS protocol.
+	 */
+	static String skipReadUntilStartsWith(BufferedReader reader, Pattern startPattern) throws IOException {
+		String nextLine = reader.readLine();
+		while (nextLine != null && !startPattern.matcher(nextLine).lookingAt()) {
+			nextLine = reader.readLine();
+		}
+		if (nextLine == null) {
+			return null;
+		}
+		return startPattern.matcher(nextLine).replaceFirst("").trim();
+	}
+
+	/**
+	 * This method reads the event information with the BufferedReader, transforms
+	 * it into a lecture and returns the lecture. If the event does not mention a
+	 * course, or if no event is found, the method returns null. The Fenix
+	 * iCalendars do not mention room capacity, students enrolled, degree or class
+	 * group. These attributes will be null regardless of how complete the iCalendar
+	 * is.
+	 * 
+	 * @param reader the buffered reader used to parse the event.
+	 * @return a lecture object with the event information.
+	 * @throws IOException is thrown if an error is given when reading file with
+	 *                     HTTPS protocol.
+	 */
+	static Lecture transformEventToLecture(BufferedReader reader) throws IOException {
+		String dateTimeBegin = skipReadUntilStartsWith(reader, DATETIME_START_PATTERN);
+		String dateTimeEnd = skipReadUntilStartsWith(reader, DATETIME_END_PATTERN);
+		LocalDateTime[] dateTimes = buildDateTimeInformation(dateTimeBegin, dateTimeEnd);
+		LocalDate date = null;
+		LocalTime timeBegin = null;
+		if (dateTimes[0] != null) {
+			date = dateTimes[0].toLocalDate();
+			timeBegin = dateTimes[0].toLocalTime();
+		}
+		LocalTime timeEnd = null;
+		if (dateTimes[1] != null) {
+			timeEnd = dateTimes[1].toLocalTime();
+		}
+		String[] info = buildInformation(reader);
+		for (int i = 0; i < info.length; i++) {
+			if (info[i] != null && info[i].isEmpty()) {
+				info[i] = null;
+			}
+		}
+		String course = info[0];
+		if (course == null) {
+			return null;
+		}
+		String shift = info[1];
+		String roomName = info[2];
+		TimeSlot timeslot = new TimeSlot(null, date, timeBegin, timeEnd);
+		Room room = new Room(roomName, (String) null);
+		AcademicInfo academicInfo = new AcademicInfo(null, course, shift, null, (String) null);
+		return new Lecture(academicInfo, timeslot, room);
+	}
+
+	/**
+	 * Transforms the event's datetime start and datetime end strings into
+	 * LocalDateTime objects. Returns an array with both objects. If the a
+	 * LocalDateTime object cannot be parsed from a string, that object is returned
+	 * as null.
+	 * 
+	 * @param dateTimeBegin the beginning date and time of the event as String.
+	 * @param dateTimeEnd   the ending date and time of the event as String.
+	 * @return a localdatetime array with the beginning and ending datetimes of the
+	 *         event.
+	 */
+	static LocalDateTime[] buildDateTimeInformation(String dateTimeBegin, String dateTimeEnd) {
+		String datetimeFormat = WEBCAL_DATETIME_FORMAT;
+		DateTimeFormatter formatterDateTime = DateTimeFormatter.ofPattern(datetimeFormat);
+		LocalDateTime[] dateTimes = new LocalDateTime[2];
+		try {
+			if (dateTimeBegin != null) {
+				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
+			}
+		} catch (DateTimeParseException ignore) {
+		}
+		try {
+			if (dateTimeEnd != null) {
+				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
+			}
+		} catch (DateTimeParseException ignore) {
+		}
+		return dateTimes;
+	}
+
+	/**
+	 * This method searches for the course, shift and room name information in the
+	 * event being read by the BufferedReader and returns them in an array. Any
+	 * information not found is returned as null.
+	 * 
+	 * @param reader the buffered reader used to find and parse the event.
+	 * @return a string array with the course, shift and room of the event
+	 *         information.
+	 * @throws IOException is thrown if an error is given when reading file with
+	 *                     HTTPS protocol.
+	 */
+	static String[] buildInformation(BufferedReader reader) throws IOException {
+		String nextLine = skipReadUntilStartsWith(reader, DESCRIPTION_PATTERN);
+		if (nextLine == null) {
+			return new String[3];
+		}
+		StringBuilder descSB = new StringBuilder();
+		descSB.append(nextLine);
+		nextLine = reader.readLine();
+		while (nextLine != null && !LOCATION_PATTERN.matcher(nextLine).lookingAt()) {
+			descSB.append(nextLine.substring(1));
+			nextLine = reader.readLine();
+		}
+		String[] description = DESCRIPTION_DELIMITER_PATTERN.split(descSB.toString());
+		String[] info = new String[3];
+		for (int i = 0; i < description.length; i++) {
+			if (COURSE_PATTERN.matcher(description[i]).lookingAt()) {
+				info[0] = COURSE_PATTERN.matcher(description[i]).replaceFirst("").trim();
+			}
+			if (SHIFT_PATTERN.matcher(description[i]).lookingAt()) {
+				info[1] = SHIFT_PATTERN.matcher(description[i]).replaceFirst("").trim();
+			}
+		}
+		if (nextLine != null) {
+			String[] location = LOCATION_DELIMITER_PATTERN.split(nextLine);
+			info[2] = LOCATION_PATTERN.matcher(location[0]).replaceFirst("").trim();
+		}
+		return info;
+	}
+
+	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.
 	 * 
@@ -690,5 +1083,22 @@ final class Schedule {
 			}
 		}
 		return str.toString();
+	}
+
+	/**
+	 * Checks if there are overlapping lectures in this schedule.
+	 * 
+	 * @return true if there are any overlapping lectures, false otherwise.
+	 */
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

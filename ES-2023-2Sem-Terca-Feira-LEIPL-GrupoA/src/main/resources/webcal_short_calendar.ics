@@ -1,0 +1,108 @@
+BEGIN:VCALENDAR
+PRODID:-//ISCTE-IUL//fenix//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+X-WR-CALNAME:pmaaa2@iscte.pt_iscte-iul
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:20230515T200000Z
+DTEND:20230515T213000Z
+SUMMARY:Interacção Pessoa-Máquina - Human-Computer Interaction
+UID:847676220417007@fenix.iscte.pt
+DESCRIPTION:Semestre: 2022/2023 - 2.º Semestre\nUnidade de execução: Inte
+ racção Pessoa-Máquina\nCódigo: L5316\nTurno: L5316TP03\nInício: 2023-05-
+ 15 21:00\nFim: 2023-05-15 22:30\nDocente: Pedro Cláudio de Faria Lopes\n
+ \nSemester: 2022/2023 - 2.º Semestre\nExecution course: Human-Computer I
+ nteraction\nCode: L5316\nShift: L5316TP03\nBegin: 2023-05-15 21:00\nEnd:
+  2023-05-15 22:30\nTeacher: Pedro Cláudio de Faria Lopes\n\n
+LOCATION:C5.08\, 5\, Edifício II (ISCTE-IUL)\, ISCTE-IUL
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:20221018T183000Z
+DTEND:20221018T200000Z
+SUMMARY:Agentes Autónomos - Autonomous Agents
+UID:1692101150526353@fenix.iscte.pt
+DESCRIPTION:Semestre: 2022/2023 - 1.º Semestre\nUnidade de execução: Agen
+ tes Autónomos\nCódigo: 03727\nTurno: 03727TP07\nInício: 2022-10-18 19:30
+ \nFim: 2022-10-18 21:00\nDocente: Luís Miguel Pina Coelho Teixeira Botel
+ ho\n\nSemester: 2022/2023 - 1.º Semestre\nExecution course: Autonomous A
+ gents\nCode: 03727\nShift: 03727TP07\nBegin: 2022-10-18 19:30\nEnd: 2022
+ -10-18 21:00\nTeacher: Luís Miguel Pina Coelho Teixeira Botelho\n\n
+LOCATION:C5.08\, 5\, Edifício II (ISCTE-IUL)\, ISCTE-IUL
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:20221210T080000Z
+DTEND:20221210T163000Z
+SUMMARY:Alunos de Arquitetura de Redes
+UID:4786191295579752_11@fenix.iscte.pt
+DESCRIPTION:Alunos de Arquitetura de Redes\nDescrição: Pedidod por: Rui M
+ arinheiro\n\n\nParticipante responsável /Responsible participant: Vítor 
+ Hugo Teixeira\nOutros participantes /Other participants: \n   Afonso da 
+ Rocha\n   Pedro Miguel de Almeida\n   Lourenço Soares Veríssimo\n   Rafa
+ el Santiago\n   Salvador Miguel da Silva\n   Nuno Martins\n   David Migu
+ el Rosa\n   Inês Ribeiro\n   Ana Rita Francisco\n   Eduardo Carneiro\n  
+  Paulo Manuel Pires\n   David Miguel Paulino\n   Miguel de Brito\n   Dan
+ iel Epifânio Lopes\n   Diogo Afonso Cardoso\n   Pedro Alexandre Mendonça
+ \n   Edgar Costa\n   Henrique Duarte\n   Rodrigo Rodrigues dos Santos\n 
+   Guilherme Martins Nunes\n   Vasco Alexandre Domingos\n   Francisco Joã
+ o Ribeiro\n   Clemente Barros\n   Diogo Crava\n   Miguel Poço\n   Luís C
+ arlos Viana\n   Alexander Ferreira\n   Cláudia Alexandra Ferreira\n   Ví
+ tor Hugo da Silva\n   Julião Mendes\n   Alexandre Monteiro\n   Pedro Lui
+ s de Almeida\n   Tomás Canavilhas\n   Guilherme Santos Fernandes\n   Rod
+ rigo Almeida Paulo\n   Maria Teresa Vicente\n   Eduardo Oliveira\n   Nun
+ o Filipe Medrôa\n   Jorge Hristovsky\n   Rodrigo Alexandre Barradas\n   
+ Anthony Alejandro Orozco\n   Tomás Tomé Rosa\n   Nuno Monteiro\n   Bruno
+  Alexandre Carvalheiro\n   Alexandra Filipa Baltazar\n   João Diogo Rodr
+ igues\n   João Miguel Ribeiro\n   Tomás Santos de Carvalho\n   Jaime Ner
+ y Pignatelli\n   Alexandre Leitão\n   António Rocha\n   Vasco do Araújo\
+ n   Carolina Roque\n   Lucas Silva Fregona\n   João Ricardo Gamito\n   F
+ lávio Miguel Martins\n   Alexandre Rodrigo Torres\n   Adriano de Queiroz
+ \n   Guilherme Santos\n   André Fonseca Coelho\n   Catarina Alexandre Lo
+ ureiro\n
+LOCATION:C7.06\, C7.09
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:20221217T080000Z
+DTEND:20221217T163000Z
+SUMMARY:Alunos de Arquitetura de Redes
+UID:4786191295579752_12@fenix.iscte.pt
+DESCRIPTION:Alunos de Arquitetura de Redes\nDescrição: Pedidod por: Rui M
+ arinheiro\n\n\nParticipante responsável /Responsible participant: Vítor 
+ Hugo Teixeira\nOutros participantes /Other participants: \n   Afonso da 
+ Rocha\n   Pedro Miguel de Almeida\n   Lourenço Soares Veríssimo\n   Rafa
+ el Santiago\n   Salvador Miguel da Silva\n   Nuno Martins\n   David Migu
+ el Rosa\n   Inês Ribeiro\n   Ana Rita Francisco\n   Eduardo Carneiro\n  
+  Paulo Manuel Pires\n   David Miguel Paulino\n   Miguel de Brito\n   Dan
+ iel Epifânio Lopes\n   Diogo Afonso Cardoso\n   Pedro Alexandre Mendonça
+ \n   Edgar Costa\n   Henrique Duarte\n   Rodrigo Rodrigues dos Santos\n 
+   Guilherme Martins Nunes\n   Vasco Alexandre Domingos\n   Francisco Joã
+ o Ribeiro\n   Clemente Barros\n   Diogo Crava\n   Miguel Poço\n   Luís C
+ arlos Viana\n   Alexander Ferreira\n   Cláudia Alexandra Ferreira\n   Ví
+ tor Hugo da Silva\n   Julião Mendes\n   Alexandre Monteiro\n   Pedro Lui
+ s de Almeida\n   Tomás Canavilhas\n   Guilherme Santos Fernandes\n   Rod
+ rigo Almeida Paulo\n   Maria Teresa Vicente\n   Eduardo Oliveira\n   Nun
+ o Filipe Medrôa\n   Jorge Hristovsky\n   Rodrigo Alexandre Barradas\n   
+ Anthony Alejandro Orozco\n   Tomás Tomé Rosa\n   Nuno Monteiro\n   Bruno
+  Alexandre Carvalheiro\n   Alexandra Filipa Baltazar\n   João Diogo Rodr
+ igues\n   João Miguel Ribeiro\n   Tomás Santos de Carvalho\n   Jaime Ner
+ y Pignatelli\n   Alexandre Leitão\n   António Rocha\n   Vasco do Araújo\
+ n   Carolina Roque\n   Lucas Silva Fregona\n   João Ricardo Gamito\n   F
+ lávio Miguel Martins\n   Alexandre Rodrigo Torres\n   Adriano de Queiroz
+ \n   Guilherme Santos\n   André Fonseca Coelho\n   Catarina Alexandre Lo
+ ureiro\n
+LOCATION:C7.06\, C7.09
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20230426T132258Z
+DTSTART:20211019T160000Z
+DTEND:20211019T170000Z
+SUMMARY:Alunos
+UID:3941766365447838_0@fenix.iscte.pt
+DESCRIPTION:Alunos\n\n\nParticipante responsável /Responsible participant
+ : Pedro Miguel de Almeida\n
+LOCATION:D1.03
+END:VEVENT
+END:VCALENDAR
