@@ -731,7 +731,7 @@ class ScheduleTest {
 		assertEquals(csvContent, csvOutputContent);
 
 		// Load the JSON file
-		File jsonFile = new File("src/main/resources/horario_exemplo_json2.json");
+		File jsonFile = new File("src/main/resources/horario_exemplo_json.json");
 		FileInputStream jsonFis = new FileInputStream(jsonFile);
 		ReadableByteChannel jsonRbc = jsonFis.getChannel();
 
