@@ -4,6 +4,7 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javafx.fxml.FXML;
@@ -19,10 +20,15 @@ public class UploadSchedule implements Initializable{
 
 
 	@FXML
-	private Button saveFileCSV, saveFileJSON, backButton, getFile, viewSchedule, uploadFileCSV, uploadFileJSON;
+	private Button saveFileCSV, saveFileJSON, backButton, getFile, viewSchedule, uploadFile;
+	private RadioButton optionLocal = new RadioButton(), optionOnline = new RadioButton();
 
 	@FXML
-	private Label fileChosen;
+	private Label fileChosen, labelOnline;
+	@FXML
+	private TextField inputOnline;
+	
+	@FXML
 	private FileChooser fileChooser  = new FileChooser();
 	private File filePath, filePathToSave;
 	private String extension, filename, filenameToSave;
@@ -39,23 +45,54 @@ public class UploadSchedule implements Initializable{
 	@FXML
 	private void getFile() {
 
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV Files", "*.csv", "JSON Files", "*.json"));
 		fileChooser.setTitle("Open Resource File");
 		filePath = fileChooser.showOpenDialog(new Stage());
+		if (filePath == null) {
+			JOptionPane.showMessageDialog(null, "Por favor, selecione um ficheiro.", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
 		fileChosen.setText(filePath.getName());
 		filename = filePath.getAbsolutePath();
 		extension = filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-
-		if(extension.equals("csv")) {
-			uploadFileCSV.setVisible(true);
-
-		}else if(extension.equals("json")){
-			uploadFileJSON.setVisible(true);
-
+	
+		
+		if(extension.equals("csv") || extension.equals("json")) {
+			uploadFile.setVisible(true);
+			fileChosen.setVisible(true);
 		}else {
 			JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: "+ extension + "! Apenas são aceites extensões .json ou .csv", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
+	@FXML
+	private void setLocal() {
+		optionLocal.setSelected(true);
+		fileChosen.setVisible(true);
+		getFile.setVisible(true);
+		labelOnline.setVisible(false);
+		inputOnline.setVisible(false);
+		
+		viewSchedule.setVisible(false);
+		uploadFile.setVisible(false);
+		saveFileCSV.setVisible(false);
+		saveFileJSON.setVisible(false);
+		
+	}
+	
+	@FXML
+	private void setRemote() {
+		optionOnline.setSelected(true);
+		fileChosen.setVisible(false);
+		getFile.setVisible(false);
+		inputOnline.setVisible(true);
+		labelOnline.setVisible(true);
+		
+		viewSchedule.setVisible(false);
+		uploadFile.setVisible(false);
+		saveFileCSV.setVisible(false);
+		saveFileJSON.setVisible(false);
+	}
 
 	@FXML
 	private void saveFileCSV() {
@@ -67,7 +104,7 @@ public class UploadSchedule implements Initializable{
 		try {
 			Schedule.saveToCSV(scheduleUploaded, filenameToSave);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Erro ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -81,39 +118,40 @@ public class UploadSchedule implements Initializable{
 		try {
 			Schedule.saveToJSON(scheduleUploaded, filenameToSave);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Erro ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 
 	@FXML
-	private void uploadFileCSV() {
-
+	private void uploadFile() {
 		try {
-			scheduleUploaded = Schedule.loadCSV(filename);
+			if (optionOnline.isSelected()) {
+				if (inputOnline.getText().isBlank() || (!Schedule.getFileExtension(inputOnline.getText()).equals(".csv") && !Schedule.getFileExtension(inputOnline.getText()).equals(".json"))) {
+					JOptionPane.showMessageDialog(null, "URL do ficheiro remoto inválido", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+					System.out.println(inputOnline.getText());
+					System.out.println(Schedule.getFileExtension(inputOnline.getText()));
+					return;
+				}
+				String tmpUrl= Schedule.downloadFileFromURL(inputOnline.getText());
+				scheduleUploaded = Schedule.callLoad(tmpUrl);
+			}else if(optionLocal.isSelected()){
+				scheduleUploaded = Schedule.callLoad(filename);
+			}
 			viewSchedule.setVisible(true);
 			saveFileJSON.setVisible(true);
-
+			saveFileCSV.setVisible(true);
 		}catch(Exception e1) {
-
-			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		App.SCHEDULE = scheduleUploaded;
 	}
 
-
 	@FXML
-	private void uploadFileJSON() {
-
-		try {
-			scheduleUploaded = Schedule.loadJSON(filename);
-			viewSchedule.setVisible(true);
-			saveFileCSV.setVisible(true);
-		}catch(Exception e1) {
-			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
-		}
-		App.SCHEDULE = scheduleUploaded;
+	private void dealWithText() {
+		uploadFile.setVisible(true);
 	}
 
 
