@@ -718,6 +718,7 @@ class ScheduleTest {
 		    assertFalse(schedule.hasOvercrowdedLecture());
 		    schedule.addLecture(lecture4);
 		    assertTrue(schedule.hasOvercrowdedLecture());
+	}
 
 	@Test
 	final void testHasOverlappingLectures() {
