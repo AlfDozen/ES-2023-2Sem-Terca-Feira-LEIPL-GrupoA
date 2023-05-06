@@ -103,6 +103,7 @@ class LectureTest {
 		assertFalse(lecture.isComplete());
 	}
 
+
 	@Test
 	final void testCompareTo() {
 		TimeSlot timeSlotSameBeginTime = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
@@ -190,5 +191,33 @@ class LectureTest {
 		Room roomNull = new Room(null, (Integer) null);
 		Lecture lectureHalfNull = new Lecture(academicInfoNull, timeSlotNull, roomNull);
 		assertEquals("Unknown - Unknown-Unknown - Unknown - Unknown - Room Unknown", lectureHalfNull.toString());
+	}
+	
+	@Test
+	final void testIsOvercrowded() {
+		AcademicInfo academicInfo1 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+		TimeSlot timeSlot1 = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		Room room1 = new Room("ES23", 20);
+		Lecture lecture1 = new Lecture(academicInfo1, timeSlot1, room1);
+		
+		AcademicInfo academicInfo2 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 25);
+		TimeSlot timeSlot2 = new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32),
+				LocalTime.of(11, 23, 4));
+		Room room2 = new Room("ES23", 20);
+		Lecture lecture2 = new Lecture(academicInfo2, timeSlot2, room2);
+		
+		AcademicInfo academicInfo3 = new AcademicInfo(null, null, null, null, 25);
+		TimeSlot timeSlot3 = null;
+		Room room3 = new Room(null, 20);
+		Lecture lecture3 = new Lecture(academicInfo3, null, room3);
+		
+		Lecture lecture4 = new Lecture(null, null, null);
+		
+		assertFalse(lecture1.isOvercrowded());		
+		assertFalse(lecture4.isOvercrowded());		
+		assertTrue(lecture2.isOvercrowded());
+		assertTrue(lecture3.isOvercrowded());
+		
 	}
 }
