@@ -692,8 +692,36 @@ class ScheduleTest {
 	}
 	
 	@Test
-    final void testHasOvercrowdedLecture() {
-	        Lecture lecture1 = new Lecture(
+	final void testCreateScheduleFromCourseList() {
+		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		Lecture lecture2 = new Lecture(new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+				new TimeSlot("Sex", null, null, LocalTime.of(14, 30, 0)), new Room(null, (Integer) null));
+		List<Lecture> lectures = new ArrayList<>();
+		lectures.add(lecture1);
+		lectures.add(lecture2);
+		Schedule schedule = new Schedule(lectures);
+		AcademicInfo ac1 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+		AcademicInfo ac2 = new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30);
+	
+		List<AcademicInfo> courseList = new ArrayList<>();
+		courseList.add(ac1);
+		courseList.add(ac2);
+		Schedule newSchedule = schedule.createScheduleFromCourseList(courseList);
+		ArrayList<AcademicInfo> emptyList = new ArrayList<>();
+		
+		assertThrows(IllegalArgumentException.class, () -> newSchedule.createScheduleFromCourseList(null));
+		assertThrows(IllegalArgumentException.class, () -> newSchedule.createScheduleFromCourseList(emptyList));
+		
+		assertEquals(1, newSchedule.getLectures().size());
+		
+		assertEquals(lecture1, newSchedule.getLectures().get(0));
+	}
+
+  @Test
+  final void testHasOvercrowdedLecture() {
+	    Lecture lecture1 = new Lecture(
 					new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
 					new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
 					new Room("AA2.23", 50));
@@ -1078,8 +1106,7 @@ class ScheduleTest {
 		uc = scd.getUniqueLecturesCourses();
 		expected = "[]";
 		assertEquals(expected, (String) uc.toString());
-	}
-	
+	}	
 	
 	@Test
 	final void testgetCommonWeekLecture() throws IOException {
@@ -1103,5 +1130,4 @@ class ScheduleTest {
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
 		
 	}
-	
 }

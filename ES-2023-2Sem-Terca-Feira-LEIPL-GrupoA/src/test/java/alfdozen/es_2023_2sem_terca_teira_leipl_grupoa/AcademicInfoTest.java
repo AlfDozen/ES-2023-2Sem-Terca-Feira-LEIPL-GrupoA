@@ -3,6 +3,8 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AcademicInfoTest {
 
@@ -206,4 +208,35 @@ class AcademicInfoTest {
 						+ " - Class " + Lecture.FOR_NULL + " - " + Lecture.FOR_NULL + " Enrolled Students",
 				academicInfoNull.toString());
 	}
+	
+	@Test
+    final void testHashCode() {
+        AcademicInfo info1 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+        AcademicInfo info2 = new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5);
+
+        assertEquals(info1.hashCode(), info2.hashCode());
+    }
+	
+	@ParameterizedTest
+	@CsvSource({
+	    "LEI-PL, Engenharia de Software, T02A, LEIPL1, 5, LEI-PL, Engenharia de Software, T02A, LEIPL1, 5, true",
+	    "LEI-PL, Engenharia de Software, T02A, LEIPL1, 5, ME, Teoria dos Jogos e dos Contratos, 01789TP01, MEA1, 30, false",
+	    "LEI-PL, Engenharia de Software, T02A, LEIPL1, 5, LEI-PL, Engenharia de Software, T02A, LEIPL2, 5, false",
+	})
+	final void testEquals(String course1, String degree1, String classGroup1, String shift1, int studentsEnrolled1,
+	                       String course2, String degree2, String classGroup2, String shift2, int studentsEnrolled2,
+	                       boolean expected) {
+	    AcademicInfo info1 = new AcademicInfo(course1, degree1, classGroup1, shift1, studentsEnrolled1);
+	    AcademicInfo info2 = new AcademicInfo(course2, degree2, classGroup2, shift2, studentsEnrolled2);
+	    assertEquals(expected, info1.equals(info2));
+	    
+	    Schedule schedule = new Schedule();
+	    assertEquals(false, info1.equals(schedule));
+	    
+	    AcademicInfo info3 = null;
+	    assertEquals(false, info1.equals(info3));
+	    
+	    assertEquals(true, info1.equals(info1));
+	}
+	
 }

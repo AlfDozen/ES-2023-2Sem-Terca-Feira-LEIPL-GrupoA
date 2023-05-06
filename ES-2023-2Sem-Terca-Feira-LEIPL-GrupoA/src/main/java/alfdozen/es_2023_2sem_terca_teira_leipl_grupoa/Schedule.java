@@ -67,6 +67,7 @@ final class Schedule {
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
+	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list of courses cannot be null or empty";
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist";
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null";
@@ -79,7 +80,6 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-
 	private static final String DELIMITER = ";";
 	private static final String FILE_FORMAT_CSV = ".csv";
 	private static final String FILE_FORMAT_JSON = ".json";
@@ -657,6 +657,26 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
+	
+	/**
+	* Creates a new schedule containing lectures for the specified list of courses.
+	*
+	* @param courseList the list of academic information for the courses
+	* @return a new schedule containing lectures for the specified courses
+	* @throws IllegalArgumentException if the courseList is null or empty
+	*/
+	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
+		if (courseList == null || courseList.isEmpty())
+			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
+		Schedule newSchedule = new Schedule(studentName, studentNumber);
+		
+		for (Lecture lecture : lectures)
+			if(courseList.contains(lecture.getAcademicInfo()))
+					newSchedule.addLecture(lecture);
+		
+		return newSchedule;
+	}
+	
 
 	/**
 	 * Downloads a file from the specified URL and saves it to a temporary
