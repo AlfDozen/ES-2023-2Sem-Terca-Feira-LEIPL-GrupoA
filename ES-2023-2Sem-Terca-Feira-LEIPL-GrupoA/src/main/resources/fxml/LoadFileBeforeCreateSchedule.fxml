@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.image.ImageView?>
 
-<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerLoadFileBeforeCreateSchedule">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerLoadFileBeforeCreateSchedule">
    <children>
-      <Label alignment="CENTER" layoutX="213.0" layoutY="157.0" prefHeight="74.0" prefWidth="443.0" text="Escolha o ficheiro .CSV ou .JSON a importar" />
-      <Button fx:id="getFile" layoutX="360.0" layoutY="231.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFile" prefHeight="74.0" prefWidth="150.0" text="Seleccionar ficheiro a fazer upload" textAlignment="CENTER" wrapText="true">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
-      <Button fx:id="saveFileCSV" layoutX="264.0" layoutY="471.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="62.0" prefWidth="144.0" text="Guardar em CSV" textAlignment="CENTER" visible="false" />
-      <Label fx:id="fileChosen" alignment="CENTER" layoutX="224.0" layoutY="316.0" prefHeight="74.0" prefWidth="223.0" />
-      <Button fx:id="viewSchedule" layoutX="445.0" layoutY="471.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="uploadFileCSV" layoutX="463.0" layoutY="322.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#uploadFileCSV" prefHeight="62.0" prefWidth="144.0" text="Carregar ficheiro" textAlignment="CENTER" visible="false">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <Button fx:id="uploadFileJSON" layoutX="463.0" layoutY="322.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#uploadFileJSON" prefHeight="62.0" prefWidth="144.0" text="Carregar ficheiro" textAlignment="CENTER" visible="false">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <Button fx:id="saveFileJSON" layoutX="264.0" layoutY="471.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="62.0" prefWidth="144.0" text="Guardar em JSON" textAlignment="CENTER" visible="false" />
+      <RadioButton fx:id="optionLocal" layoutX="95.0" layoutY="121.0" mnemonicParsing="false" onAction="#setLocal" prefHeight="18.0" prefWidth="119.0" text="Ficheiro local">
+         <toggleGroup>
+            <ToggleGroup fx:id="file_chooser" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionOnline" layoutX="228.0" layoutY="121.0" mnemonicParsing="false" onAction="#setOnline" prefHeight="18.0" prefWidth="119.0" text="Ficheiro online" toggleGroup="$file_chooser" />
+      <RadioButton fx:id="optionFenix" layoutX="366.0" layoutY="121.0" mnemonicParsing="false" onAction="#setFenix" prefHeight="18.0" prefWidth="119.0" text="Ficheiro do Fénix" toggleGroup="$file_chooser" />
+      <RadioButton fx:id="optionPrevious" layoutX="515.0" layoutY="121.0" mnemonicParsing="false" onAction="#setPrevious" prefHeight="18.0" prefWidth="200.0" text="Ficheiro carregado previamente" toggleGroup="$file_chooser" />
+      
+      <Button fx:id="getFileButton" layoutX="194.0" layoutY="196.0" minHeight="49.0" minWidth="144.0" mnemonicParsing="false" onAction="#getFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar ficheiro" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Label fx:id="fileChosen" layoutX="352.0" layoutY="196.0" prefHeight="50.0" prefWidth="265.0" text="Nenhum ficheiro importado" visible="false" />
+      <Label fx:id="labelOnline" layoutX="322.0" layoutY="213.0" text="Insira o URL do ficheiro online" visible="false" />
+      <TextField fx:id="urlChosen" layoutX="255.0" layoutY="245.0" onKeyTyped="#dealWithText" prefWidth="300.0" visible="false" />
+      <Label fx:id="labelFenix" layoutX="244.0" layoutY="213.0" text="Insira o link do seu calendário pessoal da plataforma do Fénix" visible="false" />
+      <TextField fx:id="webcalChosen" layoutX="255.0" layoutY="245.0" onKeyTyped="#dealWithText" prefWidth="300.0" visible="false" />
+      <Label fx:id="labelPreviousLoad" alignment="BASELINE_CENTER" layoutX="313.0" layoutY="212.0" text="Já existe um ficheiro já carregado" visible="false" />
+      
+            
+      <Button fx:id="uploadFileButton" layoutX="339.0" layoutY="409.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="62.0" prefWidth="131.0" text="Importar ficheiro" visible="false" />
+      <Button fx:id="createScheduleButton" layoutX="339.0" layoutY="489.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="62.0" prefWidth="131.0" text="Criar novo horário" visible="false" />
+      <Button fx:id="backButton" layoutX="339.0" layoutY="569.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="62.0" prefWidth="131.0" text="Cancelar" />
+      <Label fx:id="labelPreviousNotLoad" alignment="BASELINE_CENTER" layoutX="236.0" layoutY="212.0" text="Não existe nenhum ficheiro carregado. Seleccione outra opção" visible="false" />
    </children>
 </AnchorPane>
