@@ -150,7 +150,7 @@ public class App extends Application implements Initializable {
 	@FXML
 	private void createSchedule() {
 		try {
-			App.setRoot("/fxml/CreateSchedule");
+			App.setRoot("/fxml/LoadFileBeforeCreateSchedule");
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de escolher horário", ERROR_TITLE_DIALOG,
 					JOptionPane.ERROR_MESSAGE);
