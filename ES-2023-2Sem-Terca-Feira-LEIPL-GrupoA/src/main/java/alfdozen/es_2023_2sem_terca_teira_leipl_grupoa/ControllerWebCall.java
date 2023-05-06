@@ -80,7 +80,7 @@ public class ControllerWebCall implements Initializable {
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
-			Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
+			Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
 			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV!", App.SUCCESS_TITLE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
@@ -135,6 +135,15 @@ public class ControllerWebCall implements Initializable {
 			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar à página inicial", App.ALERT_TITLE,
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * Event handler for dealing with text. This method makes the uploadFile button
+	 * visible.
+	 */
+	@FXML
+	private void dealWithText() {
+		importSchedule.setVisible(true);
 	}
 
 	/**
