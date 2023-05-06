@@ -896,7 +896,6 @@ final class Schedule {
 			URLConnection connection = httpURL.openConnection();
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-			reader.close();
 			return readICalendar(reader);
 		} catch (MalformedURLException e) {
 			throw new MalformedURLException(URI_NOT_VALID_EXCEPTION);

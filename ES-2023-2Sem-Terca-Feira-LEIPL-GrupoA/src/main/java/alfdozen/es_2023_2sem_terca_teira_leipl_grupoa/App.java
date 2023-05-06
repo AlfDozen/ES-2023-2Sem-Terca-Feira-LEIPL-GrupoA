@@ -116,7 +116,7 @@ public class App extends Application implements Initializable {
 	@FXML
 	private void importSchedule() {
 		try {
-		  App.setRoot("/fxml/ImportSchedule");
+			App.setRoot("/fxml/ImportSchedule");
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de carregar horário de ficheiro",
 					ERROR_TITLE_DIALOG, JOptionPane.ERROR_MESSAGE);
