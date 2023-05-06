@@ -443,4 +443,22 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	public String toString() {
 		return getDateString() + " - " + getTimeBeginString() + "-" + getTimeEndString();
 	}
+
+	/**
+	 * Verify if this TimeSlot overlaps a given TimeSlot by checking if this
+	 * timeslots timeBegin is before the timeEnd given TimeSlot or this TimeSlot
+	 * timeEnd is after the timeBegin of the given TimeSlot
+	 * 
+	 * @param other The other TimeSlot to be verified.
+	 * @return true is overlaps, false otherwise.
+	 */
+	public boolean overlaps(TimeSlot other) {
+		if (other == null || other.timeBegin == null || other.timeEnd == null || other.date == null
+				|| this.timeBegin == null || this.timeEnd == null || this.date == null
+				|| !other.date.equals(this.date)) {
+			return false;
+		}
+		return (this.timeBegin.compareTo(other.timeEnd) < 0) && (this.timeEnd.compareTo(other.timeBegin) > 0);
+	}
+
 }

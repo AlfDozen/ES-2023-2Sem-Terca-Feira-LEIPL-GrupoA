@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +57,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  * @version 1.0.0
  */
 final class Schedule {
+	static final String NULL_URL_EXCEPTION_MESSAGE = "URL is null";
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
@@ -63,6 +67,7 @@ final class Schedule {
 	static final String WRONG_FILE_FORMAT_EXCEPTION = "The file format should be ";
 	static final String FILE_NULL_EXCEPTION = "The file cannot be null";
 	static final String ROW_EXCEPTION = "The row has more columns than the expected";
+	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list of courses cannot be null or empty";
 	static final String FILE_EXISTS_EXCEPTION = "The file already exists";
 	static final String FILE_NOT_EXISTS_EXCEPTION = "The provided file does not exist";
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null";
@@ -78,7 +83,10 @@ final class Schedule {
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
-	
+	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
+	static final String TEMP_FILE_CSV = "tempFile.csv";
+	static final String TEMP_FILE_JSON = "tempFile.json";
+
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -108,6 +116,8 @@ final class Schedule {
 	private static final Pattern SHIFT_PATTERN = Pattern.compile("Turno:", Pattern.LITERAL);
 	private static final Pattern LOCATION_PATTERN = Pattern.compile("LOCATION:", Pattern.LITERAL);
 	private static final Pattern LOCATION_DELIMITER_PATTERN = Pattern.compile("\\,", Pattern.LITERAL);
+	private static final double FREQUENCY_LIMIT = 0.3;
+	private static final String LECTURE_DELIMITER = " - ";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -648,6 +658,156 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
+	
+	/**
+	* Creates a new schedule containing lectures for the specified list of courses.
+	*
+	* @param courseList the list of academic information for the courses
+	* @return a new schedule containing lectures for the specified courses
+	* @throws IllegalArgumentException if the courseList is null or empty
+	*/
+	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
+		if (courseList == null || courseList.isEmpty())
+			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
+		Schedule newSchedule = new Schedule(studentName, studentNumber);
+		
+		for (Lecture lecture : lectures)
+			if(courseList.contains(lecture.getAcademicInfo()))
+					newSchedule.addLecture(lecture);
+		
+		return newSchedule;
+	}
+	
+
+	/**
+	 * Downloads a file from the specified URL and saves it to a temporary
+	 * directory.
+	 *
+	 * @param url The URL of the file to download.
+	 * @return The file name of the downloaded file (tempFile.csv or tempFile.json)
+	 *         if successful, or null if an IOException occurs.
+	 * @throws NullPointerException     If the URL is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue creating or deleting
+	 *                                  the temporary file, or if there is an error
+	 *                                  closing the ReadableByteChannel.
+	 */
+	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
+		if (url == null) {
+			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
+		}
+
+		URL fileURL = new URL(url);
+		String fileName = fileURL.getFile();
+		String fileExtension = getFileExtension(fileName);
+
+		// Create a File object for the downloaded file
+		File tempDir = new File(TEMP_FILE_PATH);
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
+		}
+		String tempFileName;
+		if (fileExtension.equals(FILE_FORMAT_CSV)) {
+			tempFileName = TEMP_FILE_CSV;
+		} else if (fileExtension.equals(FILE_FORMAT_JSON)) {
+			tempFileName = TEMP_FILE_JSON;
+		} else {
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+		File file = new File(tempDir, tempFileName);
+
+		// Delete the file if it already exists in the temp directory
+		if (file.exists()) {
+			file.delete();
+		}
+		file.createNewFile();
+		// Download the file from the URL and save it to the temp directory
+		ReadableByteChannel rbc = null;
+		try {
+			rbc = Channels.newChannel(fileURL.openStream());
+			readChannelToFile(rbc, file);
+		} catch (IOException e) {
+			return null;
+		} finally {
+			if (rbc != null) {
+				rbc.close();
+			}
+		}
+		return file.getPath();
+	}
+
+	/**
+	 * 
+	 * Reads the contents of a ReadableByteChannel and writes them to a File.
+	 * 
+	 * @param rbc  the ReadableByteChannel to read from
+	 * @param file the File to write to
+	 * @throws IOException if there is an error reading from the channel or writing
+	 *                     to the file
+	 */
+	static void readChannelToFile(ReadableByteChannel rbc, File file) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		}
+	}
+
+	/**
+	 * Loads a schedule from the specified file path, supporting both CSV and JSON
+	 * formats. If the file is a temporary file downloaded from a URL, it will be
+	 * deleted after loading the schedule.
+	 *
+	 * @param filePath The file path of the schedule file to load.
+	 * @return A Schedule object created from the data in the file.
+	 * @throws NullPointerException     If the file path is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue reading the file or
+	 *                                  deleting the temporary file.
+	 */
+	static Schedule callLoad(String filePath) throws IOException {
+		if (filePath == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
+		Schedule schedule;
+
+		// Check if file is CSV or JSON
+		String extension = getFileExtension(filePath);
+		switch (extension) {
+		case FILE_FORMAT_CSV:
+			schedule = loadCSV(filePath);
+			break;
+		case FILE_FORMAT_JSON:
+			schedule = loadJSON(filePath);
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+
+		// Delete temporary file if it was downloaded from URL
+		if (filePath.endsWith(TEMP_FILE_CSV) || filePath.endsWith(TEMP_FILE_JSON)) {
+			File file = new File(filePath);
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+		return schedule;
+	}
+
+	/**
+	 * 
+	 * Gets the file extension from a given file name.
+	 * 
+	 * @param fileName the name of the file
+	 * @return the file extension
+	 */
+	static String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0) {
+			return fileName.substring(dotIndex);
+		}
+		return "";
+	}
 
 	/**
 	 * Validates the input arguments for file conversion methods.
@@ -678,7 +838,21 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
 	}
-	
+
+	/**
+	 * Checks if at least one of the lectures in this schedule is overloaded.
+	 *
+	 * @return true if at least one lecture is overloaded, return false otherwise.
+	 */
+	public boolean hasOvercrowdedLecture() {
+		for (Lecture lecture : lectures) {
+			if (lecture.isOvercrowded()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns a set with the unique lecture's name of an object shedule
 	 * 
@@ -686,7 +860,7 @@ final class Schedule {
 	 */
 	public Set<String> getUniqueLecturesCourses() {
 		Set<String> uniqueCourses = new HashSet<String>();
-		for(Lecture l : lectures) {
+		for (Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());
 		}
 		return uniqueCourses;
@@ -901,15 +1075,6 @@ final class Schedule {
 		}
 		return info;
 	}
-
-	// DUPLICADO PARA APAGAR AO JUNTAR AO MAIN
-	static String getFileExtension(String fileName) {
-		int dotIndex = fileName.lastIndexOf(".");
-		if (dotIndex > 0) {
-			return fileName.substring(dotIndex);
-		}
-		return "";
-	}
 	
 	/**
 	 * Returns a string representation of the schedule, including the student's name
@@ -939,5 +1104,161 @@ final class Schedule {
 			}
 		}
 		return str.toString();
+	}
+
+	/**
+	 * Returns a list of lectures where each string is composed of weekday, hour and
+	 * the course name when each lecture usually occurs. The returned list about the
+	 * lectures may concern partially or to the entire list of lectures belonging to
+	 * a schedule.
+	 * 
+	 * @param courses the list of strings with the course names of the lectures
+	 *                expected to receive the details from
+	 * 
+	 * @return a List of lectures with detail of weekday and hour that all the
+	 *         courses typically occur, mentioned in the list of strings given in
+	 *         the input .
+	 */
+	public List<Lecture> getCommonWeekLecture(List<String> courses) {
+
+		List<String> commonLecturesString = new ArrayList<>();
+
+		if (!courses.isEmpty()) {
+
+			Map<String, Integer> map = getMapCourses(courses);
+			Map<String, Integer> mapCounter = getCourseDaysMap();
+
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+
+				String[] keySplit = entry.getKey().split(LECTURE_DELIMITER);
+
+				double ratio = entry.getValue() / (double) (mapCounter.get(keySplit[2]));
+
+				if (!commonLecturesString.contains(entry.getKey()) && (ratio > FREQUENCY_LIMIT)) {
+					commonLecturesString.add(entry.getKey());
+				}
+			}
+		}
+		return convertStringToLecture(commonLecturesString);
+	}
+
+	/**
+	 * Gets from input a list of strings with only the essential details from a
+	 * lecture and returns a list of lectures created with the data on each string
+	 * of the list.
+	 * 
+	 * @param list list of strings with weekday, hours and course name
+	 * @return list of lectures created using the info in each string of the
+	 *         parameter
+	 */
+	private List<Lecture> convertStringToLecture(List<String> list) {
+
+		List<Lecture> lecturesList = new ArrayList<>();
+
+		for (String str : list) {
+
+			String[] strSplit = str.split(LECTURE_DELIMITER);
+
+			String[] time = strSplit[1].split("-");
+			String timeBeg = time[0];
+			String timeEnd = time[1];
+
+			TimeSlot date = new TimeSlot(strSplit[0], null, timeBeg, timeEnd);
+			AcademicInfo course = new AcademicInfo("", strSplit[2], "", "", 0);
+			Room room = new Room("", 1);
+			lecturesList.add(new Lecture(course, date, room));
+		}
+		return lecturesList;
+	}
+
+	/**
+	 * Returns a Map where the key is the combination of weekday, hour and course
+	 * name when it occurs, for each lecture in a schedule, and the value is the
+	 * number of times that combination occurs.
+	 * 
+	 * @return a Map with string in the key and integer in the value.
+	 */
+
+	private Map<String, Integer> getMapCourses(List<String> courses) {
+
+		Map<String, Integer> mapLectures = new HashMap<>();
+
+		for (String course : courses) {
+
+			for (Lecture lec : lectures) {
+
+				if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
+						|| lec.getAcademicInfo().getCourse() == null) {
+					continue;
+				}
+
+				if (lec.getAcademicInfo().getCourse().equals(course)) {
+
+					String[] day = lec.getTimeSlot().getDateString().split("/");
+					LocalDate date = LocalDate.of(Integer.parseInt(day[2]), Integer.parseInt(day[1]),
+							Integer.parseInt(day[0]));
+
+					int weekDay = date.getDayOfWeek().getValue();
+					String hour = lec.getTimeSlot().getTimeBeginString() + "-" + lec.getTimeSlot().getTimeEndString();
+
+					String key = weekDay + LECTURE_DELIMITER + hour + LECTURE_DELIMITER + course;
+
+					if (mapLectures.containsKey(key)) {
+						Integer value = mapLectures.get(key);
+						mapLectures.put(key, value + 1);
+
+					} else {
+						mapLectures.putIfAbsent(key, 1);
+					}
+				}
+			}
+		}
+		return mapLectures;
+	}
+
+	/**
+	 * Returns a Map where the key is the course name and the value is the total
+	 * number of days that course appears throughout the schedule.
+	 * 
+	 * @return Map with the total number of times each course occurs in a schedule
+	 */
+	private Map<String, Integer> getCourseDaysMap() {
+
+		Map<String, Integer> mapDays = new HashMap<>();
+
+		for (Lecture lec : lectures) {
+
+			if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
+					|| lec.getAcademicInfo().getCourse() == null) {
+				continue;
+			}
+
+			String key = lec.getAcademicInfo().getCourse();
+
+			if (mapDays.containsKey(key)) {
+				Integer value = mapDays.get(key);
+				mapDays.put(key, value + 1);
+			} else {
+				mapDays.putIfAbsent(key, 1);
+			}
+		}
+		return mapDays;
+	}
+
+	/**
+	 * Checks if there are overlapping lectures in this schedule.
+	 * 
+	 * @return true if there are any overlapping lectures, false otherwise.
+	 */
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
