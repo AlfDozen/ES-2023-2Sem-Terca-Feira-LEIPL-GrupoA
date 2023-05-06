@@ -39,6 +39,9 @@ public class ControllerWebCall implements Initializable {
 	@FXML
 	private AnchorPane window;
 
+	public static final String ALERT_TITLE = "Alerta";
+	public static final String SUCCESS_TITLE = "Sucesso";
+
 	/**
 	 * Imports a schedule from the provided webcal URL and displays the schedule in
 	 * the GUI. Called when the importSchedule button is clicked. If successful, it
@@ -54,13 +57,13 @@ public class ControllerWebCall implements Initializable {
 			viewSchedule.setVisible(true);
 			saveCSV.setVisible(true);
 			saveJSON.setVisible(true);
-			JOptionPane.showMessageDialog(null, "Horário importado com sucesso!", App.SUCCESS_TITLE,
+			JOptionPane.showMessageDialog(null, "Horário importado com sucesso!", SUCCESS_TITLE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IllegalArgumentException e) {
-			JOptionPane.showMessageDialog(null, "Erro: URL inválido", App.ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro: URL inválido", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro: Problema ao conectar à Internet ou ao ler o arquivo",
-					App.ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+					ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -81,10 +84,10 @@ public class ControllerWebCall implements Initializable {
 
 		try {
 			Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV!", App.SUCCESS_TITLE,
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV!", SUCCESS_TITLE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao gravar", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -104,10 +107,10 @@ public class ControllerWebCall implements Initializable {
 		filenameToSave = filePathToSave.getAbsolutePath();
 		try {
 			Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em JSON!", App.SUCCESS_TITLE,
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em JSON!", SUCCESS_TITLE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao gravar", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -132,7 +135,7 @@ public class ControllerWebCall implements Initializable {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar à página inicial", App.ALERT_TITLE,
+			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar à página inicial", ALERT_TITLE,
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
