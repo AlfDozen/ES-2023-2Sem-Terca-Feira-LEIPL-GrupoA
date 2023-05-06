@@ -80,12 +80,13 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-	private static final String DELIMITER = ";";
-	private static final String FILE_FORMAT_CSV = ".csv";
-	private static final String FILE_FORMAT_JSON = ".json";
+	static final String DELIMITER = ";";
+	static final String FILE_FORMAT_CSV = ".csv";
+	static final String FILE_FORMAT_JSON = ".json";
 	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
 	static final String TEMP_FILE_CSV = "tempFile.csv";
 	static final String TEMP_FILE_JSON = "tempFile.json";
+
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -1026,14 +1027,12 @@ final class Schedule {
 			if (dateTimeBegin != null) {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		return dateTimes;
 	}
 
@@ -1076,7 +1075,7 @@ final class Schedule {
 		}
 		return info;
 	}
-
+	
 	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.

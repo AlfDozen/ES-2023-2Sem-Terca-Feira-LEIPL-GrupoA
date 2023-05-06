@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.image.ImageView?>
 
-<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ConvertFile">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerConvertFile">
    <children>
-      <Label alignment="CENTER" layoutX="157.0" layoutY="226.0" prefHeight="74.0" prefWidth="443.0" text="Escolha o ficheiro .CSV ou .JSON a importar" />
-      <Button fx:id="getFileJSON" layoutX="428.0" layoutY="300.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFileJSON" prefHeight="74.0" prefWidth="150.0" text="Seleccionar ficheiro .JSON a fazer upload" textAlignment="CENTER" wrapText="true">
+      <Button fx:id="cancelButton" layoutX="294.0" layoutY="483.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="67.0" prefWidth="158.0" text="Cancelar" />
+      <Button fx:id="chooseFileButton" layoutX="137.0" layoutY="242.0" minHeight="40.0" minWidth="150.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="40.0" prefWidth="150.0" text="Seleccionar ficheiro" textAlignment="CENTER" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
-      <Button fx:id="convertCSV2JSON" layoutX="334.0" layoutY="577.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#convertCSV2JSON" prefHeight="67.0" prefWidth="158.0" text="Converter .CSV para .JSON" textAlignment="CENTER" visible="false" wrapText="true">
+      <Button fx:id="convertFileButton" layoutX="294.0" layoutY="350.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="67.0" prefWidth="158.0" text="Converter" textAlignment="CENTER" visible="false" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Label fx:id="fileChosen" alignment="CENTER" layoutX="185.0" layoutY="393.0" prefHeight="74.0" prefWidth="443.0" />
-      <Button fx:id="getFileCSV" layoutX="229.0" layoutY="300.0" minHeight="74.0" minWidth="150.0" mnemonicParsing="false" onAction="#getFileCSV" prefHeight="74.0" prefWidth="150.0" text="Seleccionar ficheiro .CSV a fazer upload" textAlignment="CENTER" wrapText="true">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <Button fx:id="convertJSON2CSV" layoutX="334.0" layoutY="577.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#convertJSON2CSV" prefHeight="67.0" prefWidth="158.0" text="Converter .JSON para .CSV" textAlignment="CENTER" visible="false" wrapText="true">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <TextField fx:id="delimiter" layoutX="313.0" layoutY="516.0" onKeyTyped="#delimiter" visible="false" />
-      <Label fx:id="label" layoutX="213.0" layoutY="478.0" prefHeight="21.0" prefWidth="443.0" text="Indique qual é o caracter separador de colunas do ficheiro .csv" visible="false" wrapText="true" />
+      <TextField fx:id="filePathTF" editable="false" layoutX="294.0" layoutY="242.0" maxWidth="900.0" prefHeight="40.0" prefWidth="418.0" text="Nenhum ficheiro selecionado" />
    </children>
 </AnchorPane>
