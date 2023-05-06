@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ConvertFile">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerConvertFile">
    <children>
       <Button fx:id="cancelButton" layoutX="294.0" layoutY="483.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="67.0" prefWidth="158.0" text="Cancelar" />
       <Button fx:id="chooseFileButton" layoutX="137.0" layoutY="242.0" minHeight="40.0" minWidth="150.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="40.0" prefWidth="150.0" text="Seleccionar ficheiro" textAlignment="CENTER" wrapText="true">

@@ -906,6 +906,15 @@ final class Schedule {
 		return info;
 	}
 
+	// DUPLICADO PARA APAGAR AO JUNTAR AO MAIN
+	static String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0) {
+			return fileName.substring(dotIndex);
+		}
+		return "";
+	}
+	
 	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.
