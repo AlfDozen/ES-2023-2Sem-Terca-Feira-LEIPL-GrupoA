@@ -4,9 +4,7 @@ import javafx.application.Application;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javax.swing.JOptionPane;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -118,7 +116,7 @@ public class App extends Application implements Initializable {
 	@FXML
 	private void importSchedule() {
 		try {
-			App.setRoot("/fxml/UploadSchedule");
+		  App.setRoot("/fxml/ImportSchedule");
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de carregar horário de ficheiro",
 					ERROR_TITLE_DIALOG, JOptionPane.ERROR_MESSAGE);
