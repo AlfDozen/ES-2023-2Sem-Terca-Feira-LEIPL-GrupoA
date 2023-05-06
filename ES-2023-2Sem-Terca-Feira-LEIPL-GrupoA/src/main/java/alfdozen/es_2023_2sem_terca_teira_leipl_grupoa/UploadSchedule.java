@@ -67,7 +67,7 @@ public class UploadSchedule implements Initializable{
 		try {
 			Schedule.saveToCSV(scheduleUploaded, filenameToSave);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Erro ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class UploadSchedule implements Initializable{
 		try {
 			Schedule.saveToJSON(scheduleUploaded, filenameToSave);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Erro ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

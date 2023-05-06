@@ -1,9 +1,6 @@
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
-
 import javafx.application.Application;
-
-import java.awt.Button;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,10 +17,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
-
-public class App extends Application implements Initializable{
-
-
+public class App extends Application implements Initializable {
+	public static final String ALERT_TITLE = "Alerta";
+	public static final String SUCCESS_TITLE = "Sucesso";
 	@FXML
 	private Button convertFile, createSchedule, uploadSchedule, webcal;
 
@@ -37,7 +33,7 @@ public class App extends Application implements Initializable{
 	private Label header;
 
 	@FXML
-	private AnchorPane window; 
+	private AnchorPane window;
 
 	private static Scene SCENE;
 	private static Stage STAGE;
@@ -46,7 +42,7 @@ public class App extends Application implements Initializable{
 		return STAGE;
 	}
 
-	public static Schedule SCHEDULE = new Schedule(); 
+	public static Schedule SCHEDULE = new Schedule();
 
 	public static void setStageSize(double width, double height) {
 		STAGE.setWidth(width);
@@ -65,7 +61,7 @@ public class App extends Application implements Initializable{
 			STAGE.setScene(SCENE);
 			STAGE.show();
 
-		} catch(Exception e) {
+		} catch (Exception e) {
 			System.err.println("Erro ao tentar correr o conteudo");
 		}
 	}
@@ -109,10 +105,9 @@ public class App extends Application implements Initializable{
 		launch(args);
 	}
 
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
+		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
 		image.setImage(photo);
 		header.setText("Bem vindo à plataforma de gestão de horários para alunos ISCTE");
 	}

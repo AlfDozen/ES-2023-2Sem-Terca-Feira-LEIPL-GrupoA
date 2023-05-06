@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.image.ImageView?>
 
-<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Webcal">
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerWebCall">
    <children>
-      <Label alignment="CENTER" layoutX="157.0" layoutY="226.0" prefHeight="74.0" prefWidth="465.0" text="Insira o URI do seu calendário pessoal da plataforma do Fénix ISCTE. " wrapText="true" />
-      <Button fx:id="backButton" layoutX="69.0" layoutY="60.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
-      <TextField fx:id="webcal" layoutX="167.0" layoutY="300.0" prefHeight="49.0" prefWidth="442.0" />
-      <Button fx:id="save" layoutX="306.0" layoutY="384.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#webcallLink" prefHeight="62.0" prefWidth="131.0" text="Guardar" />
-      <Button fx:id="viewSchedule" layoutX="306.0" layoutY="463.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true">
+      <Label alignment="CENTER" layoutX="175.0" layoutY="100.0" prefHeight="74.0" prefWidth="465.0" text="Insira o link do seu calendário pessoal da plataforma do Fénix" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="backButton" layoutX="327.0" layoutY="465.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="166.0" text="Cancelar" />
+      <TextField fx:id="webcalURLTextField" layoutX="187.0" layoutY="150.0" prefHeight="49.0" prefWidth="442.0" />
+      <Button fx:id="importSchedule" layoutX="343.0" layoutY="233.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#importScheduleFromWebcal" prefHeight="62.0" prefWidth="131.0" text="Importar horário" />
+      <Button fx:id="viewSchedule" layoutX="345.0" layoutY="323.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
+      <Button fx:id="saveCSV" layoutX="219.0" layoutY="403.0" mnemonicParsing="false" onAction="#saveCSV" prefHeight="49.0" prefWidth="166.0" text="Guardar CSV" visible="false" />
+      <Button fx:id="saveJSON" layoutX="433.0" layoutY="403.0" mnemonicParsing="false" onAction="#saveJSON" prefHeight="49.0" prefWidth="166.0" text="Guardar JSON" visible="false" />
    </children>
 </AnchorPane>
