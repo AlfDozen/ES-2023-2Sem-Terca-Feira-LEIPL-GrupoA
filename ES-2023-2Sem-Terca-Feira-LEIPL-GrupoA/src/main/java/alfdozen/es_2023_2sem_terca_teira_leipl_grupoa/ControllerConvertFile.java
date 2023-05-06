@@ -43,8 +43,7 @@ public class ControllerConvertFile implements Initializable {
 	@FXML
 	private void chooseFile() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("JSON", "*.json"));
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV", "*.csv"));
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV, JSON", "*.csv", "*.json"));
 		File file = fileChooser.showOpenDialog(new Stage());
 		if (file == null) {
 			JOptionPane.showMessageDialog(null, "Não é possível ler o ficheiro selecionado", "Alerta",
@@ -111,10 +110,10 @@ public class ControllerConvertFile implements Initializable {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "Ficheiro convertido para JSON com sucesso", "Sucesso",
+			JOptionPane.showMessageDialog(null, "Ficheiro convertido para CSV com sucesso", "Sucesso",
 					JOptionPane.INFORMATION_MESSAGE);
-			returnHome();
 		}
+		returnHome();
 	}
 
 	/**
