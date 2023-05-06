@@ -30,9 +30,9 @@ import javafx.scene.layout.AnchorPane;
  * @version 1.0.0
  */
 public class App extends Application implements Initializable {
-	
+
 	public static final String ERROR_TITLE_DIALOG = "Erro";
-	
+
 	private static Scene scene;
 	private static Stage stage;
 	public static Schedule SCHEDULE;
@@ -196,7 +196,7 @@ public class App extends Application implements Initializable {
 	 */
 	@FXML
 	private void closeWindow() {
-		stage.close();		
+		stage.close();
 	}
 
 	/**
@@ -205,10 +205,10 @@ public class App extends Application implements Initializable {
 	 * main scene. If the schedule object is not null and has lectures, the
 	 * viewScheduleButton is shown. Otherwise, it is hidden.
 	 *
-	 * @param location  the location used to resolve relative paths for the root
-	 *                  object, or null if the location is not known.
-	 * @param resources the resources used to localize the root object, or null if
-	 *                  the root object was not localized.
+	 * @param arg0 the location used to resolve relative paths for the root object,
+	 *             or null if the location is not known.
+	 * @param arg1 the resources used to localize the root object, or null if the
+	 *             root object was not localized.
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -218,7 +218,9 @@ public class App extends Application implements Initializable {
 	}
 
 	/**
-	 * The main method of this application. It launches the application in the main menu.
+	 * The main method of this application. It launches the application in the main
+	 * menu.
+	 * 
 	 * @param args the command line arguments.
 	 */
 	public static void main(String[] args) {
