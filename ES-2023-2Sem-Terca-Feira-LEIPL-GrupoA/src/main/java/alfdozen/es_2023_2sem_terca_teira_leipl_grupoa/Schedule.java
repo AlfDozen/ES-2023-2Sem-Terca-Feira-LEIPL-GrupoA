@@ -853,16 +853,12 @@ final class Schedule {
 			if (dateTimeBegin != null) {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
-		}
+		} catch (DateTimeParseException ignore) {}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
-		}
+		} catch (DateTimeParseException ignore) {}
 		return dateTimes;
 	}
 

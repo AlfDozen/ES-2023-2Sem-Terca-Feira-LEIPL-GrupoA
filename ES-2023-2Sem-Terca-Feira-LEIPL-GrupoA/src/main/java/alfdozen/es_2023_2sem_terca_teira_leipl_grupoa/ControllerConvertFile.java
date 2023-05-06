@@ -49,6 +49,9 @@ public class ControllerConvertFile implements Initializable {
 		if (file == null) {
 			JOptionPane.showMessageDialog(null, "Não é possível ler o ficheiro selecionado", "Alerta",
 					JOptionPane.ERROR_MESSAGE);
+			filePathTF.setText("Nenhum ficheiro selecionado");
+			convertFileButton.setText("Converter");
+			convertFileButton.setVisible(false);
 			return;
 		}
 		String filePath = file.getAbsolutePath();
@@ -57,6 +60,8 @@ public class ControllerConvertFile implements Initializable {
 			JOptionPane.showMessageDialog(null, "O ficheiro selecionado não tem a extensão " + Schedule.FILE_FORMAT_JSON
 					+ " ou " + Schedule.FILE_FORMAT_CSV, "Alerta", JOptionPane.ERROR_MESSAGE);
 			filePathTF.setText("Nenhum ficheiro selecionado");
+			convertFileButton.setText("Converter");
+			convertFileButton.setVisible(false);
 			return;
 		}
 		filePathTF.setText(filePath);
