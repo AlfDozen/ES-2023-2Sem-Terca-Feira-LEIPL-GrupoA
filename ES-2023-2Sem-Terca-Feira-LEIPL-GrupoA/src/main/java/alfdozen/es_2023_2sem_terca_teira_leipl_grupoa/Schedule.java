@@ -78,7 +78,7 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-
+  
 	private static final String DELIMITER = ";";
 	private static final String FILE_FORMAT_CSV = ".csv";
 	private static final String FILE_FORMAT_JSON = ".json";
@@ -813,6 +813,21 @@ final class Schedule {
 		if (!destinationPath.endsWith(destinationFormat)) {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
+	}
+
+	
+	/**
+	 * Checks if at least one of the lectures in this schedule is overloaded.
+	 *
+	 * @return true if at least one lecture is overloaded, return false otherwise.
+	 */
+	public boolean hasOvercrowdedLecture() {
+		for (Lecture lecture : lectures) {
+			if (lecture.isOvercrowded()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
