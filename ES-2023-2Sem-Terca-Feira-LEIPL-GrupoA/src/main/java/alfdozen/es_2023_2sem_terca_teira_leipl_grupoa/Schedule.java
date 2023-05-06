@@ -1069,4 +1069,21 @@ final class Schedule {
 		}
 		return str.toString();
 	}
+
+	/**
+	 * Checks if there are overlapping lectures in this schedule.
+	 * 
+	 * @return true if there are any overlapping lectures, false otherwise.
+	 */
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

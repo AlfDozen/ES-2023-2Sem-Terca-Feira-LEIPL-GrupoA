@@ -692,7 +692,37 @@ class ScheduleTest {
 	}
 
 	@Test
-	void downloadFileFromURL() throws IllegalArgumentException, IOException {
+	final void testHasOverlappingLectures() {
+		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "IPM", "L0705TP23", "DHMCMG1", 10),
+				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(14, 0, 0), LocalTime.of(15, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+				new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+		Lecture lecture3 = new Lecture(new AcademicInfo("LEI-PL", "FAC", "L0705TP23", "ET-A10", 44),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 31), LocalTime.of(14, 30, 0), LocalTime.of(16, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture4 = new Lecture(new AcademicInfo("LEI-PL", "DIAM", "L0705TP23", "ET-A10", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture5 = new Lecture(null,
+				new TimeSlot(null, LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)), null);
+
+		Schedule schedule = new Schedule();
+		schedule.addLecture(lecture1);
+		schedule.addLecture(lecture2);
+		schedule.addLecture(lecture3);
+		schedule.addLecture(lecture4);
+
+		assertTrue(schedule.hasOverlappingLectures());
+		schedule.removeLecture(lecture3);
+		assertFalse(schedule.hasOverlappingLectures());
+		schedule.addLecture(lecture5);
+		assertTrue(schedule.hasOverlappingLectures());
+
+	}
+  
+  @Test
+	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
 		// Test with null URL
 		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null));
 		// Create a temporary CSV file
@@ -716,7 +746,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testReadChannelToFileWithLocalFiles() throws IOException {
+	final void testReadChannelToFileWithLocalFiles() throws IOException {
 		// Load the CSV file
 		File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
 		FileInputStream csvFis = new FileInputStream(csvFile);
@@ -748,7 +778,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testCallLoad() throws IOException {
+	final void testCallLoad() throws IOException {
 		// Create temp directory
 		File tempDir = new File("/src/main/resources/temp");
 		tempDir.mkdir();
@@ -800,7 +830,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testLoadInvalidFileExtension() {
+	final void testLoadInvalidFileExtension() {
 		// Create a temporary file with an invalid extension
 		File invalidFile = new File("test.txt");
 		try {
@@ -817,13 +847,13 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testLoadNonExistentFile() {
+	final void testLoadNonExistentFile() {
 		// Attempt to load a non-existent file
 		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
 	}
 
 	@Test
-	void testGetFileExtension() throws IOException {
+	final void testGetFileExtension() throws IOException {
 		// Test with valid file names
 		File csvFile = File.createTempFile("test", ".csv");
 		assertEquals(".csv", Schedule.getFileExtension(csvFile.getName()));
