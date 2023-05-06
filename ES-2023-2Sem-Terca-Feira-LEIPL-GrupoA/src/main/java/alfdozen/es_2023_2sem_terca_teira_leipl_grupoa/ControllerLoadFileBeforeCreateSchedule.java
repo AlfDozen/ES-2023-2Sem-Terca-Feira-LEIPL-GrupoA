@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	
-	static final String TYPE_MESSAGE = "Alerta";
+	static final String TYPE_MESSAGE_ALERT = "Alerta";
 
 	@FXML
 	private Button backButton;
@@ -151,16 +151,16 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	/**
 	 * This method is called by the event of clicking on the getFileButton. It
 	 * opens a file chooser dialog so the user can choose the csv or json file that
-	 * is mean to be converted. After selecting the file, it is possible to upload 
+	 * is mean to be imported. After selecting the file, it is possible to import 
 	 * the file chosen.
 	 */
 	@FXML
 	private void getFile() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV", "*.csv", "JSON", "*.json"));
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV, JSON", "*.csv", "*.json"));
 		File file = fileChooser.showOpenDialog(new Stage());
 		if (file == null) {
-			JOptionPane.showMessageDialog(null, "Por favor, selecione um ficheiro.", TYPE_MESSAGE,
+			JOptionPane.showMessageDialog(null, "Por favor, selecione um ficheiro.", TYPE_MESSAGE_ALERT,
 					JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
@@ -172,14 +172,14 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 			uploadFileButton.setVisible(true);
 		}else {
 			JOptionPane.showMessageDialog(null, "O ficheiro importado tem extensão: " + fileExtension 
-					+ "! Apenas são aceites extensões .json ou .csv", TYPE_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
+					+ "! Apenas são aceites extensões .json ou .csv", TYPE_MESSAGE_ALERT, JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	
 	/**
 	 * This method is called when something is typed in the input textfield
 	 * existing in the remote and webcal options. After typing something,
-	 * it is possible to upload the file chosen.
+	 * it is possible to import the file chosen.
 	 */
 	@FXML
 	private void dealWithText() {
@@ -188,8 +188,8 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	
 	/**
 	 * This method is called by the event of clicking on the uploadFileButton. It
-	 * uploads the file that has been previously chosen according to the local, 
-	 * remote or webcal option. After successfully upload the file, it is possible
+	 * imports the file that has been previously chosen according to the local, 
+	 * remote or webcal option. After successfully import the file, it is possible
 	 * go to the create schedule scene.
 	 */
 	@FXML
@@ -198,7 +198,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		try {
 			if (optionLocal.isSelected()){
 				scheduleUploaded = Schedule.callLoad(fileChosen.getText());
-				JOptionPane.showMessageDialog(null, "Horário importado com sucesso", TYPE_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Horário importado com sucesso", TYPE_MESSAGE_ALERT, JOptionPane.INFORMATION_MESSAGE);
 				createScheduleButton.setVisible(true);
 				
 			// NÃO FOI TESTADO - Se não for possível testar, na minha opinião, esta funcionalidade deve ser retirada
@@ -208,7 +208,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 				String filePath = urlChosen.getText();
 				String fileExtension = Schedule.getFileExtension(filePath);	
 				if (filePath.isBlank() || (!".csv".equals(fileExtension) && !".json".equals(fileExtension))) {
-					JOptionPane.showMessageDialog(null, "URL do ficheiro remoto inválido", TYPE_MESSAGE, 
+					JOptionPane.showMessageDialog(null, "URL do ficheiro remoto inválido", TYPE_MESSAGE_ALERT, 
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
@@ -219,7 +219,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 			} else {
 				String filePath = webcalChosen.getText();
 				if (filePath.isBlank()) {
-					JOptionPane.showMessageDialog(null, "Link do calendário pessoal inválido", TYPE_MESSAGE, 
+					JOptionPane.showMessageDialog(null, "Link do calendário pessoal inválido", TYPE_MESSAGE_ALERT, 
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
@@ -229,8 +229,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 			}
 			
 		}catch(Exception e1) {
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro", TYPE_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro", TYPE_MESSAGE_ALERT, JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		App.SCHEDULE = scheduleUploaded;
@@ -265,9 +264,9 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	 * and initializes the GUI components and stage in the controller needed for the
 	 * ConvertFile scene.
 	 *
-	 * @param location  the location used to resolve relative paths for the root
+	 * @param arg0		the location used to resolve relative paths for the root
 	 *                  object, or null if the location is not known.
-	 * @param resources the resources used to localize the root object, or null if
+	 * @param arg1		the resources used to localize the root object, or null if
 	 *                  the root object was not localized.
 	 */
 	@Override
