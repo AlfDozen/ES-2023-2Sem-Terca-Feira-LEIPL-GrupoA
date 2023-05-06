@@ -86,8 +86,8 @@ public class App extends Application implements Initializable{
 	}
 
 	@FXML
-	private void uploadSchedule() throws IOException {
-		App.setRoot("/fxml/UploadSchedule");
+	private void importSchedule() throws IOException {
+		App.setRoot("/fxml/ImportSchedule");
 	}
 
 	@FXML

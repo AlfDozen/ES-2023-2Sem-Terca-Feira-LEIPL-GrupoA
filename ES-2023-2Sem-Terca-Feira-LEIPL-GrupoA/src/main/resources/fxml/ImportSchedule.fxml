@@ -8,14 +8,14 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerUploadSchedule">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerImportSchedule">
    <children>
       <Button fx:id="chooseFileButton" layoutX="256.0" layoutY="175.0" minHeight="49.0" minWidth="144.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar ficheiro" textAlignment="CENTER" visible="false" wrapText="true" />
       <Button fx:id="cancelButton" layoutX="343.0" layoutY="567.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="62.0" prefWidth="131.0" text="Cancelar" />
       <Button fx:id="saveFileCSVButton" layoutX="241.0" layoutY="461.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="62.0" prefWidth="144.0" text="Guardar em CSV" textAlignment="CENTER" visible="false" />
       <Label fx:id="fileChosenPathLabel" alignment="CENTER" layoutX="411.0" layoutY="175.0" prefHeight="50.0" prefWidth="265.0" text="Nenhum ficheiro importado." visible="false" />
       <Button fx:id="viewScheduleButton" layoutX="341.0" layoutY="367.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="62.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true" />
-      <Button fx:id="uploadFileButton" layoutX="341.0" layoutY="263.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#uploadFile" prefHeight="62.0" prefWidth="131.0" text="Importar ficheiro" textAlignment="CENTER" visible="false">
+      <Button fx:id="importFileButton" layoutX="341.0" layoutY="263.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#importFile" prefHeight="62.0" prefWidth="131.0" text="Importar ficheiro" textAlignment="CENTER" visible="false">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
@@ -28,6 +28,6 @@
       </RadioButton>
       <RadioButton fx:id="optionOnlineRadioButton" layoutX="415.0" layoutY="123.0" mnemonicParsing="false" onAction="#setRemoteButtons" prefHeight="18.0" prefWidth="119.0" text="Ficheiro online" toggleGroup="$fileTypeChooser" />
       <TextField fx:id="inputOnlineTextField" layoutX="241.0" layoutY="200.0" onKeyTyped="#dealWithText" prefHeight="25.0" prefWidth="330.0" visible="false" />
-      <Label fx:id="onlineInstructionLabel" layoutX="293.0" layoutY="172.0" prefHeight="17.0" prefWidth="242.0" text="Insira o URL do ficheiro remoto" visible="false" />
+      <Label fx:id="onlineInstructionLabel" alignment="CENTER" layoutX="293.0" layoutY="172.0" prefHeight="17.0" prefWidth="242.0" text="Insira o URL do ficheiro remoto" textAlignment="CENTER" visible="false" />
    </children>
 </AnchorPane>

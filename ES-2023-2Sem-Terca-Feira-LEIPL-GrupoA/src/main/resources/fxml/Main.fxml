@@ -16,7 +16,7 @@
             <Font name="System Bold" size="24.0" />
          </font></Label>
       <ImageView fx:id="image" fitHeight="146.0" fitWidth="612.0" layoutX="36.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="uploadSchedule" layoutX="144.0" layoutY="340.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#uploadSchedule" onMouseClicked="#uploadSchedule" prefHeight="91.0" prefWidth="223.0" text="Carregar ficheiro de Horário" textAlignment="CENTER">
+      <Button fx:id="uploadSchedule" layoutX="144.0" layoutY="340.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#importSchedule" onMouseClicked="#importSchedule" prefHeight="91.0" prefWidth="223.0" text="Carregar ficheiro de Horário" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
