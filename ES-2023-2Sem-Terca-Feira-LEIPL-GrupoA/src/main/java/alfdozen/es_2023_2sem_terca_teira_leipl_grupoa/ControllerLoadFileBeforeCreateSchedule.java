@@ -7,8 +7,11 @@ import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -51,6 +54,10 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	@FXML
 	private AnchorPane window; 
 	
+	/**
+	 * Define the windows when the radiobutton "Ficheiro local" is
+	 * selected.
+	 */
 	@FXML
 	private void setLocal() {
 		optionLocal.setSelected(true);
@@ -69,6 +76,10 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		createScheduleButton.setVisible(false);
 	}
 	
+	/**
+	 * This method define the windows when the radiobutton "Ficheiro online" is
+	 * selected.
+	 */
 	@FXML
 	private void setOnline() {
 		optionOnline.setSelected(true);
@@ -87,6 +98,10 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		createScheduleButton.setVisible(false);
 	}
 	
+	/**
+	 * This method define  the windows when the radiobutton "Ficheiro do Fénix" is
+	 * selected.
+	 */
 	@FXML
 	private void setFenix() {
 		optionFenix.setSelected(true);
@@ -105,6 +120,10 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		createScheduleButton.setVisible(false);
 	}
 	
+	/**
+	 * This method define  the window when the radiobutton "Ficheiro carregado 
+	 * previamente" is selected.
+	 */
 	@FXML
 	private void setPrevious() {
 		optionPrevious.setSelected(true);
@@ -118,7 +137,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		
 		uploadFileButton.setVisible(false);
 		
-		if (scheduleIsEmpty(App.SCHEDULE)) {
+		if (scheduleIsEmpty()) {
 			labelPreviousLoad.setVisible(false);
 			labelPreviousNotLoad.setVisible(true);
 			createScheduleButton.setVisible(false);
@@ -129,6 +148,12 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		}
 	}
 	
+	/**
+	 * This method is called by the event of clicking on the getFileButton. It
+	 * opens a file chooser dialog so the user can choose the csv or json file that
+	 * is mean to be converted. After selecting the file, it is possible to upload 
+	 * the file chosen.
+	 */
 	@FXML
 	private void getFile() {
 		FileChooser fileChooser = new FileChooser();
@@ -151,11 +176,22 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		}
 	}
 	
+	/**
+	 * This method is called when something is typed in the input textfield
+	 * existing in the remote and webcal options. After typing something,
+	 * it is possible to upload the file chosen.
+	 */
 	@FXML
 	private void dealWithText() {
 		uploadFileButton.setVisible(true);
 	}
 	
+	/**
+	 * This method is called by the event of clicking on the uploadFileButton. It
+	 * uploads the file that has been previously chosen according to the local, 
+	 * remote or webcal option. After successfully upload the file, it is possible
+	 * go to the create schedule scene.
+	 */
 	@FXML
 	private void uploadFile() {
 		Schedule scheduleUploaded = null;
@@ -200,32 +236,53 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		App.SCHEDULE = scheduleUploaded;
 	}
 	
+	/**
+	 * This method is called by the event of clicking on the createScheduleButton.
+	 * It returns to the create schedule scene.
+	 */
 	@FXML
 	private void createSchedule() throws IOException {
 		App.setRoot("/fxml/CreateSchedule");
 	}
 
+	/**
+	 * This method is called by the event of clicking on the cancelButton. It
+	 * returns to the main scene.
+	 */
 	@FXML
 	private void returnHome() {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			System.err.println("Erro ao tentar retornar");
+			JOptionPane.showMessageDialog(null, "Erro ao regressar ao menu principal", "Erro",
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		}
 	}
 
+	/**
+	 * This method is called after its root element has been completely processed
+	 * and initializes the GUI components and stage in the controller needed for the
+	 * ConvertFile scene.
+	 *
+	 * @param location  the location used to resolve relative paths for the root
+	 *                  object, or null if the location is not known.
+	 * @param resources the resources used to localize the root object, or null if
+	 *                  the root object was not localized.
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 	}
 	
-	// Método auxiliar
-	private static boolean scheduleIsEmpty(Schedule sdl) {
+	/**
+	 * Auxiliar method to check if there is a schedule load in the application.
+	 * 
+	 * @return		true if there is no schedule load, or false otherwise
+	 */
+	private static boolean scheduleIsEmpty() {
 		String empty = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
-		if(empty.endsWith(sdl.toString())) {
-			return true;
-		}
-		return false;
+		return empty.equals(App.SCHEDULE.toString());
 	}
 	
 	
