@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -55,6 +57,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
  * @version 1.0.0
  */
 final class Schedule {
+	static final String NULL_URL_EXCEPTION_MESSAGE = "URL is null";
 	static final String FOR_NULL = "Unknown";
 	static final String NEGATIVE_EXCEPTION = "The studentNumber can't be negative";
 	static final String NOT_NUMBER_EXCEPTION = "The provided string doesn't correspond to a number";
@@ -76,10 +79,13 @@ final class Schedule {
 			+ " If the URI is correct, delete the current personal web calendar and create a new one.";
 	static final String URI_NOT_VALID_EXCEPTION = "The URI is not valid.";
 	static final String CONNECTING_TO_INTERNET_EXCEPTION = "Could not establish a HTTP connection and read from ics file.";
-
+  
 	private static final String DELIMITER = ";";
 	private static final String FILE_FORMAT_CSV = ".csv";
 	private static final String FILE_FORMAT_JSON = ".json";
+	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
+	static final String TEMP_FILE_CSV = "tempFile.csv";
+	static final String TEMP_FILE_JSON = "tempFile.json";
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -653,6 +659,136 @@ final class Schedule {
 	}
 
 	/**
+	 * Downloads a file from the specified URL and saves it to a temporary
+	 * directory.
+	 *
+	 * @param url The URL of the file to download.
+	 * @return The file name of the downloaded file (tempFile.csv or tempFile.json)
+	 *         if successful, or null if an IOException occurs.
+	 * @throws NullPointerException     If the URL is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue creating or deleting
+	 *                                  the temporary file, or if there is an error
+	 *                                  closing the ReadableByteChannel.
+	 */
+	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
+		if (url == null) {
+			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
+		}
+
+		URL fileURL = new URL(url);
+		String fileName = fileURL.getFile();
+		String fileExtension = getFileExtension(fileName);
+
+		// Create a File object for the downloaded file
+		File tempDir = new File(TEMP_FILE_PATH);
+		if (!tempDir.exists()) {
+			tempDir.mkdirs();
+		}
+		String tempFileName;
+		if (fileExtension.equals(FILE_FORMAT_CSV)) {
+			tempFileName = TEMP_FILE_CSV;
+		} else if (fileExtension.equals(FILE_FORMAT_JSON)) {
+			tempFileName = TEMP_FILE_JSON;
+		} else {
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+		File file = new File(tempDir, tempFileName);
+
+		// Delete the file if it already exists in the temp directory
+		if (file.exists()) {
+			file.delete();
+		}
+		file.createNewFile();
+		// Download the file from the URL and save it to the temp directory
+		ReadableByteChannel rbc = null;
+		try {
+			rbc = Channels.newChannel(fileURL.openStream());
+			readChannelToFile(rbc, file);
+		} catch (IOException e) {
+			return null;
+		} finally {
+			if (rbc != null) {
+				rbc.close();
+			}
+		}
+		return file.getPath();
+	}
+
+	/**
+	 * 
+	 * Reads the contents of a ReadableByteChannel and writes them to a File.
+	 * 
+	 * @param rbc  the ReadableByteChannel to read from
+	 * @param file the File to write to
+	 * @throws IOException if there is an error reading from the channel or writing
+	 *                     to the file
+	 */
+	static void readChannelToFile(ReadableByteChannel rbc, File file) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		}
+	}
+
+	/**
+	 * Loads a schedule from the specified file path, supporting both CSV and JSON
+	 * formats. If the file is a temporary file downloaded from a URL, it will be
+	 * deleted after loading the schedule.
+	 *
+	 * @param filePath The file path of the schedule file to load.
+	 * @return A Schedule object created from the data in the file.
+	 * @throws NullPointerException     If the file path is null.
+	 * @throws IllegalArgumentException If the file extension is not supported (only
+	 *                                  CSV and JSON are supported).
+	 * @throws IOException              If there is an issue reading the file or
+	 *                                  deleting the temporary file.
+	 */
+	static Schedule callLoad(String filePath) throws IOException {
+		if (filePath == null) {
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
+		}
+		Schedule schedule;
+
+		// Check if file is CSV or JSON
+		String extension = getFileExtension(filePath);
+		switch (extension) {
+		case FILE_FORMAT_CSV:
+			schedule = loadCSV(filePath);
+			break;
+		case FILE_FORMAT_JSON:
+			schedule = loadJSON(filePath);
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+
+		// Delete temporary file if it was downloaded from URL
+		if (filePath.endsWith(TEMP_FILE_CSV) || filePath.endsWith(TEMP_FILE_JSON)) {
+			File file = new File(filePath);
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+		return schedule;
+	}
+
+	/**
+	 * 
+	 * Gets the file extension from a given file name.
+	 * 
+	 * @param fileName the name of the file
+	 * @return the file extension
+	 */
+	static String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0) {
+			return fileName.substring(dotIndex);
+		}
+		return "";
+	}
+
+	/**
 	 * Validates the input arguments for file conversion methods.
 	 *
 	 * @param sourcePath        the path of the source file to be converted.
@@ -681,15 +817,30 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
 	}
+
 	
+	/**
+	 * Checks if at least one of the lectures in this schedule is overloaded.
+	 *
+	 * @return true if at least one lecture is overloaded, return false otherwise.
+	 */
+	public boolean hasOvercrowdedLecture() {
+		for (Lecture lecture : lectures) {
+			if (lecture.isOvercrowded()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns a set with the unique lecture's name of an object shedule
 	 * 
 	 * @return A set of unique lecture's name
 	 */
 	public Set<String> getUniqueLecturesCourses() {
-		Set<String> uniqueCourses = new HashSet<>();
-		for(Lecture l : lectures) {
+		Set<String> uniqueCourses = new HashSet<String>();
+		for (Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());
 		}
 		return uniqueCourses;
@@ -857,14 +1008,12 @@ final class Schedule {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
 		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
 		}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
 		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
 		}
 		return dateTimes;
 	}
@@ -1073,5 +1222,22 @@ final class Schedule {
 			}
 		}
 		return mapDays;
+   }
+
+	/**
+	 * Checks if there are overlapping lectures in this schedule.
+	 * 
+	 * @return true if there are any overlapping lectures, false otherwise.
+	 */
+	public boolean hasOverlappingLectures() {
+		int n = lectures.size();
+		for (int i = 0; i < n; i++) {
+			for (int j = i + 1; j < n; j++) {
+				if (lectures.get(i).getTimeSlot().overlaps(lectures.get(j).getTimeSlot())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

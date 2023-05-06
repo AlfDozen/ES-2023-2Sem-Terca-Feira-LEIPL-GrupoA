@@ -2,6 +2,8 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
+import java.nio.channels.ReadableByteChannel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -582,140 +585,374 @@ class ScheduleTest {
 		assertEquals(expected5.toString(),
 				Schedule.loadJSON("./src/main/resources/horario_exemplo_json2.JSON").toString());
 	}
-	
+
 	@Test
 	final void testEncoding() throws IOException {
-	    // Teste 1 - Converter JSON para CSV para JSON novamente
+		// Teste 1 - Converter JSON para CSV para JSON novamente
 		Schedule schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Lecture firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json",
+				"./src/main/resources/horario_encoding_test_converted.csv", ';');
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json", "./src/main/resources/horario_encoding_test_converted.csv", ';');
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test_converted.csv", "./src/main/resources/horario_encoding_test_converted2.json", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test.json",
+				"./src/main/resources/horario_encoding_test_converted.csv", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test_converted.csv",
+				"./src/main/resources/horario_encoding_test_converted2.json", ';');
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.csv"));
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted2.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
-	    // Teste 2 - Converter CSV para JSON para CSV novamente
+
+		// Teste 2 - Converter CSV para JSON para CSV novamente
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv",
+				"./src/main/resources/horario_encoding_test_converted.json", ';');
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_converted.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv", "./src/main/resources/horario_encoding_test_converted.json", ';');
-		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test_converted.json", "./src/main/resources/horario_encoding_test_converted2.csv", ';');
+		Schedule.convertCSV2JSON("./src/main/resources/horario_encoding_test.csv",
+				"./src/main/resources/horario_encoding_test_converted.json", ';');
+		Schedule.convertJSON2CSV("./src/main/resources/horario_encoding_test_converted.json",
+				"./src/main/resources/horario_encoding_test_converted2.csv", ';');
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted.json"));
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_converted2.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_converted2.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
+
 		// Teste 3 - Ler JSON, guardar em CSV e JSON, ler o novo CSV e guardar em JSON
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test.json");
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved_json.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved_json.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_json.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved2.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved2.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
-		
+
 		// Teste 4 - Ler CSV, guardar em JSON e CSV, ler o novo JSON e guardar em CSV
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test.csv");
 		Schedule.saveToJSON(schedule, "./src/main/resources/horario_encoding_test_saved_csv.json");
 		schedule = Schedule.loadJSON("./src/main/resources/horario_encoding_test_saved_csv.json");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved_csv.json"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 		Schedule.saveToCSV(schedule, "./src/main/resources/horario_encoding_test_saved2.csv");
 		schedule = Schedule.loadCSV("./src/main/resources/horario_encoding_test_saved2.csv");
 		Files.deleteIfExists(Paths.get("./src/main/resources/horario_encoding_test_saved2.csv"));
 		firstLecture = schedule.getLectures().get(0);
-		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos", firstLecture.getAcademicInfo().getCourse());
+		assertEquals("Projeto de Integração de Sistemas de Informação Distribuídos",
+				firstLecture.getAcademicInfo().getCourse());
 		assertEquals("21:00:00", firstLecture.getTimeSlot().getTimeBeginString());
 	}
 	
 	@Test
+    final void testHasOvercrowdedLecture() {
+	        Lecture lecture1 = new Lecture(
+					new AcademicInfo("PIUDHIST", "Seminário de Projecto I (Piudhist)", "SP-I_(Piudhist)S01", "DHMCMG1", 0),
+					new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(18, 0, 0), LocalTime.of(20, 0, 0)),
+					new Room("AA2.23", 50));
+			Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+					new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+			Lecture lecture3 = new Lecture(
+					new AcademicInfo("LETI, LEI, LEI-PL, LIGE, LIGE-PL", "Fundamentos de Arquitectura de Computadores",
+							"L0705TP23", "ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10", 44),
+					new TimeSlot("Sex", LocalDate.of(2022, 9, 16), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+					new Room("AA2.23", 40));
+			Lecture lecture4 = new Lecture(
+					new AcademicInfo(null, null, null,null, 44),
+					null,
+					new Room(null, 40));
+			List<Lecture> lectures = new ArrayList<>();
+			lectures.add(lecture1);
+			lectures.add(lecture2);
+			lectures.add(lecture3);
+			Schedule schedule = new Schedule(lectures);
+			assertTrue(schedule.hasOvercrowdedLecture());
+			schedule.removeLecture(lecture3);
+		    assertFalse(schedule.hasOvercrowdedLecture());
+		    schedule.addLecture(lecture4);
+		    assertTrue(schedule.hasOvercrowdedLecture());
+	}
+
+	@Test
+	final void testHasOverlappingLectures() {
+		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "IPM", "L0705TP23", "DHMCMG1", 10),
+				new TimeSlot("Seg", LocalDate.of(2022, 10, 31), LocalTime.of(14, 0, 0), LocalTime.of(15, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, null, null, null, (String) null),
+				new TimeSlot(null, null, (String) null, null), new Room(null, (String) null));
+		Lecture lecture3 = new Lecture(new AcademicInfo("LEI-PL", "FAC", "L0705TP23", "ET-A10", 44),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 31), LocalTime.of(14, 30, 0), LocalTime.of(16, 30, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture4 = new Lecture(new AcademicInfo("LEI-PL", "DIAM", "L0705TP23", "ET-A10", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)),
+				new Room("AA2.23", 50));
+		Lecture lecture5 = new Lecture(null,
+				new TimeSlot(null, LocalDate.of(2022, 10, 30), LocalTime.of(15, 30, 0), LocalTime.of(17, 0, 0)), null);
+
+		Schedule schedule = new Schedule();
+		schedule.addLecture(lecture1);
+		schedule.addLecture(lecture2);
+		schedule.addLecture(lecture3);
+		schedule.addLecture(lecture4);
+
+		assertTrue(schedule.hasOverlappingLectures());
+		schedule.removeLecture(lecture3);
+		assertFalse(schedule.hasOverlappingLectures());
+		schedule.addLecture(lecture5);
+		assertTrue(schedule.hasOverlappingLectures());
+	}
+  
+  @Test
+	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
+		// Test with null URL
+		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null));
+		// Create a temporary CSV file
+		String csvUrl = "https://nao/existe.csv";
+		String csvReturnString = Schedule.downloadFileFromURL(csvUrl);
+		File csvFile = new File("src/main/resources/temp/tempFile.csv");
+		assertNotNull(csvFile);
+		assertTrue(csvFile.exists());
+		assertTrue(csvFile.isFile());
+		assertEquals("tempFile.csv", csvFile.getName());
+		assertNull(csvReturnString);
+		// Create a temporary JSON file
+		String jsonUrl = "https://nao/existe.json";
+		String jsonReturnString = Schedule.downloadFileFromURL(jsonUrl);
+		File jsonFile = new File("src/main/resources/temp/tempFile.json");
+		assertNotNull(jsonFile);
+		assertTrue(jsonFile.exists());
+		assertTrue(jsonFile.isFile());
+		assertEquals("tempFile.json", jsonFile.getName());
+		assertNull(jsonReturnString);
+	}
+
+	@Test
+	final void testReadChannelToFileWithLocalFiles() throws IOException {
+		// Load the CSV file
+		File csvFile = new File("src/main/resources/horario_exemplo_9colunas.csv");
+		FileInputStream csvFis = new FileInputStream(csvFile);
+		ReadableByteChannel csvRbc = csvFis.getChannel();
+		// Create a new file and write the contents of the channel to it
+		File csvOutputFile = new File("src/main/resources/temp/tempFile.csv");
+		Schedule.readChannelToFile(csvRbc, csvOutputFile);
+
+		// Verify that the output file has the same content as the input file
+		String csvContent = Files.readString(csvFile.toPath());
+		String csvOutputContent = Files.readString(csvOutputFile.toPath());
+		assertEquals(csvContent, csvOutputContent);
+
+		// Load the JSON file
+		File jsonFile = new File("src/main/resources/horario_exemplo_json.json");
+		FileInputStream jsonFis = new FileInputStream(jsonFile);
+		ReadableByteChannel jsonRbc = jsonFis.getChannel();
+
+		// Create a new file and write the contents of the channel to it
+		File jsonOutputFile = new File("src/main/resources/temp/tempFile.json");
+		Schedule.readChannelToFile(jsonRbc, jsonOutputFile);
+
+		// Verify that the output file has the same content as the input file
+		String jsonContent = Files.readString(jsonFile.toPath());
+		String jsonOutputContent = Files.readString(jsonOutputFile.toPath());
+		assertEquals(jsonContent, jsonOutputContent);
+		csvFis.close();
+		jsonFis.close();
+	}
+
+	@Test
+	final void testCallLoad() throws IOException {
+		// Create temp directory
+		File tempDir = new File("/src/main/resources/temp");
+		tempDir.mkdir();
+
+		// Copy CSV file to temp directory
+		Path csvSource = Paths.get("src/main/resources/horario_exemplo_9colunas.csv");
+		Path csvDest = Paths.get("src/main/resources/temp/tempFile.csv");
+		Files.copy(csvSource, csvDest, StandardCopyOption.REPLACE_EXISTING);
+
+		// Copy JSON file to temp directory
+		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json.json");
+		Path jsonDest = Paths.get("src/main/resources/temp/tempFile.json");
+		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
+
+		// Load CSV file
+		Schedule schedule1 = Schedule.callLoad("src/main/resources/temp/tempFile.csv");
+		assertNotNull(schedule1);
+
+		// Check if the temp file was deleted
+		File tempFile = new File("src/main/resources/temp/tempFile.csv");
+		assertFalse(tempFile.exists());
+
+		Lecture lecture1 = new Lecture(
+				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room(null, (Integer) null));
+		List<Lecture> lectures1 = new ArrayList<>();
+		lectures1.add(lecture1);
+		Schedule expected1 = new Schedule(lectures1);
+		assertEquals(expected1.toString(), schedule1.toString());
+
+		// schedule 2
+		Schedule schedule2 = Schedule.callLoad("src/main/resources/temp/tempFile.json");
+		assertNotNull(schedule2);
+
+		// Check if the temp file was deleted
+		File tempFile2 = new File("src/main/resources/temp/tempFile.json");
+		assertFalse(tempFile2.exists());
+
+		Lecture lecture2 = new Lecture(
+				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
+				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
+				new Room("AA2.25", 34));
+		List<Lecture> lectures2 = new ArrayList<>();
+		lectures2.add(lecture2);
+		Schedule expected2 = new Schedule(lectures2);
+		assertEquals(expected2.toString(), schedule2.toString());
+	}
+
+	@Test
+	final void testLoadInvalidFileExtension() {
+		// Create a temporary file with an invalid extension
+		File invalidFile = new File("test.txt");
+		try {
+			Files.writeString(invalidFile.toPath(), "id,name\n1,Alice\n2,Bob\n3,Charlie\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Attempt to load the file
+		assertThrows(IllegalArgumentException.class, () -> Schedule.callLoad(invalidFile.getAbsolutePath()));
+
+		// Assert that the temporary file was not deleted
+		assertTrue(invalidFile.exists());
+	}
+
+	@Test
+	final void testLoadNonExistentFile() {
+		// Attempt to load a non-existent file
+		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
+	}
+
+	@Test
+	final void testGetFileExtension() throws IOException {
+		// Test with valid file names
+		File csvFile = File.createTempFile("test", ".csv");
+		assertEquals(".csv", Schedule.getFileExtension(csvFile.getName()));
+
+		File jsonFile = File.createTempFile("test", ".json");
+		assertEquals(".json", Schedule.getFileExtension(jsonFile.getName()));
+
+		// Test with file names that do not have extensions
+		File noExtensionFile = File.createTempFile("test", "");
+		assertEquals("", Schedule.getFileExtension(noExtensionFile.getName()));
+
+		// Test with null file name
+		assertThrows(NullPointerException.class, () -> Schedule.getFileExtension(null));
+	}
+
+	@Test
 	final void testLoadWebcal() throws IOException {
 		// null uri
-		IllegalArgumentException nullException = assertThrows(IllegalArgumentException.class, () -> Schedule.loadWebcal(null));
+		IllegalArgumentException nullException = assertThrows(IllegalArgumentException.class,
+				() -> Schedule.loadWebcal(null));
 		assertEquals(Schedule.URI_NULL_EXCEPTION, nullException.getMessage());
 		// uri não começa por webcal
-		IllegalArgumentException notWebcalException = assertThrows(IllegalArgumentException.class, () -> Schedule.loadWebcal("http"));
+		IllegalArgumentException notWebcalException = assertThrows(IllegalArgumentException.class,
+				() -> Schedule.loadWebcal("http"));
 		assertEquals(Schedule.URI_NOT_WEBCAL_EXCEPTION, notWebcalException.getMessage());
 		// uri não se transforma em url válido
-		MalformedURLException notURIException = assertThrows(MalformedURLException.class, () -> Schedule.loadWebcal("webcalNotURI"));
+		MalformedURLException notURIException = assertThrows(MalformedURLException.class,
+				() -> Schedule.loadWebcal("webcalNotURI"));
 		assertEquals(Schedule.URI_NOT_VALID_EXCEPTION, notURIException.getMessage());
 		// não é possível conectar ao uri
-		IOException saveException = assertThrows(IOException.class, () -> Schedule.loadWebcal("webcal://localhost/Random/Non/Sense"));
+		IOException saveException = assertThrows(IOException.class,
+				() -> Schedule.loadWebcal("webcal://localhost/Random/Non/Sense"));
 		assertEquals(Schedule.CONNECTING_TO_INTERNET_EXCEPTION, saveException.getMessage());
 	}
-	
+
 	@Test
 	final void testReadICalendar() throws IOException {
 		// ficheiro sem início do formato iCalendar
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_begin_calendar.ics"), StandardCharsets.UTF_8));
-		IllegalArgumentException noBeginException = assertThrows(IllegalArgumentException.class, () -> Schedule.readICalendar(reader));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_begin_calendar.ics"), StandardCharsets.UTF_8));
+		IllegalArgumentException noBeginException = assertThrows(IllegalArgumentException.class,
+				() -> Schedule.readICalendar(reader));
 		assertEquals(Schedule.WEBCAL_NOT_VCALENDAR_EXCEPTION, noBeginException.getMessage());
 		reader.close();
 		// ficheiro sem linha de utilizador
-		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_userline_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_userline_calendar.ics"), StandardCharsets.UTF_8));
 		assertTrue(Schedule.readICalendar(reader2).getLectures().isEmpty());
 		reader2.close();
 		// linha de utilizador sem @
-		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_user_at_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_user_at_calendar.ics"), StandardCharsets.UTF_8));
 		Schedule schedule = Schedule.readICalendar(reader3);
 		assertNull(schedule.getStudentName());
 		assertTrue(!schedule.getLectures().isEmpty());
 		reader3.close();
 		// ficheiro sem eventos
-		BufferedReader reader4 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader4 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
 		assertTrue(Schedule.readICalendar(reader4).getLectures().isEmpty());
 		reader4.close();
 		// ficheiro com utilizador e dois eventos válidos
-		BufferedReader reader5 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader5 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
 		Schedule schedule2 = Schedule.readICalendar(reader5);
-		Lecture lecture = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer)null),
+		Lecture lecture = new Lecture(
+				new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer) null),
 				new TimeSlot(null, LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00), LocalTime.of(22, 30, 00)),
-				new Room("C5.08", (String)null));
-		Lecture lecture2 = new Lecture(new AcademicInfo(null, "Agentes Autónomos", "03727TP07", null, (Integer)null),
+				new Room("C5.08", (String) null));
+		Lecture lecture2 = new Lecture(new AcademicInfo(null, "Agentes Autónomos", "03727TP07", null, (Integer) null),
 				new TimeSlot(null, LocalDate.of(2022, 10, 18), LocalTime.of(19, 30, 00), LocalTime.of(21, 00, 00)),
-				new Room("C5.08", (Integer)null));
+				new Room("C5.08", (Integer) null));
 		Schedule schedule3 = new Schedule();
 		schedule3.setStudentName("pmaaa2");
 		schedule3.addLecture(lecture);
@@ -723,60 +960,70 @@ class ScheduleTest {
 		assertEquals(schedule3.toString(), schedule2.toString());
 		reader5.close();
 	}
-	
+
 	@Test
 	final void testSkipReadUntilStartsWith() throws IOException {
 		// padrão não encontrado
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
 		assertNull(Schedule.skipReadUntilStartsWith(reader, Pattern.compile("VERSION2:", Pattern.LITERAL)));
 		reader.close();
 		// padrão encontrado
-		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_event_calendar.ics"), StandardCharsets.UTF_8));
 		assertEquals("2.0", Schedule.skipReadUntilStartsWith(reader2, Pattern.compile("VERSION:", Pattern.LITERAL)));
 		reader2.close();
 		// ficheiro vazio
-		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
 		assertNull(Schedule.skipReadUntilStartsWith(reader3, Pattern.compile("NOMATTER", Pattern.LITERAL)));
 		reader3.close();
 	}
-	
+
 	@Test
 	final void testTransformEventToLecture() throws IOException {
 		// evento com todos os atributos esperados
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
 		Lecture lecture = Schedule.transformEventToLecture(reader);
-		Lecture lecture2 = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer)null),
+		Lecture lecture2 = new Lecture(
+				new AcademicInfo(null, "Interacção Pessoa-Máquina", "L5316TP03", null, (Integer) null),
 				new TimeSlot(null, LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00), LocalTime.of(22, 30, 00)),
-				new Room("C5.08", (String)null));
+				new Room("C5.08", (String) null));
 		assertEquals(lecture2.toString(), lecture.toString());
 		// sem evento
-		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_empty_calendar.ics"), StandardCharsets.UTF_8));
 		assertNull(Schedule.transformEventToLecture(reader2));
 		reader2.close();
 		// course vazio
-		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_course_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_course_calendar.ics"), StandardCharsets.UTF_8));
 		assertNull(Schedule.transformEventToLecture(reader3));
 		reader3.close();
 		// datatimes, location e shift vazios
-		BufferedReader reader4 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_dates_location_shift_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader4 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_dates_location_shift_calendar.ics"),
+				StandardCharsets.UTF_8));
 		Lecture lecture3 = Schedule.transformEventToLecture(reader4);
-		Lecture lecture4 = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", null, null, (Integer)null),
-				new TimeSlot(null, null, null, (LocalTime)null),
-				new Room(null, (String)null));
+		Lecture lecture4 = new Lecture(new AcademicInfo(null, "Interacção Pessoa-Máquina", null, null, (Integer) null),
+				new TimeSlot(null, null, null, (LocalTime) null), new Room(null, (String) null));
 		assertEquals(lecture4.toString(), lecture3.toString());
 		reader4.close();
 		// sem o description pattern
-		BufferedReader reader5 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader5 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"),
+				StandardCharsets.UTF_8));
 		assertNull(Schedule.transformEventToLecture(reader5));
 		reader5.close();
 	}
-	
+
 	@Test
 	final void testBuildDateTimeInformation() {
 		// datas válidas
 		LocalDateTime[] dateTimes = Schedule.buildDateTimeInformation("20230515T200000Z", "20230515T213000Z");
 		assertEquals(LocalDateTime.of(LocalDate.of(2023, 5, 15), LocalTime.of(21, 00, 00)), dateTimes[0]);
-		assertEquals(LocalDateTime.of(LocalDate.of(2023, 5, 15), LocalTime.of(22, 30, 00)),dateTimes[1]);
+		assertEquals(LocalDateTime.of(LocalDate.of(2023, 5, 15), LocalTime.of(22, 30, 00)), dateTimes[1]);
 		// datas inválias
 		LocalDateTime[] dateTimes2 = Schedule.buildDateTimeInformation("20230515T200000A", "20230515E213000Z");
 		assertNull(dateTimes2[0]);
@@ -789,25 +1036,30 @@ class ScheduleTest {
 		assertNull(dateTimes4[0]);
 		assertNull(dateTimes4[1]);
 	}
-	
+
 	@Test
 	final void testBuildInformation() throws IOException {
 		// sem o description pattern
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_description_pattern_calendar.ics"),
+				StandardCharsets.UTF_8));
 		String[] info = Schedule.buildInformation(reader);
 		assertNull(info[0]);
 		assertNull(info[1]);
 		assertNull(info[2]);
 		reader.close();
 		// com toda a informação
-		BufferedReader reader2 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_short_calendar.ics"), StandardCharsets.UTF_8));
 		String[] info2 = Schedule.buildInformation(reader2);
 		assertEquals("Interacção Pessoa-Máquina", info2[0]);
 		assertEquals("L5316TP03", info2[1]);
 		assertEquals("C5.08", info2[2]);
 		reader2.close();
 		// com description pattern mas sem informação
-		BufferedReader reader3 = new BufferedReader(new InputStreamReader(new FileInputStream("./src/main/resources/webcal_no_description_info_calendar.ics"), StandardCharsets.UTF_8));
+		BufferedReader reader3 = new BufferedReader(new InputStreamReader(
+				new FileInputStream("./src/main/resources/webcal_no_description_info_calendar.ics"),
+				StandardCharsets.UTF_8));
 		String[] info3 = Schedule.buildInformation(reader3);
 		assertNull(info3[0]);
 		assertNull(info3[1]);
@@ -821,11 +1073,11 @@ class ScheduleTest {
 		Set<String> uc = scd.getUniqueLecturesCourses();
 		String expected = "[Seminário de Projecto I (Piudhist), Teoria dos Jogos e dos Contratos, Gestão de Conflitos, Cálculo I, Competências Académicas I, Fundamentos de Arquitectura de Computadores, Investimentos II]";
 		assertEquals(expected, (String) uc.toString());
-		
+
 		scd = new Schedule();
 		uc = scd.getUniqueLecturesCourses();
 		expected = "[]";
-		assertEquals(expected, (String) uc.toString());	
+		assertEquals(expected, (String) uc.toString());
 	}
 	
 	
@@ -853,10 +1105,3 @@ class ScheduleTest {
 	}
 	
 }
-
-
-
-
-
-
-
