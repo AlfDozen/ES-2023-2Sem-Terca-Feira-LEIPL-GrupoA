@@ -60,7 +60,7 @@ final class Schedule {
 	static final String DELIMITER_NULL_EXCEPTION = "The delimiter cannot be null!";
 	static final String FOLDER_NOT_EXISTS_EXCEPTION = "The provided parent folder does not exist!";
 	static final String FILE_MISSING_DATA = "At least 1 record of the data provided does not have the required values filled!";
-	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list cannot be null or empty!";
+	static final String LIST_NULL_OR_EMPTY_EXCEPTION = "The provided list of courses cannot be null or empty";
 	static final String DELIMITER = ";";
 	static final String FILE_FORMAT_CSV = ".csv";
 	static final String FILE_FORMAT_JSON = ".json";
