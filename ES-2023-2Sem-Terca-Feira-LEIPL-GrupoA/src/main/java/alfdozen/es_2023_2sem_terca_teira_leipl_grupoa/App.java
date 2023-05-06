@@ -30,10 +30,12 @@ import javafx.scene.layout.AnchorPane;
  * @version 1.0.0
  */
 public class App extends Application implements Initializable {
-	private static Scene SCENE;
-	private static Stage STAGE;
-	public static Schedule SCHEDULE = new Schedule();
-	public static String ERROR_TITLE_DIALOG = "Erro";
+	
+	public static final String ERROR_TITLE_DIALOG = "Erro";
+	
+	private static Scene scene;
+	private static Stage stage;
+	public static Schedule SCHEDULE;
 
 	@FXML
 	private Button importScheduleButton;
@@ -62,10 +64,11 @@ public class App extends Application implements Initializable {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			STAGE = primaryStage;
-			SCENE = new Scene(loadFXML("/fxml/Main"));
-			STAGE.setScene(SCENE);
-			STAGE.show();
+			SCHEDULE = new Schedule();
+			stage = primaryStage;
+			scene = new Scene(loadFXML("/fxml/Main"));
+			stage.setScene(scene);
+			stage.show();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro ao iniciar o programa", ERROR_TITLE_DIALOG,
 					JOptionPane.ERROR_MESSAGE);
@@ -80,8 +83,8 @@ public class App extends Application implements Initializable {
 	 * @param height the height to set the stage to.
 	 */
 	public static void setStageSize(double width, double height) {
-		STAGE.setWidth(width);
-		STAGE.setHeight(height);
+		stage.setWidth(width);
+		stage.setHeight(height);
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class App extends Application implements Initializable {
 	 * @throws IOException if an error occurs while changing the scene.
 	 */
 	public static void setRoot(String fxml) throws IOException {
-		SCENE.setRoot(loadFXML(fxml));
+		scene.setRoot(loadFXML(fxml));
 	}
 
 	/**
@@ -192,8 +195,8 @@ public class App extends Application implements Initializable {
 	 * closes the stage, effectively shutting down the application.
 	 */
 	@FXML
-	private void closeWindow() throws IOException {
-		STAGE.close();
+	private void closeWindow() {
+		stage.close();		
 	}
 
 	/**
@@ -211,11 +214,7 @@ public class App extends Application implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
 		logoImage.setImage(new Image("/fxml/iscte.gif"));
-		if (SCHEDULE != null && !SCHEDULE.getLectures().isEmpty()) {
-			viewScheduleButton.setVisible(true);
-		} else {
-			viewScheduleButton.setVisible(false);
-		}
+		viewScheduleButton.setVisible(SCHEDULE != null && !SCHEDULE.getLectures().isEmpty());
 	}
 
 	/**
