@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -108,6 +109,8 @@ final class Schedule {
 	private static final Pattern SHIFT_PATTERN = Pattern.compile("Turno:", Pattern.LITERAL);
 	private static final Pattern LOCATION_PATTERN = Pattern.compile("LOCATION:", Pattern.LITERAL);
 	private static final Pattern LOCATION_DELIMITER_PATTERN = Pattern.compile("\\,", Pattern.LITERAL);
+	private static final double FREQUENCY_LIMIT = 0.3;
+	private static final String LECTURE_DELIMITER = " - ";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -685,7 +688,7 @@ final class Schedule {
 	 * @return A set of unique lecture's name
 	 */
 	public Set<String> getUniqueLecturesCourses() {
-		Set<String> uniqueCourses = new HashSet<String>();
+		Set<String> uniqueCourses = new HashSet<>();
 		for(Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());
 		}
@@ -934,5 +937,134 @@ final class Schedule {
 			}
 		}
 		return str.toString();
+	}
+
+	/**
+	 * Returns a list of strings where each string is composed of weekday, hour and 
+	 * the course name when each lecture usually occurs. The returned list about the lectures
+	 * may concern partially or to the entire list of lectures belonging to a schedule.
+	 * 
+	 * @param courses			the list of strings with the course names of the 
+	 * 							lectures expected to receive the details from
+	 * 
+	 * @return a List of strings with detail of weekday and hour that all the courses typically occur, 
+	 * mentioned in the list of strings given in the input .
+	 */
+	public List<Lecture> getCommonWeekLecture(List<String> courses){
+
+		List<String> commonLecturesString = new ArrayList<>();
+
+		Map<String,Integer> map = getMapCourses();
+		Map<String,Integer> mapCounter = getCourseDaysMap(map);
+		
+		for(String course : courses) {
+
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+
+				String[] keySplit = entry.getKey().split(LECTURE_DELIMITER);
+				
+				double ratio = entry.getValue() / (double)(mapCounter.get(keySplit[2]));
+				
+				if(keySplit[2].equals(course) && !commonLecturesString.contains(entry.getKey())
+						&& (ratio > FREQUENCY_LIMIT)) {
+					
+					commonLecturesString.add(entry.getKey());
+				}
+			}
+		}
+		return convertStringToLecture(commonLecturesString);
+	}
+	
+	
+	/**Gets from input a list of strings with only the essential details from a lecture and returns
+	 * a list of lectures created with the data on each string of the list.
+	 * 
+	 * @param list				list of strings with weekday, hours and course name
+	 * @return					list of lectures created using the info in each string of the parameter
+	 */
+	private List<Lecture> convertStringToLecture(List<String> list){
+		
+		List<Lecture> lecturesList = new ArrayList<>();
+		
+		for(String str: list) {
+			
+			String[] strSplit = str.split(LECTURE_DELIMITER);
+			
+			String[] time = strSplit[1].split("-");
+			String timeBeg = time[0];
+			String timeEnd = time[1];
+			
+			TimeSlot date = new TimeSlot(strSplit[0],null,timeBeg, timeEnd);
+			AcademicInfo course = new AcademicInfo("",strSplit[2],"","",0);
+			Room room = new Room("",1);
+			lecturesList.add(new Lecture(course,date,room));
+		}
+		return lecturesList;
+	}
+
+	/**Returns a Map where the key is the combination of weekday, hour and course name when 
+	 * it occurs, for each lecture in a schedule, and the value is the number of times that 
+	 * combination occurs.
+	 * 
+	 * @return a Map with string in the key and integer in the value.
+	 */
+
+	private Map<String,Integer> getMapCourses(){
+
+		Map<String, Integer> mapLectures = new HashMap<>();
+
+		for(Lecture lec : lectures) {
+
+			if(lec.getTimeSlot().getDate() == null) {
+				continue;
+			}
+
+			String[] day = lec.getTimeSlot().getDateString().split("/");
+			LocalDate date = LocalDate.of(Integer.parseInt(day[2]),Integer.parseInt(day[1]),Integer.parseInt(day[0]));
+
+			int weekDay = date.getDayOfWeek().getValue();
+			String hour = lec.getTimeSlot().getTimeBeginString()+"-"+lec.getTimeSlot().getTimeEndString();
+			String course = lec.getAcademicInfo().getCourse();			
+
+			String key = weekDay+LECTURE_DELIMITER+hour+LECTURE_DELIMITER+course;
+
+			if(mapLectures.containsKey(key)) {
+				Integer value = mapLectures.get(key);
+				mapLectures.put(key, value+1);
+
+			}else {
+				mapLectures.putIfAbsent(key,1);
+			}
+		}
+
+		return mapLectures;
+	}
+
+	
+	/**Returns a Map where the key is the course name and the value is the total number 
+	 * of days that course appears throughout the schedule.
+	 * 
+	 * @param map				Map of the courses and frequency of the weekdays and hour they usually occur 
+	 * 
+	 * @return					Map with the total number of times each course occurs in a schedule
+	 */
+
+	private Map<String,Integer> getCourseDaysMap(Map<String,Integer> map){
+
+		Map<String, Integer> mapDays = new HashMap<>();
+
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+
+			String[] keySplit = entry.getKey().split(LECTURE_DELIMITER);
+			String key = keySplit[2];
+			
+			if(mapDays.containsKey(key)) {
+				Integer value = mapDays.get(key);
+				mapDays.put(key, value+1);
+			}else {
+				mapDays.putIfAbsent(key,1);
+			}
+		}
+		return mapDays;
 	}
 }

@@ -827,6 +827,31 @@ class ScheduleTest {
 		expected = "[]";
 		assertEquals(expected, (String) uc.toString());	
 	}
+	
+	
+	@Test
+	final void testgetCommonWeekLecture() throws IOException {
+		//primeiro teste - entrar e sair da função sem passar pelo for (nao ter nenhuma lecture) - linha 691
+		
+		Schedule horario = new Schedule();
+		String expected = "[]";
+		assertEquals(expected,horario.getCommonWeekLecture(new ArrayList<>()).toString());
+		
+		//entrar nos dois for e IF falso
+		List<String> courses =  new ArrayList<String>();
+		courses.add("Agentes Autonomos");
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_11colunas.csv");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
+		//entrar nos dois for e IF verdadeiro
+		
+		expected = "[Unknown - 13:00:00-14:30:00 - Investimentos II -  - Room ]";
+		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
+		courses.add("Investimentos II");
+		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
+		
+	}
+	
 }
 
 
