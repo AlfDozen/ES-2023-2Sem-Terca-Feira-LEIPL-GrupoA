@@ -671,7 +671,7 @@ final class Schedule {
 	 */
 	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
 		if (url == null) {
-			throw new NullPointerException(NULL_URL_EXCEPTION_MESSAGE);
+			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
 		}
 
 		URL fileURL = new URL(url);
@@ -704,16 +704,10 @@ final class Schedule {
 			rbc = Channels.newChannel(fileURL.openStream());
 			readChannelToFile(rbc, file);
 		} catch (IOException e) {
-			System.out.println("Error downloading file from URL: " + url);
 			return null;
 		} finally {
 			if (rbc != null) {
-				try {
-					rbc.close();
-				} catch (IOException e) {
-					System.out.println("Error closing ReadableByteChannel: " + e.getMessage());
-					return null;
-				}
+				rbc.close();
 			}
 		}
 		return file.getPath();
@@ -729,11 +723,8 @@ final class Schedule {
 	 *                     to the file
 	 */
 	static void readChannelToFile(ReadableByteChannel rbc, File file) throws IOException {
-		FileOutputStream fos = new FileOutputStream(file);
-		try {
+		try (FileOutputStream fos = new FileOutputStream(file)) {
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-		} finally {
-			fos.close();
 		}
 	}
 
@@ -752,7 +743,7 @@ final class Schedule {
 	 */
 	static Schedule callLoad(String filePath) throws IOException {
 		if (filePath == null) {
-			throw new NullPointerException(FILE_NULL_EXCEPTION);
+			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
 		}
 		Schedule schedule;
 
@@ -777,7 +768,6 @@ final class Schedule {
 			}
 		}
 		return schedule;
-
 	}
 
 	/**
@@ -824,7 +814,7 @@ final class Schedule {
 			throw new IllegalArgumentException(WRONG_FILE_FORMAT_EXCEPTION + destinationFormat);
 		}
 	}
-	
+
 	/**
 	 * Returns a set with the unique lecture's name of an object shedule
 	 * 
@@ -832,7 +822,7 @@ final class Schedule {
 	 */
 	public Set<String> getUniqueLecturesCourses() {
 		Set<String> uniqueCourses = new HashSet<String>();
-		for(Lecture l : lectures) {
+		for (Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());
 		}
 		return uniqueCourses;
@@ -1000,14 +990,12 @@ final class Schedule {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
 		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
 		}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
 		} catch (DateTimeParseException ignore) {
-			ignore.printStackTrace();
 		}
 		return dateTimes;
 	}
