@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.CreateSchedule">
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerCreateSchedule">
    <children>
       <Label alignment="CENTER" layoutX="64.0" layoutY="113.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu número de aluno" />
       <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="66.0" prefWidth="131.0" text="Voltar ao menu Inicial" textAlignment="CENTER" wrapText="true" />
@@ -39,8 +39,8 @@
       </Button>
       <Button layoutX="209.0" layoutY="30.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="66.0" prefWidth="131.0" text="Criar Novo Horário" textAlignment="CENTER" wrapText="true" />
       <Button layoutX="396.0" layoutY="38.0" mnemonicParsing="false" onAction="#conflicts" prefHeight="49.0" prefWidth="229.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true" />
-      <Button layoutX="682.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveCSV" prefHeight="66.0" prefWidth="131.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true" />
-      <Button layoutX="836.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveJSON" prefHeight="66.0" prefWidth="131.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="682.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="66.0" prefWidth="131.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="836.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="66.0" prefWidth="131.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true" />
       <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="371.0" layoutY="154.0" prefHeight="614.0" prefWidth="606.0">
          <content>
             <DetailedWeekView fx:id="calendar" />
