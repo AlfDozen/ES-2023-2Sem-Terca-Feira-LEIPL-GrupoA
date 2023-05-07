@@ -1,3 +1,13 @@
+
+/**
+ * The ControllerWebCall class manages the GUI components and events in the
+ * WebCall scene. The corresponding GUI is used to import a schedule from a
+ * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
+ *
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -14,30 +24,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * The ControllerWebCall class manages the GUI components and events in the
- * WebCall scene. The corresponding GUI is used to import a schedule from a
- * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
- *
- * @author alfdozen
- * @version 1.0.0
- */
+
 public class ControllerWebCall implements Initializable {
 
 	@FXML
-	private Button importSchedule;
+	private Button importSchedule = new Button();
 	@FXML
-	private Button viewSchedule;
+	private Button viewSchedule = new Button();
 	@FXML
-	private Button saveCSV;
+	private Button saveCSV = new Button();
 	@FXML
-	private Button backButton;
+	private Button backButton = new Button();
 	@FXML
-	private Button saveJSON;
+	private Button saveJSON = new Button();
 	@FXML
-	private TextField webcalURLTextField;
+	private TextField webcalURLTextField = new TextField();
 	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * Imports a schedule from the provided webcal URL and displays the schedule in
@@ -50,7 +53,7 @@ public class ControllerWebCall implements Initializable {
 	private void importScheduleFromWebcal() {
 		String webcalURL = webcalURLTextField.getText();
 		try {
-			App.SCHEDULE = Schedule.loadWebcal(webcalURL);
+			App.schedule = Schedule.loadWebcal(webcalURL);
 			viewSchedule.setVisible(true);
 			saveCSV.setVisible(true);
 			saveJSON.setVisible(true);
@@ -80,7 +83,7 @@ public class ControllerWebCall implements Initializable {
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
-			Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
+			Schedule.saveToCSV(App.schedule, filenameToSave);
 			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
@@ -103,7 +106,7 @@ public class ControllerWebCall implements Initializable {
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
 		filenameToSave = filePathToSave.getAbsolutePath();
 		try {
-			Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
+			Schedule.saveToJSON(App.schedule, filenameToSave);
 			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em JSON", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {

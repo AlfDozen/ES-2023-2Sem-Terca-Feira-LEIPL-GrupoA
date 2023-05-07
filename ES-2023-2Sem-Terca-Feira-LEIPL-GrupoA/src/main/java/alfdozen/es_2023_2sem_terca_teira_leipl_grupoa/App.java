@@ -1,3 +1,16 @@
+
+/**
+ * The App class launches the stage, sets the main menu scene and manages the
+ * GUI components and events in the scene. The user can click on different
+ * buttons to go to the the corresponding scenes (importSchedule, importWebcal,
+ * createSchedule and convertFile). The exit button is used to close the
+ * application. If the user already imported a schedule file, the viewSchedule
+ * button is visible and can be clicked to go to the viewSchedule scene.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import javafx.application.Application;
@@ -16,17 +29,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
-/**
- * The App class launches the stage, sets the main menu scene and manages the
- * GUI components and events in the scene. The user can click on different
- * buttons to go to the the corresponding scenes (importSchedule, importWebcal,
- * createSchedule and convertFile). The exit button is used to close the
- * application. If the user already imported a schedule file, the viewSchedule
- * button is visible and can be clicked to go to the viewSchedule scene.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
 public class App extends Application implements Initializable {
 
 	static final String ALERT_MESSAGE = "Alerta";
@@ -35,25 +37,24 @@ public class App extends Application implements Initializable {
 	static final String ERROR_SELECT_FILE_MESSAGE = "Por favor, selecione um ficheiro";
 	static final String SUCCESS_DESCRIPTION_MESSAGE = "Horário importado com sucesso";
 	
-	
+	public static Schedule schedule;
 	private static Scene scene;
 	private static Stage stage;
-	public static Schedule SCHEDULE;
 
 	@FXML
-	private Button importScheduleButton;
+	private Button importScheduleButton = new Button();
 	@FXML
-	private Button importWebcalButton;
+	private Button importWebcalButton = new Button();
 	@FXML
-	private Button createScheduleButton;
+	private Button createScheduleButton = new Button();
 	@FXML
-	private Button convertFileButton;
+	private Button convertFileButton = new Button();
 	@FXML
-	private Button viewScheduleButton;
+	private Button viewScheduleButton = new Button();
 	@FXML
-	private ImageView logoImage;
+	private ImageView logoImage = new ImageView();
 	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * This method is called after the init method has returned, and after the
@@ -67,12 +68,12 @@ public class App extends Application implements Initializable {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			SCHEDULE = new Schedule();
+			schedule = new Schedule();
 			stage = primaryStage;
 			scene = new Scene(loadFXML("/fxml/Main"));
 			stage.setScene(scene);
 			stage.show();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao iniciar o programa", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
@@ -217,7 +218,7 @@ public class App extends Application implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
 		logoImage.setImage(new Image("/fxml/iscte.gif"));
-		viewScheduleButton.setVisible(!Schedule.scheduleIsEmpty(SCHEDULE));
+		viewScheduleButton.setVisible(!Schedule.scheduleIsEmpty(schedule));
 	}
 
 	/**

@@ -1,3 +1,14 @@
+
+/**
+ * The ControllerUploadSchedule class manages the GUI components and events in
+ * the UploadSchedule scene. The corresponding GUI is used to select a csv or
+ * json file in the local file system or remotely and save it to a json or csv
+ * file. It is also used to view the uploaded schedule.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -17,67 +28,58 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-/**
- * The ControllerUploadSchedule class manages the GUI components and events in
- * the UploadSchedule scene. The corresponding GUI is used to select a csv or
- * json file in the local file system or remotely and save it to a json or csv
- * file. It is also used to view the uploaded schedule.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
 public class ControllerImportSchedule implements Initializable {
-	
-	@FXML
-	private Button saveFileCSVButton;
 
 	@FXML
-	private Button saveFileJSONButton;
+	private Button saveFileCSVButton = new Button();
 
 	@FXML
-	private Button cancelButton;
+	private Button saveFileJSONButton = new Button();
 
 	@FXML
-	private Button chooseFileButton;
+	private Button cancelButton = new Button();
 
 	@FXML
-	private Button viewScheduleButton;
+	private Button chooseFileButton = new Button();
 
 	@FXML
-	private Button importFileButton;
+	private Button viewScheduleButton = new Button();
 
 	@FXML
-	private RadioButton optionLocalRadioButton;
+	private Button importFileButton = new Button();
 
 	@FXML
-	private RadioButton optionOnlineRadioButton;
-	
-	@FXML
-	private RadioButton optionCSVRadioButton;
-	
-	@FXML
-	private RadioButton optionJSONRadioButton;
+	private RadioButton optionLocalRadioButton = new RadioButton();
 
 	@FXML
-	private ToggleGroup fileTypeChooser;
-	
-	@FXML
-	private ToggleGroup extensionChooser;
+	private RadioButton optionOnlineRadioButton = new RadioButton();
 
 	@FXML
-	private Label fileChosenPathLabel;
+	private RadioButton optionCSVRadioButton = new RadioButton();
 
 	@FXML
-	private Label onlineInstructionLabel;
-	
-	@FXML
-	private Label extensionInstructionLabel;
+	private RadioButton optionJSONRadioButton = new RadioButton();
 
 	@FXML
-	private TextField inputOnlineTextField;
+	private ToggleGroup fileTypeChooser = new ToggleGroup();
 
 	@FXML
-	private AnchorPane window;
+	private ToggleGroup extensionChooser = new ToggleGroup();
+
+	@FXML
+	private Label fileChosenPathLabel = new Label();
+
+	@FXML
+	private Label onlineInstructionLabel = new Label();
+
+	@FXML
+	private Label extensionInstructionLabel = new Label();
+
+	@FXML
+	private TextField inputOnlineTextField = new TextField();
+
+	@FXML
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * Event handler for viewing the schedule. Sets the root view to the
@@ -98,7 +100,7 @@ public class ControllerImportSchedule implements Initializable {
 	@FXML
 	private void chooseFile() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV, JSON","*.csv", "*.json"));
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV, JSON", "*.csv", "*.json"));
 		File filePath;
 		filePath = fileChooser.showOpenDialog(new Stage());
 		if (filePath == null) {
@@ -153,6 +155,7 @@ public class ControllerImportSchedule implements Initializable {
 		optionOnlineRadioButton.setSelected(true);
 		fileChosenPathLabel.setVisible(false);
 		chooseFileButton.setVisible(false);
+		inputOnlineTextField.setText("");
 		inputOnlineTextField.setVisible(true);
 		onlineInstructionLabel.setVisible(true);
 		viewScheduleButton.setVisible(false);
@@ -182,9 +185,9 @@ public class ControllerImportSchedule implements Initializable {
 		}
 		String filenameToSave = filePathToSave.getAbsolutePath();
 		try {
-			Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em " + filenameToSave, App.SUCCESS_MESSAGE,
-					JOptionPane.INFORMATION_MESSAGE);
+			Schedule.saveToCSV(App.schedule, filenameToSave);
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em " + filenameToSave,
+					App.SUCCESS_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
@@ -208,9 +211,9 @@ public class ControllerImportSchedule implements Initializable {
 		}
 		String filenameToSave = filePathToSave.getAbsolutePath();
 		try {
-			Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em " + filenameToSave, App.SUCCESS_MESSAGE,
-					JOptionPane.INFORMATION_MESSAGE);
+			Schedule.saveToJSON(App.schedule, filenameToSave);
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em " + filenameToSave,
+					App.SUCCESS_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
@@ -230,9 +233,9 @@ public class ControllerImportSchedule implements Initializable {
 			Schedule importedSchedule = null;
 			if (optionOnlineRadioButton.isSelected()) {
 				String fileExtension = "";
-				if(optionCSVRadioButton.isSelected()) {
+				if (optionCSVRadioButton.isSelected()) {
 					fileExtension = ".csv";
-				} else if(optionJSONRadioButton.isSelected()) {
+				} else if (optionJSONRadioButton.isSelected()) {
 					fileExtension = ".json";
 				} else {
 					JOptionPane.showMessageDialog(null, "Selecione o tipo de ficheiro do URL", App.ALERT_MESSAGE,
@@ -245,9 +248,10 @@ public class ControllerImportSchedule implements Initializable {
 					return;
 				}
 				importedSchedule = Schedule.downloadFileFromURL(inputOnlineTextField.getText(), fileExtension);
-				if(Schedule.lecturesInScheduleAllNull(importedSchedule)) {
-					JOptionPane.showMessageDialog(null, "O horário importado está vazio. É provável que o URL não corresponda ao formato selecionado.", App.ALERT_MESSAGE,
-							JOptionPane.INFORMATION_MESSAGE);
+				if (Schedule.lecturesInScheduleAllNull(importedSchedule)) {
+					JOptionPane.showMessageDialog(null,
+							"O horário importado está vazio. É provável que o URL não corresponda ao formato selecionado.",
+							App.ALERT_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
 					viewScheduleButton.setVisible(false);
 					saveFileJSONButton.setVisible(false);
 					saveFileCSVButton.setVisible(false);
@@ -256,30 +260,31 @@ public class ControllerImportSchedule implements Initializable {
 					JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.SUCCESS_MESSAGE,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-				App.SCHEDULE = importedSchedule;
-				
+				App.schedule = importedSchedule;
+
 			} else {
 				String extension = Schedule.getFileExtension(fileChosenPathLabel.getText());
 				switch (extension) {
-				case Schedule.FILE_FORMAT_CSV:
-					importedSchedule = Schedule.loadCSV(fileChosenPathLabel.getText());
-					break;
-				case Schedule.FILE_FORMAT_JSON:
-					importedSchedule = Schedule.loadJSON(fileChosenPathLabel.getText());
-					break;
-				default:
-					throw new IllegalArgumentException("Invalid file extension");
-				}		
-				App.SCHEDULE = importedSchedule;
+					case Schedule.FILE_FORMAT_CSV:
+						importedSchedule = Schedule.loadCSV(fileChosenPathLabel.getText());
+						break;
+					case Schedule.FILE_FORMAT_JSON:
+						importedSchedule = Schedule.loadJSON(fileChosenPathLabel.getText());
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid file extension");
+				}
+				App.schedule = importedSchedule;
 				JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.SUCCESS_MESSAGE,
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 			viewScheduleButton.setVisible(true);
 			saveFileJSONButton.setVisible(true);
 			saveFileCSVButton.setVisible(true);
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro", App.ALERT_MESSAGE,
-					JOptionPane.INFORMATION_MESSAGE);
+		} catch (IOException e1) {
+			JOptionPane.showMessageDialog(null,
+					"Erro ao importar ficheiro." + "Verifique que o formato corresponde ao selecionado",
+					App.ALERT_MESSAGE, JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -289,18 +294,19 @@ public class ControllerImportSchedule implements Initializable {
 	 */
 	@FXML
 	private void dealWithText() {
-		if(optionCSVRadioButton.isSelected() || optionJSONRadioButton.isSelected()) {
+		if (optionCSVRadioButton.isSelected() || optionJSONRadioButton.isSelected()) {
 			importFileButton.setVisible(true);
 		}
 	}
-	
+
 	/**
-	 * Event handler for showing the import file button if the online text field is not empty.
-	 * The import file button will become visible allowing the user to import a file.
+	 * Event handler for showing the import file button if the online text field is
+	 * not empty. The import file button will become visible allowing the user to
+	 * import a file.
 	 */
 	@FXML
 	private void showImportButton() {
-		if(!inputOnlineTextField.getText().isBlank()) {
+		if (!inputOnlineTextField.getText().isBlank()) {
 			importFileButton.setVisible(true);
 		}
 	}
@@ -325,10 +331,10 @@ public class ControllerImportSchedule implements Initializable {
 	 * and initializes the GUI components and stage in the controller needed for the
 	 * main scene.
 	 *
-	 * @param arg0  the location used to resolve relative paths for the root
-	 *                  object, or null if the location is not known.
-	 * @param arg1 the resources used to localize the root object, or null if
-	 *                  the root object was not localized.  
+	 * @param arg0 the location used to resolve relative paths for the root object,
+	 *             or null if the location is not known.
+	 * @param arg1 the resources used to localize the root object, or null if the
+	 *             root object was not localized.  
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

@@ -1,9 +1,3 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 /**
  * The TimeSlot class is used to define the beginning and ending time of a
@@ -25,6 +19,15 @@ import java.time.format.DateTimeParseException;
  * @author alfdozen
  * @version 1.0.0
  */
+
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+
 final class TimeSlot implements Comparable<TimeSlot> {
 
 	static final String WRONG_DATE_FORMAT = "Wrong date format";
@@ -33,6 +36,7 @@ final class TimeSlot implements Comparable<TimeSlot> {
 	static final String[] WEEK_DAY_ARRAY = { "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom" };
 	private static final String DATE_FORMAT = "d/M/yyyy";
 	private static final String TIME_FORMAT = "H:m:s";
+	private static final int TWO_DIGIT_NUMBER = 10;
 	private String weekDay;
 	private LocalDate date;
 	private LocalTime timeBegin;
@@ -174,14 +178,14 @@ final class TimeSlot implements Comparable<TimeSlot> {
 		}
 		int iDay = date.getDayOfMonth();
 		String day;
-		if (iDay < 10) {
+		if (iDay < TWO_DIGIT_NUMBER) {
 			day = "0" + iDay;
 		} else {
 			day = Integer.toString(iDay);
 		}
 		int iMonth = date.getMonthValue();
 		String month;
-		if (iMonth < 10) {
+		if (iMonth < TWO_DIGIT_NUMBER) {
 			month = "0" + iMonth;
 		} else {
 			month = Integer.toString(iMonth);

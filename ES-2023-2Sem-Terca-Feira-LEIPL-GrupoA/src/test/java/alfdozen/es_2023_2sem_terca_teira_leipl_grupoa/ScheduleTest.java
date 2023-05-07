@@ -27,7 +27,7 @@ import java.io.BufferedReader;
 
 class ScheduleTest {
 	@Test
-	void testScheduleNull() {
+	final void testScheduleNull() {
 		Schedule schedule = new Schedule(null, null, (Integer) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -35,7 +35,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesStudentNull() {
+	final void testScheduleLecturesStudentNull() {
 		Schedule schedule = new Schedule(null, null, (String) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -43,7 +43,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesNull() {
+	final void testScheduleLecturesNull() {
 		Schedule schedule = new Schedule(null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -51,7 +51,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleAllNull() {
+	final void testScheduleAllNull() {
 		Schedule schedule = new Schedule(null, (Integer) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -59,7 +59,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesStudentNull2() {
+	final void testScheduleLecturesStudentNull2() {
 		Schedule schedule = new Schedule(null, (String) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -216,7 +216,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetLecturesSorting() {
+	final void testSetLecturesSorting() {
 		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
 				new Room("ES23", 20));
@@ -241,7 +241,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testAddAndRemoveLecture() {
+	final void testAddAndRemoveLecture() {
 		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
 				new Room("ES23", 20));
@@ -257,7 +257,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetStudentName() {
+	final void testSetStudentName() {
 		Schedule schedule = new Schedule();
 		String name = "John Doe";
 		schedule.setStudentName(name);
@@ -272,7 +272,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetStudentNumberPositive() {
+	final void testSetStudentNumberPositive() {
 		Schedule schedule = new Schedule();
 		Integer number = 12345;
 		schedule.setStudentNumber(number);
@@ -778,7 +778,7 @@ class ScheduleTest {
 	}
   
   @Test
-	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
+	final void testDownloadFileFromURL() throws IllegalArgumentException, IOException {
 		// Test with null URL
 		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null, null));
 		// Create a temporary CSV file
@@ -797,6 +797,16 @@ class ScheduleTest {
 		assertTrue(jsonFile.exists());
 		assertTrue(jsonFile.isFile());
 		assertEquals("tempFile.json", jsonFile.getName());
+		// Remote CSV
+		String urlCSV = "https://drive.google.com/uc?export=download&id=1_zSXUVBpq3IDvbvIDIe2Icl2dcIv2jj4";
+		Schedule sch = Schedule.downloadFileFromURL(urlCSV, ".csv");
+		assertFalse(Schedule.scheduleIsEmpty(sch));
+		assertFalse(Schedule.lecturesInScheduleAllNull(sch));
+		// Remote JSON
+		String urlJSON = "https://drive.google.com/uc?export=download&id=1rgPJ-CIPbFqVhs1xGqs3zzf_WzoX-555";
+		sch = Schedule.downloadFileFromURL(urlJSON, ".json");
+		assertFalse(Schedule.scheduleIsEmpty(sch));
+		assertFalse(Schedule.lecturesInScheduleAllNull(sch));
 	}
 
 	@Test
