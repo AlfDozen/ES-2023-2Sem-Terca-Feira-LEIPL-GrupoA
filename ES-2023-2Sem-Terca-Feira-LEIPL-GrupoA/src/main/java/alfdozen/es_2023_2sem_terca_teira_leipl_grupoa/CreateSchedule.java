@@ -72,19 +72,16 @@ public class CreateSchedule implements Initializable {
 				lecList.add(lec);
 			}
 		}
-
-		if (studentName.getText().isEmpty()) {
-			App.setSchedule(new Schedule(lecList));
-		} else if (studentNumber.getText().isEmpty()) {
-			System.out.println("numero aluno " + studentNumber);
-			studentNumber = null;
-			App.setSchedule(new Schedule(lecList, studentName.getText(), studentNumber.getText()));
-		} else if (studentName.getText().isEmpty() && studentNumber.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "O nome de aluno não pode estar vazio", App.ERROR_TITLE_DIALOG,
+		if (studentNumber.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "O número de aluno não pode estar vazio", App.ERROR_TITLE_DIALOG,
 					JOptionPane.ERROR_MESSAGE);
+			return;
+		} else if (studentName.getText() == null) {
+			App.setSchedule(new Schedule(lecList, null, Integer.valueOf(studentNumber.getText())));
 		} else {
 			App.setSchedule(new Schedule(lecList, studentName.getText(), Integer.valueOf(studentNumber.getText())));
 		}
+		viewSchedule();
 	}
 
 	@FXML
@@ -171,7 +168,7 @@ public class CreateSchedule implements Initializable {
 
 		String[] buttons = { "Confirmar", "Cancelar" };
 		int confirmation = JOptionPane.showOptionDialog(null,
-				"Irá perder todos os dados não guardados. De certeza que pretende continuar?",
+				"De certeza que pretende continuar?",
 				"Ir para consultar calendário", JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
 				buttons, buttons[0]);
 

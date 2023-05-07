@@ -38,7 +38,7 @@
          </tooltip>
       </Button>
       <Button layoutX="209.0" layoutY="30.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="66.0" prefWidth="131.0" text="Criar Novo Horário" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="backButton2" layoutX="404.0" layoutY="72.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="229.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="396.0" layoutY="38.0" mnemonicParsing="false" onAction="#conflicts" prefHeight="49.0" prefWidth="229.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true" />
       <Button layoutX="682.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveCSV" prefHeight="66.0" prefWidth="131.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true" />
       <Button layoutX="836.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveJSON" prefHeight="66.0" prefWidth="131.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true" />
       <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="371.0" layoutY="154.0" prefHeight="614.0" prefWidth="606.0">
@@ -46,6 +46,5 @@
             <DetailedWeekView fx:id="calendar" />
          </content>
       </ScrollPane>
-      <Button layoutX="440.0" layoutY="14.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="49.0" prefWidth="131.0" text="Consultar Horário" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>

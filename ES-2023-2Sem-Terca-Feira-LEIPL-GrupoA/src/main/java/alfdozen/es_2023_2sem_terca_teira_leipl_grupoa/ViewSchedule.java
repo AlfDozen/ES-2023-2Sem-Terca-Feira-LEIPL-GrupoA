@@ -1,395 +1,257 @@
+/**
+ * The ViewSchedule class is the controller for the ViewSchedule.fxml file. It
+ * manages the GUI components and events in the ViewSchedule scene. The
+ * corresponding GUI is used to display the current schedule as a calendar view,
+ * save the schedule as a CSV or JSON file, return to the Main menu, create a new
+ * schedule or view any schedule conflicts.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
-
-import javafx.collections.ObservableList;
+import javax.swing.JOptionPane;
+import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.Calendar.Style;
+import com.calendarfx.model.CalendarSource;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
-//PARA APAGAR: CLASSE DE PAGINA DE CONSULTAR HORÁRIO
-public class ViewSchedule implements Initializable{
+public class ViewSchedule implements Initializable {
 
+	public static final int NUM_COLUMNS = 7;
+	public static final int SLEEP_TIME = 10000;
+	public static final int WIDTH = 700;
+	public static final int HEIGHT = 750;
+	static final String ALERT_MESSAGE = "Alerta";
+	static final String ERROR_MESSAGE = "Erro";
+	static final String POP_UP_MESSAGE = "Erro ao guardar o ficheiro";
 
-	private String[] daysOfWeek = {"Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"};
-
-	private List<String> hours = new ArrayList<String>();
-
-	private Map<Integer,ListView<Label>> monthItems = new HashMap<>();
-
-	@FXML 
-	private Tab monthTab, dayTab, weekTab;
-
-	@FXML
-	private GridPane paneCalendarDay, paneCalendarWeek, paneCalendarMonth;
-
-	@FXML
-	private DatePicker datePickerDay, datePickerWeek, datePickerMonth;
+	private FileChooser fileChooserToSave;
+	private File filePathToSave;
+	private String filenameToSave;
 
 	@FXML
-	private Button backButtonDay, backButtonWeek, backButtonMonth;
+	private AnchorPane window;
 
 	@FXML
-	private TabPane window; 
+	private CalendarView calendarView;
 
-
-	private void clearGridContent(GridPane paneCalendar) {
-		// clear the GridPane
-		paneCalendar.getChildren().clear();
-		paneCalendar.getRowConstraints().clear();
-		paneCalendar.getColumnConstraints().clear();
-	}
-
-	private void defineGridLayout(GridPane paneCalendar) {
-		paneCalendar.setHgap(10);
-		paneCalendar.setVgap(10);
-
-		//		paneCalendar.prefWidthProperty().bind(monthTab.App.scene.widthProperty());
-		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
-
-	}
-
-	private void allMonthLayout(GridPane paneCalendar) {
-		paneCalendar.setHgap(10);
-		paneCalendar.setVgap(10);
-
-		//		paneCalendar.prefWidthProperty().bind(monthtab.getScene().widthProperty());
-		//		paneCalendar.prefHeightProperty().bind(monthtab.getScene().heightProperty());
-
-	}
-
-
-	private void setDefaultHours(GridPane paneCalendar) {
-
-		int startingHour = 8;
-		int row = 1;
-		int previous = 8;
-
-		for(double i = startingHour+0.5; i < 23.5 ; i+=0.5) {
-
-			int truncHour = (int)  Math.floor(i);
-
-			if(truncHour == previous) {
-
-				Label dayLabel = new Label(truncHour+":00-"+ truncHour+":30");
-				paneCalendar.add(dayLabel, 0,row);
-
-			}else {
-
-				Label dayLabel = new Label(previous+":30-"+ truncHour +":00");
-				paneCalendar.add(dayLabel, 0,row);
-				previous++;
-			}
-			row++;
-		}
-	}
-
+	/**
+	 * This method is called by the event of clicking on the cancelButton. It
+	 * returns to the main scene.
+	 */
 	@FXML
 	private void returnHome() {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	//   ######################### MOSTRAR CALENDARIO #################################################### //
-
-
-	//  ######################### MÊS #################################################### //
-
-
-	private void fillMap(int month, int year) {
-		
-		
-		for(int i = 1; i <= 31; i++) {
-			
-			ListView<Label> listvu = new ListView<Label>();
-			listvu.setPrefSize(150, 150);
-			
-			monthItems.put(i, listvu);
-		}
-		
-		for(Lecture lec : App.SCHEDULE.getLectures()) {
-			
-			if(lec.getTimeSlot().getDate() != null
-					&& lec.getTimeSlot().getDate().getMonthValue() == month
-					&& lec.getTimeSlot().getDate().getYear() == year) {
-
-				Label hourClass= new Label(lec.getTimeSlot().getTimeBegin() + " - " + lec.getTimeSlot().getTimeEnd() + lec.getAcademicInfo().getCourseAbbreviation() + " - " + lec.getRoom());
-
-				int dayMonth = lec.getTimeSlot().getDate().getDayOfMonth();
-
-					monthItems.get(dayMonth).getItems().add(hourClass);
-			}
+			JOptionPane.showMessageDialog(null, "Erro ao voltar para o menu principal", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
+	/**
+	 * Event handler for saving the schedule to a CSV file. Shows a file chooser
+	 * dialog to select the save location. Saves the schedule to the selected file
+	 * in CSV format. Displays a success message with the file path if the save is
+	 * successful. Displays an error message if there is an exception while saving.
+	 */
 	@FXML
-	public void showCalendarMonth() {
+	private void saveFileCSV() {
+		// PARA GRAVAR
+		fileChooserToSave = new FileChooser();
+		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".CSV"));
+		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 
-		if(datePickerMonth.getValue() != null) {
+		try {
+			if (filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
+				Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
+			}
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, POP_UP_MESSAGE, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-			clearGridContent(paneCalendarMonth);
-			monthItems.clear();
+	/**
+	 * Event handler for saving the schedule to a JSON file. Shows a file chooser
+	 * dialog to select the save location. Saves the schedule to the selected file
+	 * in JSON format. Displays a success message with the file path if the save is
+	 * successful. Displays an error message if there is an exception while saving.
+	 */
+	@FXML
+	private void saveFileJSON() {
+		// PARA GRAVAR
+		fileChooserToSave = new FileChooser();
+		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
+		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 
-			for (int i = 1; i <= daysOfWeek.length; i++) {
-
-				Label dayLabel = new Label(daysOfWeek[i-1]);
-
-				paneCalendarMonth.add(dayLabel, i, 0);
+		try {
+			if (filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
+				Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
 			}
 
-			// Add date labels
-			int numRows = 6; // number of rows in the calendar grid
-			int numCols = 7; // number of columns in the calendar grid
-			int dayOfMonth = 1; // starting day of the month
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, POP_UP_MESSAGE, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-			LocalDate selectDate = datePickerMonth.getValue();
-			LocalDate firstDay = selectDate.minusDays(selectDate.getDayOfMonth() - 1);
+	/**
+	 * Loads the "CreateSchedule" scene when the "Create Schedule" button is
+	 * pressed.
+	 */
+	@FXML
+	private void createSchedule() {
+		try {
+			App.setRoot("/fxml/CreateSchedule");
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de criar horário", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-			DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
+	/**
+	 * Shows a new stage with a list of all the lecture conflicts in the schedule.
+	 * The conflicts are displayed using the "Overlayed.fxml" file. If there is an
+	 * IO exception while loading the FXML file, no action is taken.
+	 */
+	@FXML
+	private void conflicts() {
+		try {
 
-			
-			fillMap(selectDate.getMonthValue(),selectDate.getYear());
+			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-			for (int col = dayOfWeek.getValue(); col <= numCols; col++) {
-				
-				Label dateLabel = new Label(Integer.toString(dayOfMonth));
-				monthItems.get(dayOfMonth).getItems().add(0, dateLabel);
-				
-				
-				paneCalendarMonth.add(monthItems.get(dayOfMonth), col, 1);
-				dayOfMonth++;
-			}
+			Stage newStage = new Stage();
 
+			newStage.setScene(scene);
+			newStage.setTitle("ListView Window");
+			newStage.setResizable(false);
+			newStage.centerOnScreen();
+			newStage.show();
 
-			for (int row = 2; row <= numRows; row++) {			
-				for (int col = 1; col <= numCols; col++) {
-					if (dayOfMonth <= getNumDaysInMonth()) {
-						Label dateLabel = new Label(Integer.toString(dayOfMonth));
-						monthItems.get(dayOfMonth).getItems().add(0, dateLabel);
-						
-						paneCalendarMonth.add(monthItems.get(dayOfMonth), col, row);
-						dayOfMonth++;
-					}
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de mostrar conflitos do horário", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * Populates the calendar view with the entries of the lectures in the current
+	 * schedule. Creates a new calendar source, adds the lecture entries to it and
+	 * sets it as the calendar source for the calendar view. Also starts a thread to
+	 * update the current time on the calendar every 10 seconds.
+	 */
+	
+	private void setLecturesEntries() {
+
+		try {
+
+			Calendar<Lecture> iscte = new Calendar<>("ISCTE");
+			iscte.setStyle(Style.STYLE1);
+
+			for (Lecture lec : App.SCHEDULE.getLectures()) {
+
+				if (lec.getTimeSlot().getDate() != null) {
+
+					Entry<Lecture> aulas = new Entry<>();
+
+					aulas.setTitle(lec.toString());
+					LocalDate classDay = lec.getTimeSlot().getDate();
+					LocalTime begin = lec.getTimeSlot().getTimeBegin();
+					LocalTime end = lec.getTimeSlot().getTimeEnd();
+
+					aulas.setInterval(classDay, begin, classDay, end);
+
+					iscte.addEntry(aulas);
 				}
 			}
 
-			allMonthLayout(paneCalendarMonth);
-		}
-	}
+			CalendarSource iscteCalendarSource = new CalendarSource("ISCTE");//
+			iscteCalendarSource.getCalendars().addAll(iscte);
 
-	//  ######################### APOIO #################################################### //
+			calendarView.getCalendarSources().setAll(iscteCalendarSource);
 
-	public Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
-		Node result = null;
-		ObservableList<Node> children = gridPane.getChildren();
+			calendarView.setRequestedTime(LocalTime.now());
 
-		for (Node node : children) {
-			if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-				result = node;
-				break;
-			}
-		}
+			Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+				@Override
+				public void run() {
+					while (true) {
+						Platform.runLater(() -> {
+							calendarView.setToday(LocalDate.now());
+							calendarView.setTime(LocalTime.now());
+						});
 
-		return result;
-	}
-
-
-	public void procedureForHours(GridPane gridPane) {
-
-		hours.clear();
-
-		ObservableList<Node> children = gridPane.getChildren();
-
-		for (Node node : children) {
-			if (GridPane.getRowIndex(node) > 0 && GridPane.getColumnIndex(node) == 0) {
-				hours.add(((Label) node).getText().substring(0,5));
-			}
-		}
-	}
-
-	//  ######################### SEMANA #################################################### //
-
-	@FXML
-	public void bootCalendarWeek() {
-		clearGridContent(paneCalendarWeek);
-		setDefaultHours(paneCalendarWeek);
-		procedureForHours(paneCalendarDay);
-	}
-
-
-	@FXML
-	public void showCalendarWeek() {
-
-		clearGridContent(paneCalendarWeek);
-		setDefaultHours(paneCalendarWeek);
-
-		if(datePickerWeek.getValue() != null) {
-
-			LocalDate selectedDate = datePickerWeek.getValue();
-			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
-			LocalDate startOfWeek = selectedDate.minusDays(dayOfWeek.getValue() - 1);
-
-			for (int i = 0; i < daysOfWeek.length; i++) {
-
-				Label dayLabel = new Label(daysOfWeek[i] + "\n" + startOfWeek.plusDays(i).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-				dayLabel.setMinHeight(50);
-				dayLabel.setMinHeight(50);
-
-				paneCalendarWeek.add(dayLabel, i+1, 0);
-			}
-
-			for(Lecture lec : App.SCHEDULE.getLectures()) {
-
-				if(lec.getTimeSlot().getDate() == null) {
-					continue;
-				}
-
-				//Validar que a data da Lecture a ver está dentro da semana que está a ser mostrada no ecrã definida pelo DatePicker (seleccao da data)
-				if(lec.getTimeSlot().getDate().compareTo(startOfWeek.plusDays(7)) >= 0 ) {
-					break;
-				}
-
-				if(lec.getTimeSlot().getDate().compareTo(startOfWeek) >= 0 ) {
-
-					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5))+1;
-					int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5));
-
-					int day = lec.getTimeSlot().getDate().getDayOfWeek().getValue();
-
-					for(int row = hourBegin; row <= hourEnd; row++) {
-
-						Node content =getNodeByRowColumnIndex(row, day, paneCalendarWeek);
-
-						if(content == null ) {
-
-							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
-							ListView<Label> lecList = new ListView<>();
-							lecList.getItems().add(hourClass);
-
-							paneCalendarWeek.add(lecList, day, row);
-
-						}else {
-
-							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
-							((ListView<Label>) content).getItems().add(hourClass);
-
-							paneCalendarWeek.add(hourClass, day, row);
+						try {
+							sleep(SLEEP_TIME);
+						} catch (InterruptedException e) {
+							interrupt();
 						}
+
 					}
 				}
-			}
+			};
 
-			defineGridLayout(paneCalendarWeek);
+			updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+			updateTimeThread.setDaemon(true);
+			updateTimeThread.start();
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro ao definir e mostrar horário", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
 		}
+
 	}
 
-	//  ######################### DIA #################################################### //
-
-	@FXML
-	public void bootCalendarDay() {
-		clearGridContent(paneCalendarDay);
-		setDefaultHours(paneCalendarDay);
-		procedureForHours(paneCalendarDay);
-	}
-
-	@FXML
-	public void showCalendarDay() {
-
-		if(datePickerDay.getValue() != null) {
-
-			clearGridContent(paneCalendarDay);
-			setDefaultHours(paneCalendarDay);
-
-			LocalDate selectedDate = datePickerDay.getValue();
-			DayOfWeek dayOfWeek = selectedDate.getDayOfWeek();
-
-			//LAMBER HORARIO DE AULAS PARA O DIA
-			for(Lecture lec : App.SCHEDULE.getLectures()) {
-
-				if(lec.getTimeSlot().getDate() == null) {
-					continue;
-				}
-
-				if(lec.getTimeSlot().getDate().compareTo(selectedDate) == 0 ) {
-
-					int hourBegin = hours.indexOf(lec.getTimeSlot().getTimeBeginString().substring(0,5))+1;
-					int hourEnd = hours.indexOf(lec.getTimeSlot().getTimeEndString().substring(0,5));
-
-					//POR CABECALHO DO DIA
-					Label dayLabel = new Label(daysOfWeek[dayOfWeek.getValue()-1] + "\n" + selectedDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-					dayLabel.setMinHeight(50);
-					dayLabel.setMinHeight(50);
-					paneCalendarDay.add(dayLabel, 1, 0);
-
-
-					//VER HORAS DE INICIO E FIM
-					for(int row = hourBegin; row <= hourEnd; row++) {
-
-						Node content =getNodeByRowColumnIndex(row, 1, paneCalendarDay);
-
-						if(content == null ) {
-
-							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
-							ListView<Label> lecList = new ListView<>();
-							lecList.getItems().add(hourClass);
-
-							paneCalendarDay.add(lecList, 1, row);
-
-						}else {
-
-							Label hourClass= new Label(lec.getAcademicInfo().getCourseAbbreviation() + "-" + lec.getRoom().getName());
-							((ListView<Label>) content).getItems().add(hourClass);
-
-						}
-					}
-				}
-			}
-
-			defineGridLayout(paneCalendarDay);
-		}
-	}
-
-	public boolean validateEntry(int value, int option) {
-		return value == option;
-	}
-
-	private int getNumDaysInMonth() {
-		int value = datePickerMonth.getValue().getMonthValue(); 
-
-		if(validateEntry(value, 2))
-			return 28;
-		else 
-			if(validateEntry(value, 4) || validateEntry(value, 6) || validateEntry(value, 9) || validateEntry(value, 11))
-				return 30;
-
-		return 31;
-	}
-
-
-	//  ######################### MAIN #################################################### //
-
-
+	/**
+	 * Initializes the controller class. This method is automatically called after
+	 * the FXML file has been loaded. It sets the stage size and title, enables
+	 * timezone support, and hides the source view. It also adds a listener to the
+	 * calendar sources, which hides the "Show Calendars" button if it exists.
+	 * Finally, it calls the setLecturesEntries method to populate the calendar view
+	 * with lectures.
+	 * 
+	 * @param arg0 the URL to the FXML file
+	 * @param arg1 the resource bundle associated with the FXML file
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
-		datePickerDay.setValue(LocalDate.now());
-		datePickerMonth.setValue(LocalDate.now());
-		datePickerWeek.setValue(LocalDate.now());
+		App.setStageSize(calendarView.getPrefWidth(), calendarView.getPrefHeight());
+//		App.stage.setTitle("Calendar");
+//		App.getStage().centerOnScreen();
+		calendarView.setEnableTimeZoneSupport(true);
 
+		calendarView.setShowAddCalendarButton(false);
+		calendarView.getSourceView().setVisible(false);
+
+		calendarView.getCalendarSources().addListener((ListChangeListener<CalendarSource>) change -> {
+			ToggleButton toggleButton = (ToggleButton) calendarView.lookup(".calendar-show-calendars-button");
+			if (toggleButton != null) {
+				toggleButton.setVisible(false);
+			}
+		});
+		setLecturesEntries();
 	}
 }
