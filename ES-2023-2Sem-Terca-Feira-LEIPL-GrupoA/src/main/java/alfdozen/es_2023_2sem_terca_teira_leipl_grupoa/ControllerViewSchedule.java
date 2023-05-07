@@ -27,12 +27,9 @@ import com.calendarfx.model.CalendarSource;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.Parent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -49,7 +46,6 @@ public class ControllerViewSchedule implements Initializable {
 
 	@FXML
 	private AnchorPane window = new AnchorPane();
-
 	@FXML
 	private CalendarView calendarView = new CalendarView();
 
@@ -124,26 +120,13 @@ public class ControllerViewSchedule implements Initializable {
 	}
 
 	/**
-	 * Shows a new stage with a list of all the lecture conflicts in the schedule.
-	 * The conflicts are displayed using the "Overlayed.fxml" file. If there is an
-	 * IO exception while loading the FXML file, no action is taken.
+	 * Calls showLectureConflicts from App to show a new stage with a list of all
+	 * the lecture conflicts in the schedule. The conflicts are displayed using the
+	 * "Overlayed.fxml" file.
 	 */
 	@FXML
 	private void conflicts() {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
-			Parent root = fxmlLoader.load();
-			Scene scene = new Scene(root, WIDTH, HEIGHT);
-			Stage newStage = new Stage();
-			newStage.setScene(scene);
-			newStage.setTitle("ListView Window");
-			newStage.setResizable(false);
-			newStage.centerOnScreen();
-			newStage.show();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de mostrar conflitos do horário", ERROR_MESSAGE,
-					JOptionPane.ERROR_MESSAGE);
-		}
+		App.showLectureConflicts();
 	}
 
 	/**
@@ -171,12 +154,13 @@ public class ControllerViewSchedule implements Initializable {
 			iscteCalendarSource.getCalendars().addAll(iscte);
 			calendarView.getCalendarSources().setAll(iscteCalendarSource);
 			calendarView.setRequestedTime(LocalTime.now());
-			
+
 			Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
 				@Override
 				public void run() {
 					while (true) {
-						Platform.runLater(() -> {calendarView.setToday(LocalDate.now());
+						Platform.runLater(() -> {
+							calendarView.setToday(LocalDate.now());
 							calendarView.setTime(LocalTime.now());
 						});
 						try {

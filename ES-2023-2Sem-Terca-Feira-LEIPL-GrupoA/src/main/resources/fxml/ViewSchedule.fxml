@@ -8,29 +8,29 @@
 <AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="882.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerViewSchedule">
    <children>
       <CalendarView fx:id="calendarView" layoutX="7.0" layoutY="79.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="803.0" prefWidth="1137.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="79.0" />
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="55.0" prefWidth="112.0" text="Voltar ao Menu Inicial" textAlignment="CENTER" wrapText="true">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="55.0" prefWidth="160.0" text="Voltar ao Menu Inicial" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="870.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="55.0" prefWidth="112.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="55.0" prefWidth="160.0" text="Guardar em CSV" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="998.0" layoutY="13.0" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="57.0" prefWidth="112.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="763.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="55.0" prefWidth="160.0" text="Guardar em JSON" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System" size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="136.0" layoutY="13.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="57.0" prefWidth="112.0" text="Criar Novo Horário" textAlignment="CENTER" wrapText="true">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="201.0" layoutY="14.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="55.0" prefWidth="160.0" text="Criar Novo Horário" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font size="14.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="493.0" layoutY="22.0" mnemonicParsing="false" onAction="#conflicts" prefHeight="38.0" prefWidth="231.0" text="Verificar Conflitos no Horário">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="388.0" layoutY="14.0" mnemonicParsing="false" onAction="#conflicts" prefHeight="55.0" prefWidth="160.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="System" size="14.0" />
          </font>
       </Button>
    </children>

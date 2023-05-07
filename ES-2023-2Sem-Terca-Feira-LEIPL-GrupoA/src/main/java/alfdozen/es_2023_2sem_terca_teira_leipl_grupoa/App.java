@@ -205,6 +205,29 @@ public class App extends Application implements Initializable {
 	}
 
 	/**
+	 * Shows a new stage with a list of all the lecture conflicts in the schedule.
+	 * The conflicts are displayed using the "Overlayed.fxml" file. If there is an
+	 * IO exception while loading the FXML file, no action is taken.
+	 */
+	@FXML
+	static void showLectureConflicts() {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root, 700, 750);
+			Stage newStage = new Stage();
+			newStage.setScene(scene);
+			newStage.setTitle("Conflitos no Horário");
+			newStage.setResizable(false);
+			newStage.centerOnScreen();
+			newStage.show();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de mostrar conflitos do horário", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	/**
 	 * This method is called after its root element has been completely processed
 	 * and initializes the GUI components and stage in the controller needed for the
 	 * main scene. If the schedule object is not null and has lectures, the

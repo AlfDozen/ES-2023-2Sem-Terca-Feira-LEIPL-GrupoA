@@ -12,10 +12,8 @@
 
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
@@ -29,19 +27,6 @@ public class ControllerOverlayed implements Initializable {
 	private ListView<String> overlayedList = new ListView<>();
 	@FXML
 	private ListView<String> overlappedList = new ListView<>();
-
-	/**
-	 * Changes the scene to the ViewSchedule scene when the createSchedule button is
-	 * clicked.
-	 */
-	@FXML
-	private void createSchedule() {
-		try {
-			App.setRoot("/fxml/ViewSchedule");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Initializes the controller class. This method is automatically called after
