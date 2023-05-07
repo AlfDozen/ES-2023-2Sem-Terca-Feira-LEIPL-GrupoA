@@ -56,6 +56,12 @@ public class App extends Application implements Initializable {
 	@FXML
 	private AnchorPane window = new AnchorPane();
 
+
+	//TODO
+	public static void setSchedule(Schedule newSchedule) {
+		schedule = newSchedule;
+	}
+	
 	/**
 	 * This method is called after the init method has returned, and after the
 	 * system is ready for the application to begin running. It receives the primary
@@ -68,6 +74,18 @@ public class App extends Application implements Initializable {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+//			STAGE = primaryStage;
+//			STAGE.setResizable(true);
+//
+//			SCENE = new Scene(loadFXML("/fxml/Main"));
+//			System.out.println("Scene created " + SCENE.toString());
+//
+//			STAGE.setScene(SCENE);
+//			STAGE.show();
+//
+//		} catch(Exception e) {
+//			System.err.println("Erro ao tentar correr o conteudo");
+//=======
 			schedule = new Schedule();
 			stage = primaryStage;
 			scene = new Scene(loadFXML("/fxml/Main"));

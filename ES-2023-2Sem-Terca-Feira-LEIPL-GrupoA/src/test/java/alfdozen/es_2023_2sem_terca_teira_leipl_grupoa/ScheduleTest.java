@@ -1063,7 +1063,6 @@ class ScheduleTest {
 		courses.add("Investimentos II");
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
 	}
-	
 	@Test
 	final void testLecturesInScheduleAllNull() {
 		// schedule vazio

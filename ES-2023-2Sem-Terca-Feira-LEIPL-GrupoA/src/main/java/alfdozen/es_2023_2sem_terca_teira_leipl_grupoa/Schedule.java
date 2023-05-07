@@ -88,6 +88,7 @@ final class Schedule {
 	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
 	static final String TEMP_FILE_CSV = "tempFile.csv";
 	static final String TEMP_FILE_JSON = "tempFile.json";
+
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -1000,14 +1001,12 @@ final class Schedule {
 			if (dateTimeBegin != null) {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {
-		}
+		} catch (DateTimeParseException ignore) {}
 		return dateTimes;
 	}
 
@@ -1251,3 +1250,4 @@ final class Schedule {
 		return str.toString();
 	}
 }
+
