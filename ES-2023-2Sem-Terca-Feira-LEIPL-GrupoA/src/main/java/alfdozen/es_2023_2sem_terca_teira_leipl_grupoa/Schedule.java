@@ -658,40 +658,39 @@ final class Schedule {
 			throw new IOException(READ_WRITE_EXCEPTION);
 		}
 	}
-	
+
 	/**
-	* Creates a new schedule containing lectures for the specified list of courses.
-	*
-	* @param courseList the list of academic information for the courses
-	* @return a new schedule containing lectures for the specified courses
-	* @throws IllegalArgumentException if the courseList is null or empty
-	*/
+	 * Creates a new schedule containing lectures for the specified list of courses.
+	 *
+	 * @param courseList the list of academic information for the courses
+	 * @return a new schedule containing lectures for the specified courses
+	 * @throws IllegalArgumentException if the courseList is null or empty
+	 */
 	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
 		if (courseList == null || courseList.isEmpty())
 			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
 		Schedule newSchedule = new Schedule(studentName, studentNumber);
-		
+
 		for (Lecture lecture : lectures)
-			if(courseList.contains(lecture.getAcademicInfo()))
-					newSchedule.addLecture(lecture);
-		
+			if (courseList.contains(lecture.getAcademicInfo()))
+				newSchedule.addLecture(lecture);
+
 		return newSchedule;
 	}
-	
 
 	/**
 	 * Downloads a file from the specified URL and saves it to a temporary
-	 * directory.
+	 * directory. The downloaded file is then loaded and parsed based on the
+	 * provided file extension to create a new Schedule.
 	 *
-	 * @param url The URL of the file to download.
-	 * @return The file name of the downloaded file (tempFile.csv or tempFile.json)
-	 *         if successful, or null if an IOException occurs.
-	 * @throws NullPointerException     If the URL is null.
-	 * @throws IllegalArgumentException If the file extension is not supported (only
-	 *                                  CSV and JSON are supported).
-	 * @throws IOException              If there is an issue creating or deleting
-	 *                                  the temporary file, or if there is an error
-	 *                                  closing the ReadableByteChannel.
+	 * @param url       the URL of the file to download
+	 * @param extension the file extension indicating the format of the file (e.g.,
+	 *                  "csv", "json")
+	 * @return a new Schedule created from the downloaded and parsed file
+	 * @throws IllegalArgumentException if the URL or extension is null, or if an
+	 *                                  invalid file extension is provided
+	 * @throws IOException              if there is an error downloading the file or
+	 *                                  connecting to the internet
 	 */
 	static Schedule downloadFileFromURL(String url, String extension) throws IllegalArgumentException, IOException {
 		if (url == null || extension == null) {
@@ -997,12 +996,14 @@ final class Schedule {
 			if (dateTimeBegin != null) {
 				dateTimes[0] = LocalDateTime.from(formatterDateTime.parse(dateTimeBegin)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {}
+		} catch (DateTimeParseException ignore) {
+		}
 		try {
 			if (dateTimeEnd != null) {
 				dateTimes[1] = LocalDateTime.from(formatterDateTime.parse(dateTimeEnd)).plusHours(1);
 			}
-		} catch (DateTimeParseException ignore) {}
+		} catch (DateTimeParseException ignore) {
+		}
 		return dateTimes;
 	}
 
@@ -1045,7 +1046,7 @@ final class Schedule {
 		}
 		return info;
 	}
-	
+
 	/**
 	 * Returns a string representation of the schedule, including the student's name
 	 * and number, and the list of lectures.
