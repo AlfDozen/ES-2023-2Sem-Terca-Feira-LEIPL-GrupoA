@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="746.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.Overlayed">
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="746.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerOverlayed">
 
    <children>
       <Label alignment="CENTER" layoutX="108.0" layoutY="101.0" prefHeight="49.0" prefWidth="176.0" text="Lista de aulas sobrepostas" wrapText="true" />
