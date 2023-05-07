@@ -36,6 +36,9 @@ public class App extends Application implements Initializable {
 	static final String SUCCESS_MESSAGE = "Sucesso";
 	static final String ERROR_SELECT_FILE_MESSAGE = "Por favor, selecione um ficheiro";
 	static final String SUCCESS_DESCRIPTION_MESSAGE = "Horário importado com sucesso";
+	static final String ERROR_SAVING = "Erro ao gravar";
+	public static final int WIDTH = 700;
+	public static final int HEIGHT = 750;
 	
 	public static Schedule schedule;
 	private static Scene scene;
@@ -81,8 +84,23 @@ public class App extends Application implements Initializable {
 		}
 	}
 	
+	/**
+	 * Sets a new value of schedule to the global instance of schedule.
+	 * 
+	 * @param newSchedule the new schedule to update the global schedule
+	 */
 	public static void setSchedule(Schedule newSchedule) {
 		schedule = newSchedule;
+	}
+	
+	/**
+	 * Defines if the the application's main stage can be resizable or not.
+	 * 
+	 * @param bool option a boolean value that if true allow resizing or false to
+	 *               disable resizing)
+	 */
+	public static void setStageResize(boolean bool) {
+		stage.setResizable(bool);
 	}
 
 	/**
@@ -218,7 +236,7 @@ public class App extends Application implements Initializable {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
 			Parent root = fxmlLoader.load();
-			Scene scene = new Scene(root, 700, 750);
+			Scene scene = new Scene(root, WIDTH, HEIGHT);
 			Stage newStage = new Stage();
 			newStage.setScene(scene);
 			newStage.setTitle("Conflitos no Horário");

@@ -1,3 +1,4 @@
+
 /**
  * ControllerCreateSchedule is a controller class for the Create Schedule page. 
  * It allows users to select courses and create their schedule.
@@ -5,6 +6,7 @@
  * @author alfdozen
  * @version 1.0.0
  */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -16,53 +18,44 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
 import javax.swing.JOptionPane;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import java.util.HashSet;
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.DetailedWeekView;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class ControllerCreateSchedule implements Initializable {
-	
-	private static final String ALERT_MESSAGE = "Alerta";
-	private static final String ERROR_SAVING = "Erro ao gravar";
-	private static final String ERROR_MESSAGE = "Erro";
-	public static final int WIDTH = 700;
-	public static final int HEIGHT = 750;
 
 	@FXML
-	private Button backButton;
+	private Button backButton = new Button();
 	@FXML
-	private Button save;
+	private Button save = new Button();
 	@FXML
-	private Button selectAll;
+	private Button selectAll = new Button();
 	@FXML
-	private Button clearAll;
+	private Button clearAll = new Button();
 	@FXML
-	private TextField studentName;
+	private TextField studentName = new TextField();
 	@FXML
-	private TextField studentNumber;
+	private TextField studentNumber = new TextField();
 	@FXML
-	private DetailedWeekView calendar;
+	private DetailedWeekView calendar = new DetailedWeekView();
 	@FXML
-	private ListView<String> lectures;
+	private ListView<String> lectures = new ListView<>();
 	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
-	private FileChooser fileChooserToSave;
-	private File filePathToSave;
-	private String filenameToSave;
 	List<String> selectedItems = new ArrayList<>();
 
 	private LocalDate[] daysDates = new LocalDate[7];
@@ -79,7 +72,6 @@ public class ControllerCreateSchedule implements Initializable {
 	@FXML
 	private void createSchedule() {
 		List<Lecture> lecList = new ArrayList<>();
-
 		for (Lecture lec : App.schedule.getLectures()) {
 			if (lectures.getSelectionModel().getSelectedItems().contains(lec.getAcademicInfo().getCourse())) {
 				lecList.add(lec);
@@ -128,7 +120,7 @@ public class ControllerCreateSchedule implements Initializable {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao regressar ao menu principal", ERROR_MESSAGE,
+			JOptionPane.showMessageDialog(null, "Erro ao regressar ao menu principal", App.ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -142,16 +134,16 @@ public class ControllerCreateSchedule implements Initializable {
 	 */
 	@FXML
 	private void saveFileCSV() {
-		fileChooserToSave = new FileChooser();
+		FileChooser fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".CSV"));
-		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
+		File filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 		try {
 			if (filePathToSave != null) {
-				filenameToSave = filePathToSave.getAbsolutePath();
+				String filenameToSave = filePathToSave.getAbsolutePath();
 				Schedule.saveToCSV(App.schedule, filenameToSave);
 			}
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, ERROR_SAVING, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, App.ERROR_SAVING, App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -163,17 +155,16 @@ public class ControllerCreateSchedule implements Initializable {
 	 */
 	@FXML
 	private void saveFileJSON() {
-		fileChooserToSave = new FileChooser();
+		FileChooser fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
-		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
+		File filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
 		try {
 			if (filePathToSave != null) {
-				filenameToSave = filePathToSave.getAbsolutePath();
+				String filenameToSave = filePathToSave.getAbsolutePath();
 				Schedule.saveToJSON(App.schedule, filenameToSave);
 			}
-
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, ERROR_SAVING, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, App.ERROR_SAVING, App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -198,12 +189,11 @@ public class ControllerCreateSchedule implements Initializable {
 				"De certeza que pretende continuar?",
 				"Ir para consultar calendário", JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE, null,
 				buttons, buttons[0]);
-
 		if (confirmation == 0) {
 			try {
 				App.setRoot("/fxml/ViewSchedule");
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Erro ao mostrar calendário", ERROR_MESSAGE,
+				JOptionPane.showMessageDialog(null, "Erro ao mostrar calendário", App.ERROR_MESSAGE,
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
@@ -247,28 +237,37 @@ public class ControllerCreateSchedule implements Initializable {
 		if (!listi.isEmpty()) {
 			for (Lecture lec : listi) {
 				int classDay = Integer.parseInt(lec.getTimeSlot().getWeekDay()) - 1;
-
 				LocalTime begin = lec.getTimeSlot().getTimeBegin();
 				LocalTime end = lec.getTimeSlot().getTimeEnd();
-
 				Entry<Lecture> aulas = new Entry<>();
-
 				String entryText = semana[classDay] + " - " + lec.getTimeSlot().getTimeBeginString() + "-"
 						+ lec.getTimeSlot().getTimeEndString() + " - " + lec.getAcademicInfo().getCourse();
-
 				aulas.setTitle(entryText);
-
-				for (LocalDate weekDay : daysDates) {
-					if (weekDay.getDayOfWeek().getValue() == classDay + 1) {
-						aulas.setInterval(weekDay, begin, weekDay, end);
-						break;
-					}
-				}
-
+				setLecturesToCalendar(aulas, classDay, begin, end);
 				iscte.getCalendars().get(0).addEntry(aulas);
 			}
 		}
 	}
+	
+	/**
+	 * Checks which weekday each lecture occurs and inserts it into the calendar for the specified day and time
+	 * interval.
+	 * 
+	 * @param aulas    the lectures to set to the calendar
+	 * @param classDay the day of the week for the lectures (0 for Monday, 1 for
+	 *                 Tuesday, etc.)
+	 * @param begin    the start time of the lectures
+	 * @param end      the end time of the lectures
+	 */
+	private void setLecturesToCalendar(Entry<Lecture> aulas, int classDay, LocalTime begin, LocalTime end) {
+		for (LocalDate weekDay : daysDates) {
+			if (weekDay.getDayOfWeek().getValue() == classDay + 1) {
+				aulas.setInterval(weekDay, begin, weekDay, end);
+				break;
+			}
+		}
+	}
+	
 
 	/**
 	* Initializes the controller class.
@@ -283,25 +282,20 @@ public class ControllerCreateSchedule implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
-
+		App.setStageResize(false);
 		iscte.getCalendars().addAll(week);
 		calendar.getCalendarSources().setAll(iscte);
-
 		for (int i = 0; i < semana.length; i++) {
 			daysDates[i] = calendar.getStartDate().plusDays(i);
 		}
-
 		List<Lecture> lecturesList = App.schedule.getLectures();
 		Set<String> courses = new HashSet<>();
-
 		for (Lecture lec : lecturesList) {
 			courses.add(lec.getAcademicInfo().getCourse());
 		}
-
 		for (String s : courses) {
 			lectures.getItems().add(s);
 		}
-
 		lectures.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		lectures.setStyle("-fx-selection-bar: #0033ff");
 	}

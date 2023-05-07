@@ -66,11 +66,25 @@ public class ControllerOverlayed implements Initializable {
 		}
 	}
 
+	/**
+	 * Adds the given lectures to the overlayed and overlapped lists if they overlap
+	 * or if one of them is overcrowded. If the lectures overlap, their string
+	 * representation is added to the overlayed list if it is not already there. If
+	 * one of the lectures is overcrowded, its string representation with the suffix
+	 * " - Sobrelotada" is added to the overlapped list if it is not already there.
+	 * 
+	 * @param lec1 the first lecture
+	 * @param lec2 the second lecture
+	 */
 	private void addLectureToOverlayedAndOverlapped(Lecture lec1, Lecture lec2) {
 		if (lec1.getTimeSlot().overlaps(lec2.getTimeSlot())) {
 			String over = lec1.toString();
 			if (!overlayedList.getItems().contains(over)) {
 				overlayedList.getItems().add(over);
+			}
+			String over2 = lec2.toString();
+			if (!overlayedList.getItems().contains(over2)) {
+				overlayedList.getItems().add(over2);
 			}
 		}
 		if (lec1.isOvercrowded()) {
