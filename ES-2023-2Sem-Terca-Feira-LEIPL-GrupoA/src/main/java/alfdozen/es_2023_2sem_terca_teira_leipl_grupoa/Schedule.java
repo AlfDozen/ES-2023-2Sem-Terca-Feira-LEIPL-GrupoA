@@ -693,14 +693,11 @@ final class Schedule {
 	 *                                  the temporary file, or if there is an error
 	 *                                  closing the ReadableByteChannel.
 	 */
-	static String downloadFileFromURL(String url) throws IllegalArgumentException, IOException {
-		if (url == null) {
+	static Schedule downloadFileFromURL(String url, String extension) throws IllegalArgumentException, IOException {
+		if (url == null || extension == null) {
 			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
 		}
-
 		URL fileURL = new URL(url);
-		String fileName = fileURL.getFile();
-		String fileExtension = getFileExtension(fileName);
 
 		// Create a File object for the downloaded file
 		File tempDir = new File(TEMP_FILE_PATH);
@@ -708,9 +705,9 @@ final class Schedule {
 			tempDir.mkdirs();
 		}
 		String tempFileName;
-		if (fileExtension.equals(FILE_FORMAT_CSV)) {
+		if (extension.equals(FILE_FORMAT_CSV)) {
 			tempFileName = TEMP_FILE_CSV;
-		} else if (fileExtension.equals(FILE_FORMAT_JSON)) {
+		} else if (extension.equals(FILE_FORMAT_JSON)) {
 			tempFileName = TEMP_FILE_JSON;
 		} else {
 			throw new IllegalArgumentException("Invalid file extension");
@@ -728,13 +725,28 @@ final class Schedule {
 			rbc = Channels.newChannel(fileURL.openStream());
 			readChannelToFile(rbc, file);
 		} catch (IOException e) {
-			return null;
+			throw new IOException(CONNECTING_TO_INTERNET_EXCEPTION);
 		} finally {
 			if (rbc != null) {
 				rbc.close();
 			}
 		}
-		return file.getPath();
+		Schedule newSchedule;
+		switch (extension) {
+		case FILE_FORMAT_CSV:
+			newSchedule = loadCSV(file.getAbsolutePath());
+			break;
+		case FILE_FORMAT_JSON:
+			newSchedule = loadJSON(file.getAbsolutePath());
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid file extension");
+		}
+		// Delete temporary file if it was downloaded from URL
+		if (file.exists()) {
+			file.delete();
+		}
+		return newSchedule;
 	}
 
 	/**
@@ -750,48 +762,6 @@ final class Schedule {
 		try (FileOutputStream fos = new FileOutputStream(file)) {
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		}
-	}
-
-	/**
-	 * Loads a schedule from the specified file path, supporting both CSV and JSON
-	 * formats. If the file is a temporary file downloaded from a URL, it will be
-	 * deleted after loading the schedule.
-	 *
-	 * @param filePath The file path of the schedule file to load.
-	 * @return A Schedule object created from the data in the file.
-	 * @throws NullPointerException     If the file path is null.
-	 * @throws IllegalArgumentException If the file extension is not supported (only
-	 *                                  CSV and JSON are supported).
-	 * @throws IOException              If there is an issue reading the file or
-	 *                                  deleting the temporary file.
-	 */
-	static Schedule callLoad(String filePath) throws IOException {
-		if (filePath == null) {
-			throw new IllegalArgumentException(FILE_NULL_EXCEPTION);
-		}
-		Schedule schedule;
-
-		// Check if file is CSV or JSON
-		String extension = getFileExtension(filePath);
-		switch (extension) {
-		case FILE_FORMAT_CSV:
-			schedule = loadCSV(filePath);
-			break;
-		case FILE_FORMAT_JSON:
-			schedule = loadJSON(filePath);
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid file extension");
-		}
-
-		// Delete temporary file if it was downloaded from URL
-		if (filePath.endsWith(TEMP_FILE_CSV) || filePath.endsWith(TEMP_FILE_JSON)) {
-			File file = new File(filePath);
-			if (file.exists()) {
-				file.delete();
-			}
-		}
-		return schedule;
 	}
 
 	/**

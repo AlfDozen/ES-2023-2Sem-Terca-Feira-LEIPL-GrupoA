@@ -56,15 +56,27 @@ public class ControllerImportSchedule implements Initializable {
 
 	@FXML
 	private RadioButton optionOnlineRadioButton;
+	
+	@FXML
+	private RadioButton optionCSVRadioButton;
+	
+	@FXML
+	private RadioButton optionJSONRadioButton;
 
 	@FXML
 	private ToggleGroup fileTypeChooser;
+	
+	@FXML
+	private ToggleGroup extensionChooser;
 
 	@FXML
 	private Label fileChosenPathLabel;
 
 	@FXML
 	private Label onlineInstructionLabel;
+	
+	@FXML
+	private Label extensionInstructionLabel;
 
 	@FXML
 	private TextField inputOnlineTextField;
@@ -130,6 +142,9 @@ public class ControllerImportSchedule implements Initializable {
 		importFileButton.setVisible(false);
 		saveFileCSVButton.setVisible(false);
 		saveFileJSONButton.setVisible(false);
+		optionCSVRadioButton.setVisible(false);
+		optionJSONRadioButton.setVisible(false);
+		extensionInstructionLabel.setVisible(false);
 	}
 
 	/**
@@ -150,6 +165,9 @@ public class ControllerImportSchedule implements Initializable {
 		importFileButton.setVisible(false);
 		saveFileCSVButton.setVisible(false);
 		saveFileJSONButton.setVisible(false);
+		extensionInstructionLabel.setVisible(true);
+		optionCSVRadioButton.setVisible(true);
+		optionJSONRadioButton.setVisible(true);
 	}
 
 	/**
@@ -223,10 +241,12 @@ public class ControllerImportSchedule implements Initializable {
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				String tmpUrl = Schedule.downloadFileFromURL(inputOnlineTextField.getText());
-				App.SCHEDULE = Schedule.callLoad(tmpUrl);
+				if(optionCSVRadioButton.isSelected())
+					App.SCHEDULE  = Schedule.downloadFileFromURL(inputOnlineTextField.getText(),Schedule.FILE_FORMAT_CSV);
+				else if(optionJSONRadioButton.isSelected())
+					App.SCHEDULE  = Schedule.downloadFileFromURL(inputOnlineTextField.getText(),Schedule.FILE_FORMAT_JSON);
 			} else {
-				App.SCHEDULE = Schedule.callLoad(fileChosenPathLabel.getText());
+				App.SCHEDULE = Schedule.downloadFileFromURL(fileChosenPathLabel.getText(), Schedule.getFileExtension(fileChosenPathLabel.getText()));
 			}
 			JOptionPane.showMessageDialog(null, "Ficheiro importado com sucesso", SUCCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
@@ -245,7 +265,18 @@ public class ControllerImportSchedule implements Initializable {
 	 */
 	@FXML
 	private void dealWithText() {
-		importFileButton.setVisible(true);
+		if(optionCSVRadioButton.isSelected() || optionJSONRadioButton.isSelected())
+			importFileButton.setVisible(true);
+	}
+	
+	/**
+	 * Event handler for showing the import file button if the online text field is not empty.
+	 * The import file button will become visible allowing the user to import a file.
+	 */
+	@FXML
+	private void showImportButton() {
+		if(!inputOnlineTextField.getText().isBlank())
+			importFileButton.setVisible(true);
 	}
 
 	/**
