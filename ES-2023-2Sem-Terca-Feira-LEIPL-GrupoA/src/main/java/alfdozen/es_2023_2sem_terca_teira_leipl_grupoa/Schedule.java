@@ -1,3 +1,22 @@
+
+/**
+ * The Schedule class is used to represent a schedule of lectures for a student.
+ * It contains a list of Lectures and information about the student, such as
+ * their name and student number. The constructor can be used to create an empty
+ * schedule or a schedule with a list of lectures, as well as providing student
+ * information. The student number must be a positive integer and will be
+ * validated by the class. The class can also add or remove lectures to/from the
+ * schedule. The class can be sorted by the time slots of the lectures in the
+ * schedule. The toString() method returns a String representation of the
+ * schedule, including the student name and number, as well as the list of
+ * lectures. If the student name or number is not provided, the string "Unknown"
+ * will be used instead. If the schedule is empty, the string "Schedule is
+ * empty" will be returned.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.BufferedReader;
@@ -39,23 +58,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
-/**
- * The Schedule class is used to represent a schedule of lectures for a student.
- * It contains a list of Lectures and information about the student, such as
- * their name and student number. The constructor can be used to create an empty
- * schedule or a schedule with a list of lectures, as well as providing student
- * information. The student number must be a positive integer and will be
- * validated by the class. The class can also add or remove lectures to/from the
- * schedule. The class can be sorted by the time slots of the lectures in the
- * schedule. The toString() method returns a String representation of the
- * schedule, including the student name and number, as well as the list of
- * lectures. If the student name or number is not provided, the string "Unknown"
- * will be used instead. If the schedule is empty, the string "Schedule is
- * empty" will be returned.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
 final class Schedule {
 	static final String NULL_URL_EXCEPTION_MESSAGE = "URL is null";
 	static final String FOR_NULL = "Unknown";
@@ -86,7 +88,6 @@ final class Schedule {
 	static final String TEMP_FILE_PATH = "src/main/resources/temp/";
 	static final String TEMP_FILE_CSV = "tempFile.csv";
 	static final String TEMP_FILE_JSON = "tempFile.json";
-
 	private static final String EMPTY_ROW = ";;;;;;;;;;";
 	private static final String PATH_TMP = "src/main/resources/tmpfile.csv";
 	private static final String HEADER = "Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;"
@@ -116,8 +117,8 @@ final class Schedule {
 	private static final Pattern SHIFT_PATTERN = Pattern.compile("Turno:", Pattern.LITERAL);
 	private static final Pattern LOCATION_PATTERN = Pattern.compile("LOCATION:", Pattern.LITERAL);
 	private static final Pattern LOCATION_DELIMITER_PATTERN = Pattern.compile("\\,", Pattern.LITERAL);
+	private static final Pattern LECTURE_DELIMITER_PATTERN = Pattern.compile(" - ", Pattern.LITERAL);
 	private static final double FREQUENCY_LIMIT = 0.3;
-	private static final String LECTURE_DELIMITER = " - ";
 
 	private List<Lecture> lectures;
 	private String studentName;
@@ -667,14 +668,15 @@ final class Schedule {
 	 * @throws IllegalArgumentException if the courseList is null or empty
 	 */
 	Schedule createScheduleFromCourseList(List<AcademicInfo> courseList) {
-		if (courseList == null || courseList.isEmpty())
+		if (courseList == null || courseList.isEmpty()) {
 			throw new IllegalArgumentException(LIST_NULL_OR_EMPTY_EXCEPTION);
+		}
 		Schedule newSchedule = new Schedule(studentName, studentNumber);
-
-		for (Lecture lecture : lectures)
-			if (courseList.contains(lecture.getAcademicInfo()))
+		for (Lecture lecture : lectures) {
+			if (courseList.contains(lecture.getAcademicInfo())) {
 				newSchedule.addLecture(lecture);
-
+			}
+		}
 		return newSchedule;
 	}
 
@@ -696,13 +698,13 @@ final class Schedule {
 		if (url == null) {
 			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
 		}
-		URL fileURL = new URL(url);
 
 		// Create a File object for the downloaded file
 		File tempDir = new File(TEMP_FILE_PATH);
 		if (!tempDir.exists()) {
 			tempDir.mkdirs();
 		}
+
 		String tempFileName;
 		if (extension.equals(FILE_FORMAT_CSV)) {
 			tempFileName = TEMP_FILE_CSV;
@@ -719,6 +721,7 @@ final class Schedule {
 		}
 		file.createNewFile();
 		// Download the file from the URL and save it to the temp directory
+		URL fileURL = new URL(url);
 		ReadableByteChannel rbc = null;
 		try {
 			rbc = Channels.newChannel(fileURL.openStream());
@@ -730,17 +733,19 @@ final class Schedule {
 				rbc.close();
 			}
 		}
+
 		Schedule newSchedule;
 		switch (extension) {
-		case FILE_FORMAT_CSV:
-			newSchedule = loadCSV(file.getAbsolutePath());
-			break;
-		case FILE_FORMAT_JSON:
-			newSchedule = loadJSON(file.getAbsolutePath());
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid file extension");
+			case FILE_FORMAT_CSV:
+				newSchedule = loadCSV(file.getAbsolutePath());
+				break;
+			case FILE_FORMAT_JSON:
+				newSchedule = loadJSON(file.getAbsolutePath());
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid file extension");
 		}
+
 		// Delete temporary file if it was downloaded from URL
 		if (file.exists()) {
 			file.delete();
@@ -828,7 +833,7 @@ final class Schedule {
 	 * @return A set of unique lecture's name
 	 */
 	public Set<String> getUniqueLecturesCourses() {
-		Set<String> uniqueCourses = new HashSet<String>();
+		Set<String> uniqueCourses = new HashSet<>();
 		for (Lecture l : lectures) {
 			uniqueCourses.add(l.getAcademicInfo().getCourse());
 		}
@@ -1054,26 +1059,18 @@ final class Schedule {
 	 * 
 	 * @param courses the list of strings with the course names of the lectures
 	 *                expected to receive the details from
-	 * 
 	 * @return a List of lectures with detail of weekday and hour that all the
 	 *         courses typically occur, mentioned in the list of strings given in
 	 *         the input .
 	 */
 	public List<Lecture> getCommonWeekLecture(List<String> courses) {
-
 		List<String> commonLecturesString = new ArrayList<>();
-
 		if (!courses.isEmpty()) {
-
 			Map<String, Integer> map = getMapCourses(courses);
 			Map<String, Integer> mapCounter = getCourseDaysMap();
-
 			for (Map.Entry<String, Integer> entry : map.entrySet()) {
-
-				String[] keySplit = entry.getKey().split(LECTURE_DELIMITER);
-
+				String[] keySplit = LECTURE_DELIMITER_PATTERN.split(entry.getKey());
 				double ratio = entry.getValue() / (double) (mapCounter.get(keySplit[2]));
-
 				if (!commonLecturesString.contains(entry.getKey()) && (ratio > FREQUENCY_LIMIT)) {
 					commonLecturesString.add(entry.getKey());
 				}
@@ -1091,18 +1088,13 @@ final class Schedule {
 	 * @return list of lectures created using the info in each string of the
 	 *         parameter
 	 */
-	private List<Lecture> convertStringToLecture(List<String> list) {
-
+	private static List<Lecture> convertStringToLecture(List<String> list) {
 		List<Lecture> lecturesList = new ArrayList<>();
-
 		for (String str : list) {
-
-			String[] strSplit = str.split(LECTURE_DELIMITER);
-
+			String[] strSplit = LECTURE_DELIMITER_PATTERN.split(str);
 			String[] time = strSplit[1].split("-");
 			String timeBeg = time[0];
 			String timeEnd = time[1];
-
 			TimeSlot date = new TimeSlot(strSplit[0], null, timeBeg, timeEnd);
 			AcademicInfo course = new AcademicInfo("", strSplit[2], "", "", 0);
 			Room room = new Room("", 1);
@@ -1118,42 +1110,45 @@ final class Schedule {
 	 * 
 	 * @return a Map with string in the key and integer in the value.
 	 */
-
 	private Map<String, Integer> getMapCourses(List<String> courses) {
-
 		Map<String, Integer> mapLectures = new HashMap<>();
-
 		for (String course : courses) {
-
 			for (Lecture lec : lectures) {
-
 				if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
 						|| lec.getAcademicInfo().getCourse() == null) {
 					continue;
 				}
-
-				if (lec.getAcademicInfo().getCourse().equals(course)) {
-
-					String[] day = lec.getTimeSlot().getDateString().split("/");
-					LocalDate date = LocalDate.of(Integer.parseInt(day[2]), Integer.parseInt(day[1]),
-							Integer.parseInt(day[0]));
-
-					int weekDay = date.getDayOfWeek().getValue();
-					String hour = lec.getTimeSlot().getTimeBeginString() + "-" + lec.getTimeSlot().getTimeEndString();
-
-					String key = weekDay + LECTURE_DELIMITER + hour + LECTURE_DELIMITER + course;
-
-					if (mapLectures.containsKey(key)) {
-						Integer value = mapLectures.get(key);
-						mapLectures.put(key, value + 1);
-
-					} else {
-						mapLectures.putIfAbsent(key, 1);
-					}
-				}
+				getMapCoursesCounts(mapLectures, course, lec);
 			}
 		}
 		return mapLectures;
+	}
+
+	/**
+	 * This auxiliary method receives a lecture and checks if it has the received
+	 * course and the same weekday and hour as other lectures in the map. If so, it
+	 * adds one to that entry. Otherwise, it creates a new entry with the value 1.
+	 * Then, it returns the map of unique weekday lectures.
+	 * 
+	 * @param mapLectures the map with the lecture string as the key and count as the value.
+	 * @param course the course for the lecture being matched.		
+	 * @param lecture the lectures to check and count.
+	 * @return a map with the updated entry regarding the received lecture.
+	 */
+	private static void getMapCoursesCounts(Map<String, Integer> mapLectures, String course, Lecture lecture) {
+		if (lecture.getAcademicInfo().getCourse().equals(course)) {
+			String[] day = lecture.getTimeSlot().getDateString().split("/");
+			LocalDate date = LocalDate.of(Integer.parseInt(day[2]), Integer.parseInt(day[1]), Integer.parseInt(day[0]));
+			int weekDay = date.getDayOfWeek().getValue();
+			String hour = lecture.getTimeSlot().getTimeBeginString() + "-" + lecture.getTimeSlot().getTimeEndString();
+			String key = weekDay + " - " + hour + " - " + course;
+			if (mapLectures.containsKey(key)) {
+				Integer value = mapLectures.get(key);
+				mapLectures.put(key, value + 1);
+			} else {
+				mapLectures.putIfAbsent(key, 1);
+			}
+		}
 	}
 
 	/**
@@ -1163,18 +1158,13 @@ final class Schedule {
 	 * @return Map with the total number of times each course occurs in a schedule
 	 */
 	private Map<String, Integer> getCourseDaysMap() {
-
 		Map<String, Integer> mapDays = new HashMap<>();
-
 		for (Lecture lec : lectures) {
-
 			if (lec.getTimeSlot().getDate() == null || lec.getAcademicInfo() == null || lec.getTimeSlot() == null
 					|| lec.getAcademicInfo().getCourse() == null) {
 				continue;
 			}
-
 			String key = lec.getAcademicInfo().getCourse();
-
 			if (mapDays.containsKey(key)) {
 				Integer value = mapDays.get(key);
 				mapDays.put(key, value + 1);

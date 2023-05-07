@@ -64,7 +64,7 @@ public class CreateSchedule implements Initializable{
 
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 
-		List<Lecture> lecturesList = App.SCHEDULE.getLectures();
+		List<Lecture> lecturesList = App.schedule.getLectures();
 		Set<String> courses = new HashSet<String>();
 
 		for(Lecture lec : lecturesList) {

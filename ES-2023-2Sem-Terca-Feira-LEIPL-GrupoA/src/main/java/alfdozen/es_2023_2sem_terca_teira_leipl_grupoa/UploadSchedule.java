@@ -99,7 +99,7 @@ public class UploadSchedule implements Initializable{
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro CSV", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
 
-		App.SCHEDULE = scheduleUploaded;
+		App.schedule = scheduleUploaded;
 	}
 
 
@@ -113,7 +113,7 @@ public class UploadSchedule implements Initializable{
 		}catch(Exception e1) {
 			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro JSON", "Alerta" , JOptionPane.INFORMATION_MESSAGE);
 		}
-		App.SCHEDULE = scheduleUploaded;
+		App.schedule = scheduleUploaded;
 	}
 
 

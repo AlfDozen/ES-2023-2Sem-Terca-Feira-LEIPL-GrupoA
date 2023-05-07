@@ -1,9 +1,19 @@
+
+/**
+ * The ControllerLoadFileBeforeCreateSchedule class manages the GUI components and events in
+ * the loadFileBeforeCreateSchedule scene. The corresponding GUI is used to select a csv or
+ * json file in the local file system, remotely or from a webcal and import the file in the
+ * application. With the file imported it is possible to create a schedule.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
 import javafx.fxml.FXML;
@@ -12,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -21,47 +30,43 @@ import javafx.stage.Stage;
 public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 
 	@FXML
-	private Button backButton;
+	private Button backButton = new Button();
 	@FXML
-	private Button createScheduleButton;
+	private Button createScheduleButton = new Button();
 	@FXML
-	private Button uploadFileButton;
+	private Button importFileButton = new Button();
 	@FXML
-	private Button getFileButton;
+	private Button getFileButton = new Button();
 	@FXML
-	private RadioButton optionLocal;
+	private RadioButton optionLocal = new RadioButton();
 	@FXML
-	private RadioButton optionOnline;
+	private RadioButton optionOnline = new RadioButton();
 	@FXML
-	private RadioButton optionFenix;
+	private RadioButton optionFenix = new RadioButton();
 	@FXML
-	private RadioButton optionPrevious;
+	private RadioButton optionPrevious = new RadioButton();
 	@FXML
-	private RadioButton optionCSVRadioButton;
+	private RadioButton optionCSVRadioButton = new RadioButton();
 	@FXML
-	private RadioButton optionJSONRadioButton;
+	private RadioButton optionJSONRadioButton = new RadioButton();
 	@FXML
-	private ToggleGroup file_chooser;
+	private Label fileChosen = new Label();
 	@FXML
-	private ToggleGroup extensionChooser;
+	private Label labelOnline = new Label();
 	@FXML
-	private Label fileChosen;
+	private Label labelFenix = new Label();
 	@FXML
-	private Label labelOnline;
+	private Label labelPreviousLoad = new Label();
 	@FXML
-	private Label labelFenix;
+	private Label labelPreviousNotLoad = new Label();
 	@FXML
-	private Label labelPreviousLoad;
+	private Label extensionInstructionLabel = new Label();
 	@FXML
-	private Label labelPreviousNotLoad;
+	private TextField urlChosen = new TextField();
 	@FXML
-	private Label extensionInstructionLabel;
+	private TextField webcalChosen = new TextField();
 	@FXML
-	private TextField urlChosen;
-	@FXML
-	private TextField webcalChosen;
-	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * Define the windows when the radiobutton "Ficheiro local" is selected.
@@ -80,7 +85,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 		labelPreviousLoad.setVisible(false);
 		labelPreviousNotLoad.setVisible(false);
 
-		uploadFileButton.setVisible(false);
+		importFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
 		extensionInstructionLabel.setVisible(false);
 		optionCSVRadioButton.setVisible(false);
@@ -105,7 +110,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 		labelPreviousLoad.setVisible(false);
 		labelPreviousNotLoad.setVisible(false);
 
-		uploadFileButton.setVisible(false);
+		importFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
 		extensionInstructionLabel.setVisible(true);
 		optionCSVRadioButton.setVisible(true);
@@ -130,7 +135,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 		labelPreviousLoad.setVisible(false);
 		labelPreviousNotLoad.setVisible(false);
 
-		uploadFileButton.setVisible(false);
+		importFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
 		extensionInstructionLabel.setVisible(false);
 		optionCSVRadioButton.setVisible(false);
@@ -152,12 +157,12 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 		labelFenix.setVisible(false);
 		webcalChosen.setVisible(false);
 
-		uploadFileButton.setVisible(false);
+		importFileButton.setVisible(false);
 		extensionInstructionLabel.setVisible(false);
 		optionCSVRadioButton.setVisible(false);
 		optionJSONRadioButton.setVisible(false);
 
-		if (Schedule.scheduleIsEmpty(App.SCHEDULE)) {
+		if (Schedule.scheduleIsEmpty(App.schedule)) {
 			labelPreviousLoad.setVisible(false);
 			labelPreviousNotLoad.setVisible(true);
 			createScheduleButton.setVisible(false);
@@ -189,7 +194,7 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 		String fileExtension = Schedule.getFileExtension(filePath);
 		if (".csv".equals(fileExtension) || ".json".equals(fileExtension)) {
 			fileChosen.setText(filePath);
-			uploadFileButton.setVisible(true);
+			importFileButton.setVisible(true);
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"O ficheiro importado tem extensão: " + fileExtension
@@ -205,70 +210,61 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 	 */
 	@FXML
 	private void dealWithText() {
-		uploadFileButton.setVisible(true);
+		importFileButton.setVisible(true);
 	}
 
-//	/**
-//	 * Event handler for showing the import file button if the online text field is
-//	 * not empty. The import file button will become visible allowing the user to
-//	 * import a file.
-//	 */
-//	@FXML
-//	private void showImportButton() {
-//		if (urlChosen.getText().isBlank())
-//			uploadFileButton.setVisible(false);
-//	}
 
 	/**
-	 * This method is called by the event of clicking on the uploadFileButton. It
+	 * This method is called by the event of clicking on the importFileButton. It
 	 * imports the file that has been previously chosen according to the local,
 	 * remote or webcal option. After successfully import the file, it is possible
 	 * go to the create schedule scene.
 	 */
 	@FXML
-	private void uploadFile() {
-		Schedule scheduleUploaded = null;
+	private void importFile() {
+		Schedule scheduleImported = null;
 		try {
 			if (optionLocal.isSelected()) {
 				String extension = Schedule.getFileExtension(fileChosen.getText());
 				switch (extension) {
-				case Schedule.FILE_FORMAT_CSV:
-					scheduleUploaded = Schedule.loadCSV(fileChosen.getText());
-					break;
-				case Schedule.FILE_FORMAT_JSON:
-					scheduleUploaded = Schedule.loadJSON(fileChosen.getText());
-					break;
-				default:
-					throw new IllegalArgumentException("Invalid file extension");
+					case Schedule.FILE_FORMAT_CSV:
+						scheduleImported = Schedule.loadCSV(fileChosen.getText());
+						break;
+					case Schedule.FILE_FORMAT_JSON:
+						scheduleImported = Schedule.loadJSON(fileChosen.getText());
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid file extension");
 				}
 				JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.ALERT_MESSAGE,
 						JOptionPane.INFORMATION_MESSAGE);
 				createScheduleButton.setVisible(true);
-				
+
 			} else if (optionOnline.isSelected()) {
-				String filePath = urlChosen.getText();
 				String fileExtension = "";
-				if(optionCSVRadioButton.isSelected()) {
+				if (optionCSVRadioButton.isSelected()) {
 					fileExtension = ".csv";
-				} else if(optionJSONRadioButton.isSelected()) {
+				} else if (optionJSONRadioButton.isSelected()) {
 					fileExtension = ".json";
 				} else {
 					JOptionPane.showMessageDialog(null, "Selecione o tipo de ficheiro do URL", App.ALERT_MESSAGE,
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				scheduleUploaded = Schedule.downloadFileFromURL(filePath, fileExtension);
-				if(Schedule.lecturesInScheduleAllNull(scheduleUploaded)) {
-					JOptionPane.showMessageDialog(null, "O horário importado está vazio. É provável que o URL não corresponda ao formato selecionado.", App.ALERT_MESSAGE,
-							JOptionPane.INFORMATION_MESSAGE);
+				String filePath = urlChosen.getText();
+				scheduleImported = Schedule.downloadFileFromURL(filePath, fileExtension);
+				if (Schedule.lecturesInScheduleAllNull(scheduleImported)) {
+					JOptionPane.showMessageDialog(null, "O horário importado está vazio." + 
+					" É provável que o URL não corresponda ao formato selecionado", App.ALERT_MESSAGE,
+					JOptionPane.INFORMATION_MESSAGE);
 					createScheduleButton.setVisible(false);
 					return;
 				} else {
 					JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.SUCCESS_MESSAGE,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
-				createScheduleButton.setVisible(true);				
-				
+				createScheduleButton.setVisible(true);
+
 			} else {
 				String filePath = webcalChosen.getText();
 				if (filePath.isBlank()) {
@@ -276,17 +272,18 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				scheduleUploaded = Schedule.loadWebcal(filePath);
+				scheduleImported = Schedule.loadWebcal(filePath);
 				JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.SUCCESS_MESSAGE,
 						JOptionPane.INFORMATION_MESSAGE);
 				createScheduleButton.setVisible(true);
 			}
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro", App.ALERT_MESSAGE,
+		} catch (IOException e1) {
+			JOptionPane.showMessageDialog(null, "Erro ao importar ficheiro." +
+					" Verifique que o formato corresponde ao selecionado", App.ALERT_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 
-		App.SCHEDULE = scheduleUploaded;
+		App.schedule = scheduleImported;
 	}
 
 	/**
@@ -326,5 +323,5 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
-	}	
+	}
 }

@@ -1,3 +1,13 @@
+
+/**
+ * The ControllerConvertFile class manages the GUI components and events in the
+ * ConvertFile scene. The corresponding GUI is used to select a csv file in the
+ * local file system and convert it to a json file (or vice versa).
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -14,26 +24,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * The ControllerConvertFile class manages the GUI components and events in the
- * ConvertFile scene. The corresponding GUI is used to select a csv file in the
- * local file system and convert it to a json file (or vice versa).
- * 
- * @author alfdozen
- * @version 1.0.0
- */
+
 public class ControllerConvertFile implements Initializable {
 
 	@FXML
-	private Button convertFileButton;
+	private Button convertFileButton = new Button();
 	@FXML
-	private Button cancelButton;
+	private Button cancelButton = new Button();
 	@FXML
-	private Button chooseFileButton;
+	private Button chooseFileButton = new Button();
 	@FXML
-	private Label fileChosenPathLabel;
+	private Label fileChosenPathLabel = new Label();
 	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * This method is called by the event of clicking on the chooseFileButton. It
@@ -49,7 +52,6 @@ public class ControllerConvertFile implements Initializable {
 			JOptionPane.showMessageDialog(null, "Não é possível ler o ficheiro selecionado", App.ALERT_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			fileChosenPathLabel.setText("Nenhum ficheiro selecionado");
-			convertFileButton.setText("Converter");
 			convertFileButton.setVisible(false);
 			return;
 		}
@@ -59,7 +61,6 @@ public class ControllerConvertFile implements Initializable {
 			JOptionPane.showMessageDialog(null, "O ficheiro selecionado não tem a extensão " + Schedule.FILE_FORMAT_JSON
 					+ " ou " + Schedule.FILE_FORMAT_CSV, App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 			fileChosenPathLabel.setText("Nenhum ficheiro selecionado");
-			convertFileButton.setText("Converter");
 			convertFileButton.setVisible(false);
 			return;
 		}
@@ -71,7 +72,6 @@ public class ControllerConvertFile implements Initializable {
 			convertFileButton.setText("Converter JSON para CSV");
 			convertFileButton.setVisible(true);
 		} else {
-			convertFileButton.setText("Converter");
 			convertFileButton.setVisible(false);
 		}
 	}

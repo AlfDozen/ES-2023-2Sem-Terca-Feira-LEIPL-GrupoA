@@ -11,12 +11,12 @@
    <children>
       <RadioButton fx:id="optionLocal" layoutX="95.0" layoutY="84.0" mnemonicParsing="false" onAction="#setLocal" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Local">
          <toggleGroup>
-            <ToggleGroup fx:id="file_chooser" />
+            <ToggleGroup fx:id="fileChooserTG" />
          </toggleGroup>
       </RadioButton>
-      <RadioButton fx:id="optionOnline" layoutX="228.0" layoutY="84.0" mnemonicParsing="false" onAction="#setOnline" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Online" toggleGroup="$file_chooser" />
-      <RadioButton fx:id="optionFenix" layoutX="366.0" layoutY="84.0" mnemonicParsing="false" onAction="#setFenix" prefHeight="18.0" prefWidth="119.0" text="Ficheiro do Fénix" toggleGroup="$file_chooser" />
-      <RadioButton fx:id="optionPrevious" layoutX="515.0" layoutY="84.0" mnemonicParsing="false" onAction="#setPrevious" prefHeight="18.0" prefWidth="200.0" text="Ficheiro Carregado Previamente" toggleGroup="$file_chooser" />
+      <RadioButton fx:id="optionOnline" layoutX="228.0" layoutY="84.0" mnemonicParsing="false" onAction="#setOnline" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Online" toggleGroup="$fileChooserTG" />
+      <RadioButton fx:id="optionFenix" layoutX="366.0" layoutY="84.0" mnemonicParsing="false" onAction="#setFenix" prefHeight="18.0" prefWidth="119.0" text="Ficheiro do Fénix" toggleGroup="$fileChooserTG" />
+      <RadioButton fx:id="optionPrevious" layoutX="515.0" layoutY="84.0" mnemonicParsing="false" onAction="#setPrevious" prefHeight="18.0" prefWidth="200.0" text="Ficheiro Carregado Previamente" toggleGroup="$fileChooserTG" />
       
       <Button fx:id="getFileButton" layoutX="95.0" layoutY="124.0" minHeight="49.0" minWidth="154.0" mnemonicParsing="false" onAction="#getFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar Ficheiro" textAlignment="CENTER" visible="false" wrapText="true" />
       <Label fx:id="fileChosen" layoutX="255.0" layoutY="123.0" prefHeight="50.0" prefWidth="450.0" text="Nenhum ficheiro importado" visible="false" />
@@ -27,7 +27,7 @@
       <Label fx:id="labelPreviousLoad" alignment="BASELINE_CENTER" layoutX="322.0" layoutY="116.0" text="Já existe um ficheiro já carregado" visible="false" />
       
             
-      <Button fx:id="uploadFileButton" layoutX="340.0" layoutY="263.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="60.0" prefWidth="130.0" text="Importar Ficheiro" visible="false" />
+      <Button fx:id="importFileButton" layoutX="340.0" layoutY="263.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#importFile" prefHeight="60.0" prefWidth="130.0" text="Importar Ficheiro" visible="false" />
       <Button fx:id="createScheduleButton" layoutX="340.0" layoutY="365.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="60.0" prefWidth="130.0" text="Criar Novo Horário" visible="false" />
       <Button fx:id="backButton" layoutX="340.0" layoutY="560.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="60.0" prefWidth="130.0" text="Cancelar" />
       <Label fx:id="labelPreviousNotLoad" alignment="BASELINE_CENTER" layoutX="236.0" layoutY="116.0" text="Não existe nenhum ficheiro carregado. Seleccione outra opção" visible="false" />

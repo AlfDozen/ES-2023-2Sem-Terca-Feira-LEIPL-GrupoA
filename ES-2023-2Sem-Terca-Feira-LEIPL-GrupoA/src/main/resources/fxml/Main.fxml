@@ -14,14 +14,14 @@
             <Font name="System Bold" size="24.0" />
          </font></Label>
       <ImageView fx:id="logoImage" fitHeight="146.0" fitWidth="612.0" layoutX="36.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="importScheduleButton" layoutX="107.0" layoutY="303.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#importSchedule" prefHeight="90.0" prefWidth="225.0" text="Carregar Horário de ficheiro" textAlignment="CENTER">
+      <Button fx:id="importScheduleButton" layoutX="107.0" layoutY="303.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#importSchedule" prefHeight="90.0" prefWidth="225.0" text="Carregar Horário de Ficheiro" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
       <Button fx:id="importWebcalButton" layoutX="481.0" layoutY="303.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#importWebcal" prefHeight="90.0" prefWidth="225.0" text="Importar Horário do Fénix" textAlignment="CENTER" wrapText="true" />
       <Button fx:id="createScheduleButton" layoutX="107.0" layoutY="440.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="90.0" prefWidth="225.0" text="Escolher Horário" textAlignment="CENTER" />
-      <Button fx:id="convertFileButton" layoutX="481.0" layoutY="440.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="90.0" prefWidth="225.0" text="Converter ficheiros" textAlignment="CENTER">
+      <Button fx:id="convertFileButton" layoutX="481.0" layoutY="440.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="90.0" prefWidth="225.0" text="Converter Ficheiros" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="Empty Tooltip" />
          </tooltip>
