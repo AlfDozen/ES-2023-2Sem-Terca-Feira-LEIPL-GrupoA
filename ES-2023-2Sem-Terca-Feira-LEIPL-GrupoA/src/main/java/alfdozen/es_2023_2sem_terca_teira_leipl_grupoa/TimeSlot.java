@@ -1,3 +1,9 @@
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * The TimeSlot class is used to define the beginning and ending time of a
@@ -19,15 +25,6 @@
  * @author alfdozen
  * @version 1.0.0
  */
-
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-
-
 final class TimeSlot implements Comparable<TimeSlot> {
 
 	static final String WRONG_DATE_FORMAT = "Wrong date format";

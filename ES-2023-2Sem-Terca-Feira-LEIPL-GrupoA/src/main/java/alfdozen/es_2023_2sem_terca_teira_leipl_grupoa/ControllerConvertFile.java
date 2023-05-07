@@ -1,13 +1,3 @@
-
-/**
- * The ControllerConvertFile class manages the GUI components and events in the
- * ConvertFile scene. The corresponding GUI is used to select a csv file in the
- * local file system and convert it to a json file (or vice versa).
- * 
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -24,7 +14,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-
+/**
+ * The ControllerConvertFile class manages the GUI components and events in the
+ * ConvertFile scene. The corresponding GUI is used to select a csv file in the
+ * local file system and convert it to a json file (or vice versa).
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerConvertFile implements Initializable {
 
 	@FXML

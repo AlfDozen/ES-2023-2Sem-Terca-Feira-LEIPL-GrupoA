@@ -1,13 +1,3 @@
-
-/**
- * The ControllerWebCall class manages the GUI components and events in the
- * WebCall scene. The corresponding GUI is used to import a schedule from a
- * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
- *
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -24,7 +14,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-
+/**
+ * The ControllerWebCall class manages the GUI components and events in the
+ * WebCall scene. The corresponding GUI is used to import a schedule from a
+ * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
+ *
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerWebCall implements Initializable {
 
 	@FXML

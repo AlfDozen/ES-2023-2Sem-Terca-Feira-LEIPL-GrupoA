@@ -1,16 +1,3 @@
-
-/**
- * The App class launches the stage, sets the main menu scene and manages the
- * GUI components and events in the scene. The user can click on different
- * buttons to go to the the corresponding scenes (importSchedule, importWebcal,
- * createSchedule and convertFile). The exit button is used to close the
- * application. If the user already imported a schedule file, the viewSchedule
- * button is visible and can be clicked to go to the viewSchedule scene.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import javafx.application.Application;
@@ -29,6 +16,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * The App class launches the stage, sets the main menu scene and manages the
+ * GUI components and events in the scene. The user can click on different
+ * buttons to go to the the corresponding scenes (importSchedule, importWebcal,
+ * createSchedule and convertFile). The exit button is used to close the
+ * application. If the user already imported a schedule file, the viewSchedule
+ * button is visible and can be clicked to go to the viewSchedule scene.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class App extends Application implements Initializable {
 
 	static final String ALERT_MESSAGE = "Alerta";

@@ -1,15 +1,3 @@
-
-/**
- * The ViewSchedule class is the controller for the ViewSchedule.fxml file. It
- * manages the GUI components and events in the ViewSchedule scene. The
- * corresponding GUI is used to display the current schedule as a calendar view,
- * save the schedule as a CSV or JSON file, return to the Main menu, create a new
- * schedule or view any schedule conflicts.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -34,6 +22,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+/**
+ * The ViewSchedule class is the controller for the ViewSchedule.fxml file. It
+ * manages the GUI components and events in the ViewSchedule scene. The
+ * corresponding GUI is used to display the current schedule as a calendar view,
+ * save the schedule as a CSV or JSON file, return to the Main menu, create a new
+ * schedule or view any schedule conflicts.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerViewSchedule implements Initializable {
 
 	public static final int NUM_COLUMNS = 7;

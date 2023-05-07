@@ -1,14 +1,3 @@
-
-/**
- * The ControllerUploadSchedule class manages the GUI components and events in
- * the UploadSchedule scene. The corresponding GUI is used to select a csv or
- * json file in the local file system or remotely and save it to a json or csv
- * file. It is also used to view the uploaded schedule.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -28,6 +17,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+/**
+ * The ControllerUploadSchedule class manages the GUI components and events in
+ * the UploadSchedule scene. The corresponding GUI is used to select a csv or
+ * json file in the local file system or remotely and save it to a json or csv
+ * file. It is also used to view the uploaded schedule.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerImportSchedule implements Initializable {
 
 	@FXML

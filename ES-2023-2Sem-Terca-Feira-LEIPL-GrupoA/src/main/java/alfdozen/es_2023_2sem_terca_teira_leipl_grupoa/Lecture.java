@@ -1,3 +1,5 @@
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
 
 /**
  * The Lecture class is used to manage all the information regarding a lecture.
@@ -12,9 +14,6 @@
  * @author alfdozen
  * @version 1.0.0
  */
-
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
-
 final class Lecture implements Comparable<Lecture> {
 
 	static final String FOR_NULL = "Unknown";

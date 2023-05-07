@@ -1,12 +1,3 @@
-
-/**
- * ControllerCreateSchedule is a controller class for the Create Schedule page. 
- * It allows users to select courses and create their schedule.
- * Users can save their schedule as a CSV or JSON file.
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -35,6 +26,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+
+/**
+ * ControllerCreateSchedule is a controller class for the Create Schedule page. 
+ * It allows users to select courses and create their schedule.
+ * Users can save their schedule as a CSV or JSON file.
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerCreateSchedule implements Initializable {
 
 	@FXML

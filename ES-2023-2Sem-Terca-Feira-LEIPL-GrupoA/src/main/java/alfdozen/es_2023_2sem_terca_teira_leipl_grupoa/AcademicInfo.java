@@ -1,3 +1,6 @@
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
+import java.util.Objects;
 
 /**
  * The AcademicInfo class is used to define various academic information
@@ -12,11 +15,6 @@
  * @author alfdozen
  * @version 1.0.0
  */
-
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
-
-import java.util.Objects;
-
 final class AcademicInfo {
 
 	static final String NEGATIVE_EXCEPTION = "The number of students enrolled can't be negative";

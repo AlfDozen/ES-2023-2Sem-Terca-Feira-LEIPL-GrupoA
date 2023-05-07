@@ -1,14 +1,3 @@
-
-/**
- * The ControllerLoadFileBeforeCreateSchedule class manages the GUI components and events in
- * the loadFileBeforeCreateSchedule scene. The corresponding GUI is used to select a csv or
- * json file in the local file system, remotely or from a webcal and import the file in the
- * application. With the file imported it is possible to create a schedule.
- * 
- * @author alfdozen
- * @version 1.0.0
- */
-
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -27,6 +16,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+/**
+ * The ControllerLoadFileBeforeCreateSchedule class manages the GUI components and events in
+ * the loadFileBeforeCreateSchedule scene. The corresponding GUI is used to select a csv or
+ * json file in the local file system, remotely or from a webcal and import the file in the
+ * application. With the file imported it is possible to create a schedule.
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
 public class ControllerLoadFileBeforeCreateSchedule implements Initializable {
 
 	@FXML
