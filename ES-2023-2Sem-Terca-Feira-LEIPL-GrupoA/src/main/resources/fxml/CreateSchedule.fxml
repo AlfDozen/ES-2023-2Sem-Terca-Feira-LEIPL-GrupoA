@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.calendarfx.view.page.WeekPage?>
+<?import com.calendarfx.view.DetailedWeekView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -9,15 +9,10 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.CreateSchedule">
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1010.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerCreateSchedule">
    <children>
       <Label alignment="CENTER" layoutX="64.0" layoutY="113.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu número de aluno" />
-      <Button fx:id="save" layoutX="842.0" layoutY="30.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="49.0" prefWidth="131.0" text="Guardar" textAlignment="CENTER">
-         <tooltip>
-            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
-         </tooltip>
-      </Button>
-      <Button fx:id="backButton" layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="49.0" prefWidth="98.0" text="Voltar" />
+      <Button layoutX="50.0" layoutY="30.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="66.0" prefWidth="131.0" text="Voltar ao menu Inicial" textAlignment="CENTER" wrapText="true" />
       <TextField fx:id="studentNumber" layoutX="50.0" layoutY="156.0" prefHeight="31.0" prefWidth="264.0" />
       <TextField fx:id="studentName" layoutX="50.0" layoutY="249.0" prefHeight="31.0" prefWidth="264.0" />
       <Label alignment="CENTER" layoutX="64.0" layoutY="200.0" prefHeight="49.0" prefWidth="223.0" text="Indique o seu nome completo" />
@@ -30,7 +25,7 @@
          <content>
             <AnchorPane prefHeight="308.0" prefWidth="263.0">
                <children>
-                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" prefHeight="281.0" prefWidth="264.0" />
+                  <ListView fx:id="lectures" layoutX="-1.0" layoutY="27.0" onMouseClicked="#setSelectedFields" prefHeight="281.0" prefWidth="264.0" />
                   <Label alignment="CENTER" layoutX="-3.0" layoutY="4.0" prefHeight="21.0" prefWidth="243.0" text="Unidades Curriculares" />
                </children>
             </AnchorPane>
@@ -42,9 +37,13 @@
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <ScrollPane layoutX="364.0" layoutY="131.0" prefHeight="606.0" prefWidth="609.0">
+      <Button layoutX="209.0" layoutY="30.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="66.0" prefWidth="131.0" text="Criar Novo Horário" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="396.0" layoutY="38.0" mnemonicParsing="false" onAction="#conflicts" prefHeight="49.0" prefWidth="229.0" text="Verificar Conflitos no Horário" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="682.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="66.0" prefWidth="131.0" text="Guardar .CSV" textAlignment="CENTER" wrapText="true" />
+      <Button layoutX="836.0" layoutY="30.0" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="66.0" prefWidth="131.0" text="Guardar .JSON" textAlignment="CENTER" wrapText="true" />
+      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="371.0" layoutY="154.0" prefHeight="614.0" prefWidth="606.0">
          <content>
-            <WeekPage fx:id="calendar" prefHeight="595.0" prefWidth="606.0" />
+            <DetailedWeekView fx:id="calendar" />
          </content>
       </ScrollPane>
    </children>

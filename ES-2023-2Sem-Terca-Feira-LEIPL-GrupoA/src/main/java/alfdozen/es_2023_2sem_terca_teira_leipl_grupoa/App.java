@@ -80,6 +80,10 @@ public class App extends Application implements Initializable {
 			System.exit(1);
 		}
 	}
+	
+	public static void setSchedule(Schedule newSchedule) {
+		schedule = newSchedule;
+	}
 
 	/**
 	 * This method sets the stage size according to the width and heigh received.
