@@ -29,8 +29,13 @@ import javafx.scene.layout.AnchorPane;
  */
 public class App extends Application implements Initializable {
 
-	public static final String ERROR_TITLE_DIALOG = "Erro";
-
+	static final String ALERT_MESSAGE = "Alerta";
+	static final String ERROR_MESSAGE = "Erro";
+	static final String SUCCESS_MESSAGE = "Sucesso";
+	static final String ERROR_SELECT_FILE_MESSAGE = "Por favor, selecione um ficheiro";
+	static final String SUCCESS_DESCRIPTION_MESSAGE = "Horário importado com sucesso";
+	
+	
 	private static Scene scene;
 	private static Stage stage;
 	public static Schedule SCHEDULE;
@@ -68,7 +73,7 @@ public class App extends Application implements Initializable {
 			stage.setScene(scene);
 			stage.show();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro ao iniciar o programa", ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "Erro ao iniciar o programa", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -119,7 +124,7 @@ public class App extends Application implements Initializable {
 			App.setRoot("/fxml/ImportSchedule");
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de carregar horário de ficheiro",
-					ERROR_TITLE_DIALOG, JOptionPane.ERROR_MESSAGE);
+					ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 	}
@@ -134,7 +139,7 @@ public class App extends Application implements Initializable {
 		try {
 			App.setRoot("/fxml/Webcal");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de importar horário do Fénix", ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de importar horário do Fénix", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -150,7 +155,7 @@ public class App extends Application implements Initializable {
 		try {
 			App.setRoot("/fxml/LoadFileBeforeCreateSchedule");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de escolher horário", ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de escolher horário", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -166,7 +171,7 @@ public class App extends Application implements Initializable {
 		try {
 			App.setRoot("/fxml/ConvertFile");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de converter ficheiros", ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de converter ficheiros", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -182,7 +187,7 @@ public class App extends Application implements Initializable {
 		try {
 			App.setRoot("/fxml/ViewSchedule");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de consultar horário", ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de consultar horário", ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -212,7 +217,7 @@ public class App extends Application implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(window.getPrefWidth(), window.getPrefHeight());
 		logoImage.setImage(new Image("/fxml/iscte.gif"));
-		viewScheduleButton.setVisible(SCHEDULE != null && !SCHEDULE.getLectures().isEmpty());
+		viewScheduleButton.setVisible(!Schedule.scheduleIsEmpty(SCHEDULE));
 	}
 
 	/**

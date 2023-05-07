@@ -1033,7 +1033,7 @@ class ScheduleTest {
 	}	
 	
 	@Test
-	final void testgetCommonWeekLecture() throws IOException {
+	final void testGetCommonWeekLecture() throws IOException {
 		//primeiro teste - entrar e sair da função sem passar pelo for (nao ter nenhuma lecture) - linha 691
 		
 		Schedule horario = new Schedule();
@@ -1052,6 +1052,43 @@ class ScheduleTest {
 		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
 		courses.add("Investimentos II");
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
-		
+	}
+	
+	@Test
+	final void testLecturesInScheduleAllNull() {
+		// schedule vazio
+		Schedule emptySchedule = new Schedule();
+		Schedule nullLectureSchedule = new Schedule();
+		assertTrue(Schedule.lecturesInScheduleAllNull(emptySchedule));
+		// schedule com lecture a null
+		Lecture emptyLecture = new Lecture(null, null, null);
+		nullLectureSchedule.addLecture(emptyLecture);
+		assertTrue(Schedule.lecturesInScheduleAllNull(nullLectureSchedule));
+		// schedule com lecture
+		Schedule schedule = new Schedule();
+		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		schedule.addLecture(lecture);
+		assertFalse(Schedule.lecturesInScheduleAllNull(schedule));
+	}
+	
+	@Test
+	final void testScheduleIsEmpty() {
+		// schedule vazio
+		Schedule emptySchedule = new Schedule();
+		Schedule nullLectureSchedule = new Schedule();
+		assertTrue(Schedule.scheduleIsEmpty(emptySchedule));
+		// schedule com lecture a null
+		Lecture emptyLecture = new Lecture(null, null, null);
+		nullLectureSchedule.addLecture(emptyLecture);
+		assertFalse(Schedule.scheduleIsEmpty(nullLectureSchedule));
+		// schedule com lecture
+		Schedule schedule = new Schedule();
+		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		schedule.addLecture(lecture);
+		assertFalse(Schedule.lecturesInScheduleAllNull(schedule));
 	}
 }
