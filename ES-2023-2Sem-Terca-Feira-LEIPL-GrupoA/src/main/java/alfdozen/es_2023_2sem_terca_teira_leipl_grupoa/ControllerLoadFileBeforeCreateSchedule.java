@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -37,6 +38,12 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	@FXML
 	private RadioButton optionPrevious = new RadioButton();
 	@FXML
+	private RadioButton optionCSVRadioButton;
+	@FXML
+	private RadioButton optionJSONRadioButton;
+	@FXML
+	private ToggleGroup extensionChooser;
+	@FXML
 	private Label fileChosen;
 	@FXML
 	private Label labelOnline;
@@ -47,10 +54,11 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	@FXML
 	private Label labelPreviousNotLoad;
 	@FXML
+	private Label extensionInstructionLabel;
+	@FXML
 	private TextField urlChosen;
 	@FXML
 	private TextField webcalChosen;
-
 	@FXML
 	private AnchorPane window; 
 	
@@ -74,6 +82,9 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		
 		uploadFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
+		extensionInstructionLabel.setVisible(false);
+		optionCSVRadioButton.setVisible(false);
+		optionJSONRadioButton.setVisible(false);
 	}
 	
 	/**
@@ -96,6 +107,9 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		
 		uploadFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
+		extensionInstructionLabel.setVisible(true);
+		optionCSVRadioButton.setVisible(true);
+		optionJSONRadioButton.setVisible(true);
 	}
 	
 	/**
@@ -118,6 +132,9 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		
 		uploadFileButton.setVisible(false);
 		createScheduleButton.setVisible(false);
+		extensionInstructionLabel.setVisible(false);
+		optionCSVRadioButton.setVisible(false);
+		optionJSONRadioButton.setVisible(false);
 	}
 	
 	/**
@@ -136,6 +153,9 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		webcalChosen.setVisible(false);
 		
 		uploadFileButton.setVisible(false);
+		extensionInstructionLabel.setVisible(false);
+		optionCSVRadioButton.setVisible(false);
+		optionJSONRadioButton.setVisible(false);
 		
 		if (scheduleIsEmpty()) {
 			labelPreviousLoad.setVisible(false);
@@ -183,7 +203,18 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 	 */
 	@FXML
 	private void dealWithText() {
-		uploadFileButton.setVisible(true);
+		if(optionCSVRadioButton.isSelected() || optionJSONRadioButton.isSelected())
+			uploadFileButton.setVisible(true);
+	}
+	
+	/**
+	 * Event handler for showing the import file button if the online text field is not empty.
+	 * The import file button will become visible allowing the user to import a file.
+	 */
+	@FXML
+	private void showImportButton() {
+		if(!urlChosen.getText().isBlank())
+			uploadFileButton.setVisible(true);
 	}
 	
 	/**
@@ -197,7 +228,17 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 		Schedule scheduleUploaded = null;
 		try {
 			if (optionLocal.isSelected()){
-				scheduleUploaded = Schedule.callLoad(fileChosen.getText());
+				String extension = Schedule.getFileExtension(fileChosen.getText());
+				switch (extension) {
+				case Schedule.FILE_FORMAT_CSV:
+					scheduleUploaded = Schedule.loadCSV(fileChosen.getText());
+					break;
+				case Schedule.FILE_FORMAT_JSON:
+					scheduleUploaded = Schedule.loadJSON(fileChosen.getText());
+					break;
+				default:
+					throw new IllegalArgumentException("Invalid file extension");
+				}
 				JOptionPane.showMessageDialog(null, "Horário importado com sucesso", TYPE_MESSAGE_ALERT, JOptionPane.INFORMATION_MESSAGE);
 				createScheduleButton.setVisible(true);
 				
@@ -212,8 +253,8 @@ public class ControllerLoadFileBeforeCreateSchedule implements Initializable{
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
-				String tmpUrl= Schedule.downloadFileFromURL(filePath);
-				scheduleUploaded = Schedule.callLoad(tmpUrl);
+				
+				scheduleUploaded = Schedule.downloadFileFromURL(filePath, Schedule.getFileExtension(filePath));
 				createScheduleButton.setVisible(true);
 			
 			} else {

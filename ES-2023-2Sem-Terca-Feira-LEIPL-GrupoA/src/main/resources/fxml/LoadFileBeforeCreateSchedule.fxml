@@ -7,7 +7,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerLoadFileBeforeCreateSchedule">
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerLoadFileBeforeCreateSchedule">
    <children>
       <RadioButton fx:id="optionLocal" layoutX="95.0" layoutY="121.0" mnemonicParsing="false" onAction="#setLocal" prefHeight="18.0" prefWidth="119.0" text="Ficheiro local">
          <toggleGroup>
@@ -31,5 +31,16 @@
       <Button fx:id="createScheduleButton" layoutX="339.0" layoutY="489.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="62.0" prefWidth="131.0" text="Criar novo horário" visible="false" />
       <Button fx:id="backButton" layoutX="339.0" layoutY="569.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="62.0" prefWidth="131.0" text="Cancelar" />
       <Label fx:id="labelPreviousNotLoad" alignment="BASELINE_CENTER" layoutX="236.0" layoutY="212.0" text="Não existe nenhum ficheiro carregado. Seleccione outra opção" visible="false" />
+      <RadioButton fx:id="optionCSVRadioButton" layoutX="339.0" layoutY="317.0" mnemonicParsing="false" onAction="#showImportButton" prefHeight="18.0" prefWidth="50.0" text=".csv" visible="false">
+         <toggleGroup>
+            <ToggleGroup fx:id="extensionChooser" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionJSONRadioButton" layoutX="425.0" layoutY="317.0" mnemonicParsing="false" onAction="#showImportButton" prefHeight="18.0" prefWidth="57.0" text=".json" visible="false">
+         <toggleGroup>
+            <ToggleGroup fx:id="extensionChooser" />
+         </toggleGroup>
+      </RadioButton>
+      <Label fx:id="extensionInstructionLabel" alignment="CENTER" layoutX="286.0" layoutY="290.0" prefHeight="17.0" prefWidth="242.0" text="Selecione a extensão do ficheiro" textAlignment="CENTER" visible="false" />
    </children>
 </AnchorPane>

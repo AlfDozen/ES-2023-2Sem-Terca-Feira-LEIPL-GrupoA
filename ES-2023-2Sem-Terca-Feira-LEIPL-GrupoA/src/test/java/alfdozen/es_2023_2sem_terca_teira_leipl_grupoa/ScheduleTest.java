@@ -780,25 +780,23 @@ class ScheduleTest {
   @Test
 	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
 		// Test with null URL
-		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null));
+		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null, null));
 		// Create a temporary CSV file
 		String csvUrl = "https://nao/existe.csv";
-		String csvReturnString = Schedule.downloadFileFromURL(csvUrl);
+		assertThrows(IOException.class, () -> Schedule.downloadFileFromURL(csvUrl, Schedule.getFileExtension(csvUrl))); 
 		File csvFile = new File("src/main/resources/temp/tempFile.csv");
 		assertNotNull(csvFile);
 		assertTrue(csvFile.exists());
 		assertTrue(csvFile.isFile());
 		assertEquals("tempFile.csv", csvFile.getName());
-		assertNull(csvReturnString);
 		// Create a temporary JSON file
 		String jsonUrl = "https://nao/existe.json";
-		String jsonReturnString = Schedule.downloadFileFromURL(jsonUrl);
+		assertThrows(IOException.class, () -> Schedule.downloadFileFromURL(jsonUrl, Schedule.getFileExtension(jsonUrl))); 
 		File jsonFile = new File("src/main/resources/temp/tempFile.json");
 		assertNotNull(jsonFile);
 		assertTrue(jsonFile.exists());
 		assertTrue(jsonFile.isFile());
 		assertEquals("tempFile.json", jsonFile.getName());
-		assertNull(jsonReturnString);
 	}
 
 	@Test
@@ -831,80 +829,6 @@ class ScheduleTest {
 		assertEquals(jsonContent, jsonOutputContent);
 		csvFis.close();
 		jsonFis.close();
-	}
-
-	@Test
-	final void testCallLoad() throws IOException {
-		// Create temp directory
-		File tempDir = new File("/src/main/resources/temp");
-		tempDir.mkdir();
-
-		// Copy CSV file to temp directory
-		Path csvSource = Paths.get("src/main/resources/horario_exemplo_9colunas.csv");
-		Path csvDest = Paths.get("src/main/resources/temp/tempFile.csv");
-		Files.copy(csvSource, csvDest, StandardCopyOption.REPLACE_EXISTING);
-
-		// Copy JSON file to temp directory
-		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json.json");
-		Path jsonDest = Paths.get("src/main/resources/temp/tempFile.json");
-		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
-
-		// Load CSV file
-		Schedule schedule1 = Schedule.callLoad("src/main/resources/temp/tempFile.csv");
-		assertNotNull(schedule1);
-
-		// Check if the temp file was deleted
-		File tempFile = new File("src/main/resources/temp/tempFile.csv");
-		assertFalse(tempFile.exists());
-
-		Lecture lecture1 = new Lecture(
-				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
-				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
-				new Room(null, (Integer) null));
-		List<Lecture> lectures1 = new ArrayList<>();
-		lectures1.add(lecture1);
-		Schedule expected1 = new Schedule(lectures1);
-		assertEquals(expected1.toString(), schedule1.toString());
-
-		// schedule 2
-		Schedule schedule2 = Schedule.callLoad("src/main/resources/temp/tempFile.json");
-		assertNotNull(schedule2);
-
-		// Check if the temp file was deleted
-		File tempFile2 = new File("src/main/resources/temp/tempFile.json");
-		assertFalse(tempFile2.exists());
-
-		Lecture lecture2 = new Lecture(
-				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
-				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
-				new Room("AA2.25", 34));
-		List<Lecture> lectures2 = new ArrayList<>();
-		lectures2.add(lecture2);
-		Schedule expected2 = new Schedule(lectures2);
-		assertEquals(expected2.toString(), schedule2.toString());
-	}
-
-	@Test
-	final void testLoadInvalidFileExtension() {
-		// Create a temporary file with an invalid extension
-		File invalidFile = new File("test.txt");
-		try {
-			Files.writeString(invalidFile.toPath(), "id,name\n1,Alice\n2,Bob\n3,Charlie\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Attempt to load the file
-		assertThrows(IllegalArgumentException.class, () -> Schedule.callLoad(invalidFile.getAbsolutePath()));
-
-		// Assert that the temporary file was not deleted
-		assertTrue(invalidFile.exists());
-	}
-
-	@Test
-	final void testLoadNonExistentFile() {
-		// Attempt to load a non-existent file
-		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
 	}
 
 	@Test
