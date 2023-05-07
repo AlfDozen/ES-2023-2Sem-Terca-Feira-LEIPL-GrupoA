@@ -3,7 +3,6 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import javafx.application.Application;
 
-import java.awt.Button;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class App extends Application implements Initializable{
 		SCENE.setRoot(loadFXML(fxml));
 	}
 
-	private static Parent loadFXML(String fxml) throws IOException {
+	public static Parent loadFXML(String fxml) throws IOException {
 		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
 		System.out.println(fxmlLoader.toString());
 		return fxmlLoader.load();

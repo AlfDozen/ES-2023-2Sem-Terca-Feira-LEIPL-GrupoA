@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -18,8 +16,12 @@ import com.calendarfx.model.Calendar.Style;
 import com.calendarfx.model.CalendarSource;
 
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -39,9 +41,11 @@ public class ViewSchedule implements Initializable{
 
 	@FXML
 	private AnchorPane window;
-	
+
 	@FXML
 	private CalendarView calendarView;
+
+
 
 	@FXML
 	private void returnHome() {
@@ -58,10 +62,11 @@ public class ViewSchedule implements Initializable{
 		fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("CSV", ".CSV"));
 		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
-		filenameToSave = filePathToSave.getAbsolutePath();
+		
 
 		try {
-			if(filenameToSave != null) {
+			if(filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
 				Schedule.saveToCSV(App.getSchedule(), filenameToSave);
 			}
 		} catch (IOException e) {
@@ -75,10 +80,11 @@ public class ViewSchedule implements Initializable{
 		fileChooserToSave = new FileChooser();
 		fileChooserToSave.getExtensionFilters().addAll(new ExtensionFilter("JSON", ".json"));
 		filePathToSave = fileChooserToSave.showSaveDialog(new Stage());
-		filenameToSave = filePathToSave.getAbsolutePath();
+		
 
 		try {
-			if(filenameToSave != null) {
+			if(filePathToSave != null) {
+				filenameToSave = filePathToSave.getAbsolutePath();
 				Schedule.saveToJSON(App.getSchedule(), filenameToSave);
 			}
 
@@ -96,66 +102,90 @@ public class ViewSchedule implements Initializable{
 		}
 	}
 
+	@FXML
+	private void conflicts() {
+		try {
 
+			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root, 700, 750);
+
+			Stage newStage = new Stage();
+
+			newStage.setScene(scene);
+			newStage.setTitle("ListView Window");
+			newStage.setResizable(false);
+			newStage.centerOnScreen();
+			newStage.show();
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	//  ######################### APOIO CALCULO #################################################### //
 
 
 	private void setLecturesEntries() {
 
-		Calendar<Lecture> iscte = new Calendar<>("ISCTE");
-		iscte.setStyle(Style.STYLE1);
-		
-		for(Lecture lec : App.getSchedule().getLectures()) {
+		try {
 
-			if(lec.getTimeSlot().getDate() != null){
-			
-			Entry<Lecture> aulas = new Entry<>();
-			
-			aulas.setTitle(lec.toString());
-			LocalDate classDay = lec.getTimeSlot().getDate();
-			LocalTime begin = lec.getTimeSlot().getTimeBegin();
-			LocalTime end = lec.getTimeSlot().getTimeEnd();
+			Calendar<Lecture> iscte = new Calendar<>("ISCTE");
+			iscte.setStyle(Style.STYLE1);
 
-			aulas.setInterval(classDay, begin, classDay, end);
+			for(Lecture lec : App.getSchedule().getLectures()) {
 
-			iscte.addEntry(aulas);
-			}
-		}
-		
-		CalendarSource iscteCalendarSource = new CalendarSource("ISCTE");//
-		iscteCalendarSource.getCalendars().addAll(iscte);
+				if(lec.getTimeSlot().getDate() != null){
 
-		calendarView.getCalendarSources().setAll(iscteCalendarSource);
+					Entry<Lecture> aulas = new Entry<>();
 
-		calendarView.setRequestedTime(LocalTime.now());
+					aulas.setTitle(lec.toString());
+					LocalDate classDay = lec.getTimeSlot().getDate();
+					LocalTime begin = lec.getTimeSlot().getTimeBegin();
+					LocalTime end = lec.getTimeSlot().getTimeEnd();
 
-		Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
-			@Override
-			public void run() {
-				while (true) {
-					Platform.runLater(() -> {
-						calendarView.setToday(LocalDate.now());
-						calendarView.setTime(LocalTime.now());
-					});
+					aulas.setInterval(classDay, begin, classDay, end);
 
-					try {
-						// update every 10 seconds
-						sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
+					iscte.addEntry(aulas);
 				}
 			}
-		};
 
-		updateTimeThread.setPriority(Thread.MIN_PRIORITY);
-		updateTimeThread.setDaemon(true);
-		updateTimeThread.start();
-	
-	
-//		calendarView.getDayPage().getAgendaView().
+			CalendarSource iscteCalendarSource = new CalendarSource("ISCTE");//
+			iscteCalendarSource.getCalendars().addAll(iscte);
+
+			calendarView.getCalendarSources().setAll(iscteCalendarSource);
+
+			calendarView.setRequestedTime(LocalTime.now());
+
+			Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+				@Override
+				public void run() {
+					while (true) {
+						Platform.runLater(() -> {
+							calendarView.setToday(LocalDate.now());
+							calendarView.setTime(LocalTime.now());
+						});
+
+						try {
+							// update every 10 seconds
+							sleep(10000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+					}
+				}
+			};
+
+			updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+			updateTimeThread.setDaemon(true);
+			updateTimeThread.start();
+
+		} catch (Exception e) {
+			System.out.println("caçei excepção");
+		}
+
 	}
 
 
@@ -169,6 +199,17 @@ public class ViewSchedule implements Initializable{
 		App.getStage().centerOnScreen();
 		calendarView.setEnableTimeZoneSupport(true);
 
+		calendarView.setShowAddCalendarButton(false);
+		calendarView.getSourceView().setVisible(false);
+		
+		 calendarView.getCalendarSources().addListener((ListChangeListener<CalendarSource>) change -> {
+		        // Get a reference to the ToggleButton and hide it
+		        ToggleButton toggleButton = (ToggleButton) calendarView.lookup(".calendar-show-calendars-button");
+		        if (toggleButton != null) {
+		            toggleButton.setVisible(false);
+		        }
+		    });
+		
 		setLecturesEntries();
 
 	}

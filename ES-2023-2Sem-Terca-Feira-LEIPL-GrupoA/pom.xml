@@ -98,7 +98,7 @@
     <groupId>com.calendarfx</groupId>
     <artifactId>view</artifactId>
     <version>11.12.5</version>
-</dependency>
+  </dependency>
   </dependencies>
 
   <build>
