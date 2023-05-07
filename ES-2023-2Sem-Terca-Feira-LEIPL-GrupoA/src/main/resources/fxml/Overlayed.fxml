@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="746.0" prefWidth="695.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerOverlayed">
+
+   <children>
+      <Label alignment="CENTER" layoutX="104.0" layoutY="63.0" prefHeight="49.0" prefWidth="176.0" text="Lista de aulas sobrepostas" wrapText="true" />
+      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="61.0" layoutY="159.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="540.0" prefWidth="262.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="61.0" AnchorPane.rightAnchor="372.0" AnchorPane.topAnchor="159.0">
+         <content>
+            <ListView fx:id="overlayedList" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="540.0" prefWidth="300.0" />
+         </content>
+      </ScrollPane>
+      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="379.0" layoutY="159.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="540.0" prefWidth="254.0" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="379.0" AnchorPane.rightAnchor="62.0" AnchorPane.topAnchor="159.0">
+         <content>
+            <ListView fx:id="overlappedList" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="540.0" prefWidth="300.0" />
+         </content>
+      </ScrollPane>
+      <Label alignment="CENTER" layoutX="418.0" layoutY="63.0" prefHeight="49.0" prefWidth="176.0" text="Lista de aulas sobrelotadas" wrapText="true" />
+   </children>
+</AnchorPane>

@@ -94,7 +94,7 @@
     <artifactId>javafx-web</artifactId>
     <version>16</version>
   </dependency>
-    <dependency>
+  <dependency>
     <groupId>com.calendarfx</groupId>
     <artifactId>view</artifactId>
     <version>11.12.5</version>

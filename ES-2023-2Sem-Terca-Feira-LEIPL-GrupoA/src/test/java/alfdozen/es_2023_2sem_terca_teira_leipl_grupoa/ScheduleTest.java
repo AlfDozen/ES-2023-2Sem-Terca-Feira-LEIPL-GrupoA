@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,7 +26,7 @@ import java.io.BufferedReader;
 
 class ScheduleTest {
 	@Test
-	void testScheduleNull() {
+	final void testScheduleNull() {
 		Schedule schedule = new Schedule(null, null, (Integer) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -35,7 +34,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesStudentNull() {
+	final void testScheduleLecturesStudentNull() {
 		Schedule schedule = new Schedule(null, null, (String) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -43,7 +42,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesNull() {
+	final void testScheduleLecturesNull() {
 		Schedule schedule = new Schedule(null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -51,7 +50,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleAllNull() {
+	final void testScheduleAllNull() {
 		Schedule schedule = new Schedule(null, (Integer) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -59,7 +58,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testScheduleLecturesStudentNull2() {
+	final void testScheduleLecturesStudentNull2() {
 		Schedule schedule = new Schedule(null, (String) null);
 		assertNull(schedule.getStudentName());
 		assertNull(schedule.getStudentNumber());
@@ -216,7 +215,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetLecturesSorting() {
+	final void testSetLecturesSorting() {
 		Lecture lecture1 = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
 				new Room("ES23", 20));
@@ -241,7 +240,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testAddAndRemoveLecture() {
+	final void testAddAndRemoveLecture() {
 		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
 				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
 				new Room("ES23", 20));
@@ -257,7 +256,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetStudentName() {
+	final void testSetStudentName() {
 		Schedule schedule = new Schedule();
 		String name = "John Doe";
 		schedule.setStudentName(name);
@@ -272,7 +271,7 @@ class ScheduleTest {
 	}
 
 	@Test
-	void testSetStudentNumberPositive() {
+	final void testSetStudentNumberPositive() {
 		Schedule schedule = new Schedule();
 		Integer number = 12345;
 		schedule.setStudentNumber(number);
@@ -778,27 +777,35 @@ class ScheduleTest {
 	}
   
   @Test
-	final void downloadFileFromURL() throws IllegalArgumentException, IOException {
+	final void testDownloadFileFromURL() throws IllegalArgumentException, IOException {
 		// Test with null URL
-		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null));
+		assertThrows(IllegalArgumentException.class, () -> Schedule.downloadFileFromURL(null, null));
 		// Create a temporary CSV file
 		String csvUrl = "https://nao/existe.csv";
-		String csvReturnString = Schedule.downloadFileFromURL(csvUrl);
+		assertThrows(IOException.class, () -> Schedule.downloadFileFromURL(csvUrl, Schedule.getFileExtension(csvUrl))); 
 		File csvFile = new File("src/main/resources/temp/tempFile.csv");
 		assertNotNull(csvFile);
 		assertTrue(csvFile.exists());
 		assertTrue(csvFile.isFile());
 		assertEquals("tempFile.csv", csvFile.getName());
-		assertNull(csvReturnString);
 		// Create a temporary JSON file
 		String jsonUrl = "https://nao/existe.json";
-		String jsonReturnString = Schedule.downloadFileFromURL(jsonUrl);
+		assertThrows(IOException.class, () -> Schedule.downloadFileFromURL(jsonUrl, Schedule.getFileExtension(jsonUrl))); 
 		File jsonFile = new File("src/main/resources/temp/tempFile.json");
 		assertNotNull(jsonFile);
 		assertTrue(jsonFile.exists());
 		assertTrue(jsonFile.isFile());
 		assertEquals("tempFile.json", jsonFile.getName());
-		assertNull(jsonReturnString);
+		// Remote CSV
+		String urlCSV = "https://drive.google.com/uc?export=download&id=1_zSXUVBpq3IDvbvIDIe2Icl2dcIv2jj4";
+		Schedule sch = Schedule.downloadFileFromURL(urlCSV, ".csv");
+		assertFalse(Schedule.scheduleIsEmpty(sch));
+		assertFalse(Schedule.lecturesInScheduleAllNull(sch));
+		// Remote JSON
+		String urlJSON = "https://drive.google.com/uc?export=download&id=1rgPJ-CIPbFqVhs1xGqs3zzf_WzoX-555";
+		sch = Schedule.downloadFileFromURL(urlJSON, ".json");
+		assertFalse(Schedule.scheduleIsEmpty(sch));
+		assertFalse(Schedule.lecturesInScheduleAllNull(sch));
 	}
 
 	@Test
@@ -831,80 +838,6 @@ class ScheduleTest {
 		assertEquals(jsonContent, jsonOutputContent);
 		csvFis.close();
 		jsonFis.close();
-	}
-
-	@Test
-	final void testCallLoad() throws IOException {
-		// Create temp directory
-		File tempDir = new File("/src/main/resources/temp");
-		tempDir.mkdir();
-
-		// Copy CSV file to temp directory
-		Path csvSource = Paths.get("src/main/resources/horario_exemplo_9colunas.csv");
-		Path csvDest = Paths.get("src/main/resources/temp/tempFile.csv");
-		Files.copy(csvSource, csvDest, StandardCopyOption.REPLACE_EXISTING);
-
-		// Copy JSON file to temp directory
-		Path jsonSource = Paths.get("src/main/resources/horario_exemplo_json.json");
-		Path jsonDest = Paths.get("src/main/resources/temp/tempFile.json");
-		Files.copy(jsonSource, jsonDest, StandardCopyOption.REPLACE_EXISTING);
-
-		// Load CSV file
-		Schedule schedule1 = Schedule.callLoad("src/main/resources/temp/tempFile.csv");
-		assertNotNull(schedule1);
-
-		// Check if the temp file was deleted
-		File tempFile = new File("src/main/resources/temp/tempFile.csv");
-		assertFalse(tempFile.exists());
-
-		Lecture lecture1 = new Lecture(
-				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
-				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
-				new Room(null, (Integer) null));
-		List<Lecture> lectures1 = new ArrayList<>();
-		lectures1.add(lecture1);
-		Schedule expected1 = new Schedule(lectures1);
-		assertEquals(expected1.toString(), schedule1.toString());
-
-		// schedule 2
-		Schedule schedule2 = Schedule.callLoad("src/main/resources/temp/tempFile.json");
-		assertNotNull(schedule2);
-
-		// Check if the temp file was deleted
-		File tempFile2 = new File("src/main/resources/temp/tempFile.json");
-		assertFalse(tempFile2.exists());
-
-		Lecture lecture2 = new Lecture(
-				new AcademicInfo("ME", "Teoria dos Jogos e dos Contratos", "01789TP01", "MEA1", 30),
-				new TimeSlot("Sex", LocalDate.of(2022, 12, 2), LocalTime.of(13, 0, 0), LocalTime.of(14, 30, 0)),
-				new Room("AA2.25", 34));
-		List<Lecture> lectures2 = new ArrayList<>();
-		lectures2.add(lecture2);
-		Schedule expected2 = new Schedule(lectures2);
-		assertEquals(expected2.toString(), schedule2.toString());
-	}
-
-	@Test
-	final void testLoadInvalidFileExtension() {
-		// Create a temporary file with an invalid extension
-		File invalidFile = new File("test.txt");
-		try {
-			Files.writeString(invalidFile.toPath(), "id,name\n1,Alice\n2,Bob\n3,Charlie\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Attempt to load the file
-		assertThrows(IllegalArgumentException.class, () -> Schedule.callLoad(invalidFile.getAbsolutePath()));
-
-		// Assert that the temporary file was not deleted
-		assertTrue(invalidFile.exists());
-	}
-
-	@Test
-	final void testLoadNonExistentFile() {
-		// Attempt to load a non-existent file
-		assertThrows(IOException.class, () -> Schedule.callLoad("does_not_exist.csv"));
 	}
 
 	@Test
@@ -1109,7 +1042,7 @@ class ScheduleTest {
 	}	
 	
 	@Test
-	final void testgetCommonWeekLecture() throws IOException {
+	final void testGetCommonWeekLecture() throws IOException {
 		//primeiro teste - entrar e sair da função sem passar pelo for (nao ter nenhuma lecture) - linha 691
 		
 		Schedule horario = new Schedule();
@@ -1128,6 +1061,42 @@ class ScheduleTest {
 		horario = Schedule.loadCSV("./src/main/resources/horario_exemplo_test_hugo.csv");
 		courses.add("Investimentos II");
 		assertEquals(expected,horario.getCommonWeekLecture(courses).toString());
-		
+	}
+	@Test
+	final void testLecturesInScheduleAllNull() {
+		// schedule vazio
+		Schedule emptySchedule = new Schedule();
+		Schedule nullLectureSchedule = new Schedule();
+		assertTrue(Schedule.lecturesInScheduleAllNull(emptySchedule));
+		// schedule com lecture a null
+		Lecture emptyLecture = new Lecture(null, null, null);
+		nullLectureSchedule.addLecture(emptyLecture);
+		assertTrue(Schedule.lecturesInScheduleAllNull(nullLectureSchedule));
+		// schedule com lecture
+		Schedule schedule = new Schedule();
+		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		schedule.addLecture(lecture);
+		assertFalse(Schedule.lecturesInScheduleAllNull(schedule));
+	}
+	
+	@Test
+	final void testScheduleIsEmpty() {
+		// schedule vazio
+		Schedule emptySchedule = new Schedule();
+		Schedule nullLectureSchedule = new Schedule();
+		assertTrue(Schedule.scheduleIsEmpty(emptySchedule));
+		// schedule com lecture a null
+		Lecture emptyLecture = new Lecture(null, null, null);
+		nullLectureSchedule.addLecture(emptyLecture);
+		assertFalse(Schedule.scheduleIsEmpty(nullLectureSchedule));
+		// schedule com lecture
+		Schedule schedule = new Schedule();
+		Lecture lecture = new Lecture(new AcademicInfo("LEI-PL", "Engenharia de Software", "T02A", "LEIPL1", 5),
+				new TimeSlot("Qui", LocalDate.of(2023, 2, 23), LocalTime.of(3, 2, 32), LocalTime.of(11, 23, 4)),
+				new Room("ES23", 20));
+		schedule.addLecture(lecture);
+		assertFalse(Schedule.lecturesInScheduleAllNull(schedule));
 	}
 }

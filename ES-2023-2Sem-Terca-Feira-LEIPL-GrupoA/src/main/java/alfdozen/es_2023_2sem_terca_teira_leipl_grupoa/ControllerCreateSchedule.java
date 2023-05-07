@@ -80,13 +80,13 @@ public class ControllerCreateSchedule implements Initializable {
 	private void createSchedule() {
 		List<Lecture> lecList = new ArrayList<>();
 
-		for (Lecture lec : App.SCHEDULE.getLectures()) {
+		for (Lecture lec : App.schedule.getLectures()) {
 			if (lectures.getSelectionModel().getSelectedItems().contains(lec.getAcademicInfo().getCourse())) {
 				lecList.add(lec);
 			}
 		}
 		if (studentNumber.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "O número de aluno não pode estar vazio", App.ERROR_TITLE_DIALOG,
+			JOptionPane.showMessageDialog(null, "O número de aluno não pode estar vazio", App.ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		} else if (studentName.getText() == null) {
@@ -148,7 +148,7 @@ public class ControllerCreateSchedule implements Initializable {
 		try {
 			if (filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
+				Schedule.saveToCSV(App.schedule, filenameToSave);
 			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, ERROR_SAVING, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
@@ -169,7 +169,7 @@ public class ControllerCreateSchedule implements Initializable {
 		try {
 			if (filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
+				Schedule.saveToJSON(App.schedule, filenameToSave);
 			}
 
 		} catch (IOException e) {
@@ -178,28 +178,13 @@ public class ControllerCreateSchedule implements Initializable {
 	}
 
 	/**
-	* Shows a new stage with a list of all the lecture conflicts in the schedule.
-	* The conflicts are displayed using the "Overlayed.fxml" file.
-	* If there is an IO exception while loading the FXML file, no action is taken.
-	*/
+	 * Calls showLectureConflicts from App to show a new stage with a list of all
+	 * the lecture conflicts in the schedule. The conflicts are displayed using the
+	 * "Overlayed.fxml" file.
+	 */
 	@FXML
 	private void conflicts() {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
-			Parent root = fxmlLoader.load();
-			Scene scene = new Scene(root, WIDTH, HEIGHT);
-
-			Stage newStage = new Stage();
-
-			newStage.setScene(scene);
-			newStage.setTitle("ListView Window");
-			newStage.setResizable(false);
-			newStage.centerOnScreen();
-			newStage.show();
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de mostrar conflitos do horário", ERROR_MESSAGE,
-					JOptionPane.ERROR_MESSAGE);
-		}
+		App.showLectureConflicts();
 	}
 	
 	/**
@@ -258,7 +243,7 @@ public class ControllerCreateSchedule implements Initializable {
 		for (Calendar<Lecture> cal : iscte.getCalendars()) {
 			cal.clear();
 		}
-		List<Lecture> listi = App.SCHEDULE.getCommonWeekLecture(lectures.getSelectionModel().getSelectedItems());
+		List<Lecture> listi = App.schedule.getCommonWeekLecture(lectures.getSelectionModel().getSelectedItems());
 		if (!listi.isEmpty()) {
 			for (Lecture lec : listi) {
 				int classDay = Integer.parseInt(lec.getTimeSlot().getWeekDay()) - 1;
@@ -306,7 +291,7 @@ public class ControllerCreateSchedule implements Initializable {
 			daysDates[i] = calendar.getStartDate().plusDays(i);
 		}
 
-		List<Lecture> lecturesList = App.SCHEDULE.getLectures();
+		List<Lecture> lecturesList = App.schedule.getLectures();
 		Set<String> courses = new HashSet<>();
 
 		for (Lecture lec : lecturesList) {

@@ -1,3 +1,13 @@
+
+/**
+ * The ControllerConvertFile class manages the GUI components and events in the
+ * ConvertFile scene. The corresponding GUI is used to select a csv file in the
+ * local file system and convert it to a json file (or vice versa).
+ * 
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -8,32 +18,25 @@ import javax.swing.JOptionPane;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * The ControllerConvertFile class manages the GUI components and events in the
- * ConvertFile scene. The corresponding GUI is used to select a csv file in the
- * local file system and convert it to a json file (or vice versa).
- * 
- * @author alfdozen
- * @version 1.0.0
- */
+
 public class ControllerConvertFile implements Initializable {
 
 	@FXML
-	private Button convertFileButton;
+	private Button convertFileButton = new Button();
 	@FXML
-	private Button cancelButton;
+	private Button cancelButton = new Button();
 	@FXML
-	private Button chooseFileButton;
+	private Button chooseFileButton = new Button();
 	@FXML
-	private TextField filePathTF;
+	private Label fileChosenPathLabel = new Label();
 	@FXML
-	private AnchorPane window;
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * This method is called by the event of clicking on the chooseFileButton. It
@@ -46,10 +49,9 @@ public class ControllerConvertFile implements Initializable {
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("CSV, JSON", "*.csv", "*.json"));
 		File file = fileChooser.showOpenDialog(new Stage());
 		if (file == null) {
-			JOptionPane.showMessageDialog(null, "Não é possível ler o ficheiro selecionado", "Alerta",
+			JOptionPane.showMessageDialog(null, "Não é possível ler o ficheiro selecionado", App.ALERT_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
-			filePathTF.setText("Nenhum ficheiro selecionado");
-			convertFileButton.setText("Converter");
+			fileChosenPathLabel.setText("Nenhum ficheiro selecionado");
 			convertFileButton.setVisible(false);
 			return;
 		}
@@ -57,13 +59,12 @@ public class ControllerConvertFile implements Initializable {
 		String fileExtension = Schedule.getFileExtension(filePath);
 		if (fileExtension.isBlank()) {
 			JOptionPane.showMessageDialog(null, "O ficheiro selecionado não tem a extensão " + Schedule.FILE_FORMAT_JSON
-					+ " ou " + Schedule.FILE_FORMAT_CSV, "Alerta", JOptionPane.ERROR_MESSAGE);
-			filePathTF.setText("Nenhum ficheiro selecionado");
-			convertFileButton.setText("Converter");
+					+ " ou " + Schedule.FILE_FORMAT_CSV, App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
+			fileChosenPathLabel.setText("Nenhum ficheiro selecionado");
 			convertFileButton.setVisible(false);
 			return;
 		}
-		filePathTF.setText(filePath);
+		fileChosenPathLabel.setText(filePath);
 		if (fileExtension.equals(Schedule.FILE_FORMAT_CSV)) {
 			convertFileButton.setText("Converter CSV para JSON");
 			convertFileButton.setVisible(true);
@@ -71,7 +72,6 @@ public class ControllerConvertFile implements Initializable {
 			convertFileButton.setText("Converter JSON para CSV");
 			convertFileButton.setVisible(true);
 		} else {
-			convertFileButton.setText("Converter");
 			convertFileButton.setVisible(false);
 		}
 	}
@@ -85,7 +85,7 @@ public class ControllerConvertFile implements Initializable {
 	@FXML
 	private void convertFile() {
 		FileChooser fileChooser = new FileChooser();
-		String fileToConvertPath = filePathTF.getText();
+		String fileToConvertPath = fileChosenPathLabel.getText();
 		if ("Converter CSV para JSON".equals(convertFileButton.getText())) {
 			fileChooser.getExtensionFilters().add(new ExtensionFilter("JSON", "*.json"));
 			File fileToSave = fileChooser.showSaveDialog(new Stage());
@@ -93,11 +93,11 @@ public class ControllerConvertFile implements Initializable {
 			try {
 				Schedule.convertCSV2JSON(fileToConvertPath, fileToSavePath, Schedule.DELIMITER.charAt(0));
 			} catch (IOException | IllegalArgumentException e) {
-				JOptionPane.showMessageDialog(null, "Erro ao converter ficheiro para JSON", "Alerta",
+				JOptionPane.showMessageDialog(null, "Erro ao converter ficheiro para JSON", App.ALERT_MESSAGE,
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "Ficheiro convertido para JSON com sucesso", "Sucesso",
+			JOptionPane.showMessageDialog(null, "Ficheiro convertido para JSON com sucesso", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			fileChooser.getExtensionFilters().add(new ExtensionFilter("CSV", "*.csv"));
@@ -106,11 +106,11 @@ public class ControllerConvertFile implements Initializable {
 			try {
 				Schedule.convertJSON2CSV(fileToConvertPath, fileToSavePath, Schedule.DELIMITER.charAt(0));
 			} catch (IOException | IllegalArgumentException e) {
-				JOptionPane.showMessageDialog(null, "Erro ao converter ficheiro para CSV", "Alerta",
+				JOptionPane.showMessageDialog(null, "Erro ao converter ficheiro para CSV", App.ALERT_MESSAGE,
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "Ficheiro convertido para CSV com sucesso", "Sucesso",
+			JOptionPane.showMessageDialog(null, "Ficheiro convertido para CSV com sucesso", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 		returnHome();
@@ -125,7 +125,7 @@ public class ControllerConvertFile implements Initializable {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao regressar ao menu principal", "Erro",
+			JOptionPane.showMessageDialog(null, "Erro ao regressar ao menu principal", App.ERROR_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}

@@ -1,3 +1,13 @@
+
+/**
+ * The ControllerWebCall class manages the GUI components and events in the
+ * WebCall scene. The corresponding GUI is used to import a schedule from a
+ * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
+ *
+ * @author alfdozen
+ * @version 1.0.0
+ */
+
 package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 import java.io.File;
@@ -14,33 +24,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * The ControllerWebCall class manages the GUI components and events in the
- * WebCall scene. The corresponding GUI is used to import a schedule from a
- * webcal URL, view the schedule, and save the schedule as a CSV or JSON file.
- *
- * @author alfdozen
- * @version 1.0.0
- */
+
 public class ControllerWebCall implements Initializable {
 
 	@FXML
-	private Button importSchedule;
+	private Button importSchedule = new Button();
 	@FXML
-	private Button viewSchedule;
+	private Button viewSchedule = new Button();
 	@FXML
-	private Button saveCSV;
+	private Button saveCSV = new Button();
 	@FXML
-	private Button backButton;
+	private Button backButton = new Button();
 	@FXML
-	private Button saveJSON;
+	private Button saveJSON = new Button();
 	@FXML
-	private TextField webcalURLTextField;
+	private TextField webcalURLTextField = new TextField();
 	@FXML
-	private AnchorPane window;
-
-	public static final String ALERT_TITLE = "Alerta";
-	public static final String SUCCESS_TITLE = "Sucesso";
+	private AnchorPane window = new AnchorPane();
 
 	/**
 	 * Imports a schedule from the provided webcal URL and displays the schedule in
@@ -53,17 +53,17 @@ public class ControllerWebCall implements Initializable {
 	private void importScheduleFromWebcal() {
 		String webcalURL = webcalURLTextField.getText();
 		try {
-			App.SCHEDULE = Schedule.loadWebcal(webcalURL);
+			App.schedule = Schedule.loadWebcal(webcalURL);
 			viewSchedule.setVisible(true);
 			saveCSV.setVisible(true);
 			saveJSON.setVisible(true);
-			JOptionPane.showMessageDialog(null, "Horário importado com sucesso!", SUCCESS_TITLE,
+			JOptionPane.showMessageDialog(null, App.SUCCESS_DESCRIPTION_MESSAGE, App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IllegalArgumentException e) {
-			JOptionPane.showMessageDialog(null, "Erro: URL inválido", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "URL inválido", App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro: Problema ao conectar à Internet ou ao ler o arquivo",
-					ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Problema ao conectar à Internet ou ao ler o arquivo",
+					App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -83,11 +83,11 @@ public class ControllerWebCall implements Initializable {
 		filenameToSave = filePathToSave.getAbsolutePath();
 
 		try {
-			Schedule.saveToCSV(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV!", SUCCESS_TITLE,
+			Schedule.saveToCSV(App.schedule, filenameToSave);
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em CSV", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao gravar", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -106,11 +106,11 @@ public class ControllerWebCall implements Initializable {
 		filePathToSave = fileChooser.showSaveDialog(new Stage());
 		filenameToSave = filePathToSave.getAbsolutePath();
 		try {
-			Schedule.saveToJSON(App.SCHEDULE, filenameToSave);
-			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em JSON!", SUCCESS_TITLE,
+			Schedule.saveToJSON(App.schedule, filenameToSave);
+			JOptionPane.showMessageDialog(null, "Ficheiro guardado com sucesso em JSON", App.SUCCESS_MESSAGE,
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao gravar", ALERT_TITLE, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao gravar", App.ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class ControllerWebCall implements Initializable {
 		try {
 			App.setRoot("/fxml/Main");
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar à página inicial", ALERT_TITLE,
+			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar à página inicial", App.ALERT_MESSAGE,
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}

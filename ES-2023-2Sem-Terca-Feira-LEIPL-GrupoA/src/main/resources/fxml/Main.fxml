@@ -9,24 +9,24 @@
 
 <AnchorPane fx:id="window" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.App">
    <children>
-      <Label contentDisplay="CENTER" layoutX="130.0" layoutY="186.0" prefHeight="91.0" prefWidth="573.0" text="Bem vindo à plataforma de gestão de horários para alunos ISCTE" wrapText="true">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="107.0" layoutY="184.0" minHeight="90.0" minWidth="600.0" prefHeight="90.0" prefWidth="600.0" text="Bem vindo à plataforma de gestão de horários para alunos ISCTE" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="System Bold" size="24.0" />
          </font></Label>
       <ImageView fx:id="logoImage" fitHeight="146.0" fitWidth="612.0" layoutX="36.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="importScheduleButton" layoutX="144.0" layoutY="303.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#importSchedule" prefHeight="91.0" prefWidth="223.0" text="Carregar Horário de ficheiro" textAlignment="CENTER">
+      <Button fx:id="importScheduleButton" layoutX="107.0" layoutY="303.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#importSchedule" prefHeight="90.0" prefWidth="225.0" text="Carregar Horário de Ficheiro" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Button fx:id="importWebcalButton" layoutX="467.0" layoutY="303.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#importWebcal" prefHeight="73.0" prefWidth="150.0" text="Importar Horário do Fénix" textAlignment="CENTER" wrapText="true" />
-      <Button fx:id="createScheduleButton" layoutX="144.0" layoutY="440.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="63.0" prefWidth="209.0" text="Escolher Horário" textAlignment="CENTER" />
-      <Button fx:id="convertFileButton" layoutX="467.0" layoutY="440.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="73.0" prefWidth="150.0" text="Converter ficheiros" textAlignment="CENTER">
+      <Button fx:id="importWebcalButton" layoutX="481.0" layoutY="303.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#importWebcal" prefHeight="90.0" prefWidth="225.0" text="Importar Horário do Fénix" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="createScheduleButton" layoutX="107.0" layoutY="440.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="90.0" prefWidth="225.0" text="Escolher Horário" textAlignment="CENTER" />
+      <Button fx:id="convertFileButton" layoutX="481.0" layoutY="440.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="90.0" prefWidth="225.0" text="Converter Ficheiros" textAlignment="CENTER">
          <tooltip>
             <Tooltip text="Empty Tooltip" />
          </tooltip>
        </Button>
-      <Button fx:id="closeWindowButton" layoutX="690.0" layoutY="39.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="41.0" prefWidth="82.0" text="Exit" />
-      <Button fx:id="viewScheduleButton" layoutX="305.0" layoutY="579.0" minHeight="91.0" minWidth="223.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="63.0" prefWidth="209.0" text="Consultar Horário" textAlignment="CENTER" visible="false" />
+      <Button fx:id="closeWindowButton" layoutX="690.0" layoutY="39.0" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="40.0" prefWidth="80.0" text="Exit" />
+      <Button fx:id="viewScheduleButton" layoutX="294.0" layoutY="576.0" minHeight="90.0" minWidth="225.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="90.0" prefWidth="225.0" text="Consultar Horário" textAlignment="CENTER" visible="false" />
    </children>
 </AnchorPane>

@@ -1,4 +1,3 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
  * The Room class is used to define the name and capacity of the room where the
@@ -11,6 +10,9 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  * @author alfdozen
  * @version 1.0.0
  */
+
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
 final class Room {
 
 	static final String NEGATIVE_EXCEPTION = "Room needs to have a positive number capacity";
