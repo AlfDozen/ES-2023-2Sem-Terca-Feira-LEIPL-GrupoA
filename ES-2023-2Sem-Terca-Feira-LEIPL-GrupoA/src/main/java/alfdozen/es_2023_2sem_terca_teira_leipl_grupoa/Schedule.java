@@ -1133,7 +1133,6 @@ final class Schedule {
 	 * @param mapLectures the map with the lecture string as the key and count as the value.
 	 * @param course the course for the lecture being matched.		
 	 * @param lecture the lectures to check and count.
-	 * @return a map with the updated entry regarding the received lecture.
 	 */
 	private static void getMapCoursesCounts(Map<String, Integer> mapLectures, String course, Lecture lecture) {
 		if (lecture.getAcademicInfo().getCourse().equals(course)) {
