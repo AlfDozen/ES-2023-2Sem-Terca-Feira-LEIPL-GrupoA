@@ -70,7 +70,7 @@ public class CreateSchedule implements Initializable{
 				lecList.add(lec);
 			}
 		}
-		App.setSchedule(new Schedule(lecList,studentName.getText(),Integer.valueOf(studentNumber.getText())));
+		App.schedule = new Schedule(lecList,studentName.getText(),Integer.valueOf(studentNumber.getText()));
 	}
 
 	@FXML

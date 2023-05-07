@@ -55,12 +55,7 @@ public class App extends Application implements Initializable {
 	private ImageView logoImage = new ImageView();
 	@FXML
 	private AnchorPane window = new AnchorPane();
-
-
-	//TODO
-	public static void setSchedule(Schedule newSchedule) {
-		schedule = newSchedule;
-	}
+	
 	
 	/**
 	 * This method is called after the init method has returned, and after the
@@ -74,18 +69,6 @@ public class App extends Application implements Initializable {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-//			STAGE = primaryStage;
-//			STAGE.setResizable(true);
-//
-//			SCENE = new Scene(loadFXML("/fxml/Main"));
-//			System.out.println("Scene created " + SCENE.toString());
-//
-//			STAGE.setScene(SCENE);
-//			STAGE.show();
-//
-//		} catch(Exception e) {
-//			System.err.println("Erro ao tentar correr o conteudo");
-//=======
 			schedule = new Schedule();
 			stage = primaryStage;
 			scene = new Scene(loadFXML("/fxml/Main"));
@@ -221,6 +204,29 @@ public class App extends Application implements Initializable {
 		stage.close();
 	}
 
+	/**
+	 * Shows a new stage with a list of all the lecture conflicts in the schedule.
+	 * The conflicts are displayed using the "Overlayed.fxml" file. If there is an
+	 * IO exception while loading the FXML file, no action is taken.
+	 */
+	@FXML
+	static void showLectureConflicts() {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/Overlayed.fxml"));
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root, 700, 750);
+			Stage newStage = new Stage();
+			newStage.setScene(scene);
+			newStage.setTitle("Conflitos no Horário");
+			newStage.setResizable(false);
+			newStage.centerOnScreen();
+			newStage.show();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Erro ao abrir o menu de mostrar conflitos do horário", ERROR_MESSAGE,
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
 	/**
 	 * This method is called after its root element has been completely processed
 	 * and initializes the GUI components and stage in the controller needed for the
