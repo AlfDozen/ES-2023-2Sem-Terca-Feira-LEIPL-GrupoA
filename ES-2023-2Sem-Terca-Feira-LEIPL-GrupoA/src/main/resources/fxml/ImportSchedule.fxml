@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerImportSchedule">
+   <children>
+      <Button fx:id="cancelButton" layoutX="340.0" layoutY="560.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="60.0" prefWidth="130.0" text="Cancelar" />
+      <Button fx:id="chooseFileButton" layoutX="95.0" layoutY="124.0" minHeight="49.0" minWidth="154.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar Ficheiro" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="saveFileCSVButton" layoutX="243.0" layoutY="461.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#saveFileCSV" prefHeight="60.0" prefWidth="130.0" text="Guardar em CSV" textAlignment="CENTER" visible="false" />
+      <Label fx:id="fileChosenPathLabel" layoutX="255.0" layoutY="123.0" prefHeight="50.0" prefWidth="450.0" text="Nenhum ficheiro importado" visible="false" />
+      <Button fx:id="viewScheduleButton" layoutX="340.0" layoutY="365.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#viewSchedule" prefHeight="60.0" prefWidth="130.0" text="Consultar Horário" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Button fx:id="importFileButton" layoutX="340.0" layoutY="263.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#importFile" prefHeight="60.0" prefWidth="130.0" text="Importar Ficheiro" textAlignment="CENTER" visible="false">
+         <tooltip>
+            <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
+         </tooltip>
+      </Button>
+      <Button fx:id="saveFileJSONButton" layoutX="429.0" layoutY="461.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#saveFileJSON" prefHeight="60.0" prefWidth="130.0" text="Guardar em JSON" textAlignment="CENTER" visible="false" />
+      <RadioButton fx:id="optionLocalRadioButton" layoutX="279.0" layoutY="84.0" mnemonicParsing="false" onAction="#setLocalButtons" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Local">
+         <toggleGroup>
+            <ToggleGroup fx:id="fileTypeChooser" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionOnlineRadioButton" layoutX="425.0" layoutY="84.0" mnemonicParsing="false" onAction="#setRemoteButtons" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Online" toggleGroup="$fileTypeChooser" />
+      <TextField fx:id="inputOnlineTextField" layoutX="241.0" layoutY="149.0" minHeight="25.0" minWidth="330.0" onKeyTyped="#dealWithText" prefHeight="25.0" prefWidth="330.0" visible="false" />
+      <Label fx:id="onlineInstructionLabel" alignment="CENTER" layoutX="283.0" layoutY="116.0" prefHeight="17.0" prefWidth="242.0" text="Insira o URL do ficheiro online" textAlignment="CENTER" visible="false" />
+      <RadioButton fx:id="optionCSVRadioButton" layoutX="339.0" layoutY="213.0" mnemonicParsing="false" onAction="#showImportButton" prefHeight="18.0" prefWidth="50.0" text=".csv" visible="false">
+         <toggleGroup>
+            <ToggleGroup fx:id="extensionChooser" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionJSONRadioButton" layoutX="425.0" layoutY="213.0" mnemonicParsing="false" onAction="#showImportButton" prefHeight="18.0" prefWidth="57.0" text=".json" toggleGroup="$extensionChooser" visible="false" />
+      <Label fx:id="extensionInstructionLabel" alignment="CENTER" layoutX="286.0" layoutY="186.0" prefHeight="17.0" prefWidth="242.0" text="Selecione a extensão do ficheiro" textAlignment="CENTER" visible="false" />
+   </children>
+</AnchorPane>

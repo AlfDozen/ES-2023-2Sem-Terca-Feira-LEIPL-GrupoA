@@ -34,7 +34,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-//PARA APAGAR: CLASSE DE PAGINA DE CRIAR HORARIO (A SEGUNDA PÁGINA, NÃO A DE IR BUSCAR O HORÁRIO PRIMEIRO)
 public class CreateSchedule implements Initializable{
 
 
@@ -66,7 +65,7 @@ public class CreateSchedule implements Initializable{
 
 		List<Lecture> lecList = new ArrayList<Lecture>();
 
-		for(Lecture lec :  App.getSchedule().getLectures()) {
+		for(Lecture lec :  App.schedule.getLectures()) {
 			if(lectures.getSelectionModel().getSelectedItems().contains(lec.getAcademicInfo().getCourse())) {
 				lecList.add(lec);
 			}
@@ -108,7 +107,7 @@ public class CreateSchedule implements Initializable{
 		try {
 			if(filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToCSV(App.getSchedule(), filenameToSave);
+				Schedule.saveToCSV(App.schedule, filenameToSave);
 			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Deu cócó ao gravar", "Alerta" , JOptionPane.ERROR_MESSAGE);
@@ -126,7 +125,7 @@ public class CreateSchedule implements Initializable{
 		try {
 			if(filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToJSON(App.getSchedule(), filenameToSave);
+				Schedule.saveToJSON(App.schedule, filenameToSave);
 			}
 
 		} catch (IOException e) {
@@ -176,7 +175,7 @@ public class CreateSchedule implements Initializable{
 		System.out.println("lista selected " + lectures.getSelectionModel().getSelectedItems());
 
 		//função semana tipica
-		List<Lecture> listi = App.getSchedule().getCommonWeekLecture(lectures.getSelectionModel().getSelectedItems());
+		List<Lecture> listi = App.schedule.getCommonWeekLecture(lectures.getSelectionModel().getSelectedItems());
 
 		if(!listi.isEmpty()) {
 
@@ -209,7 +208,7 @@ public class CreateSchedule implements Initializable{
 
 		App.setStageSize(window.getPrefWidth(),window.getPrefHeight());
 
-		List<Lecture> lecturesList = App.getSchedule().getLectures();
+		List<Lecture> lecturesList = App.schedule.getLectures();
 		Set<String> courses = new HashSet<String>();
 
 		for(Lecture lec : lecturesList) {

@@ -85,7 +85,7 @@ public class ViewSchedule implements Initializable {
 		try {
 			if (filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToCSV(App.getSchedule(), filenameToSave);
+				Schedule.saveToCSV(App.schedule, filenameToSave);
 			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, POP_UP_MESSAGE, ALERT_MESSAGE, JOptionPane.ERROR_MESSAGE);
@@ -108,7 +108,7 @@ public class ViewSchedule implements Initializable {
 		try {
 			if (filePathToSave != null) {
 				filenameToSave = filePathToSave.getAbsolutePath();
-				Schedule.saveToJSON(App.getSchedule(), filenameToSave);
+				Schedule.saveToJSON(App.schedule, filenameToSave);
 			}
 
 		} catch (IOException e) {
@@ -163,6 +163,7 @@ public class ViewSchedule implements Initializable {
 	 * sets it as the calendar source for the calendar view. Also starts a thread to
 	 * update the current time on the calendar every 10 seconds.
 	 */
+	
 	private void setLecturesEntries() {
 
 		try {
@@ -170,7 +171,7 @@ public class ViewSchedule implements Initializable {
 			Calendar<Lecture> iscte = new Calendar<>("ISCTE");
 			iscte.setStyle(Style.STYLE1);
 
-			for (Lecture lec : App.getSchedule().getLectures()) {
+			for (Lecture lec : App.schedule.getLectures()) {
 
 				if (lec.getTimeSlot().getDate() != null) {
 
@@ -238,8 +239,8 @@ public class ViewSchedule implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		App.setStageSize(calendarView.getPrefWidth(), calendarView.getPrefHeight());
-		App.getStage().setTitle("Calendar");
-		App.getStage().centerOnScreen();
+//		App.stage.setTitle("Calendar");
+//		App.getStage().centerOnScreen();
 		calendarView.setEnableTimeZoneSupport(true);
 
 		calendarView.setShowAddCalendarButton(false);

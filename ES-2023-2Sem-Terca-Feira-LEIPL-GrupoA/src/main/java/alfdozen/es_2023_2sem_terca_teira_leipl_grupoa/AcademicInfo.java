@@ -1,4 +1,3 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
  * The AcademicInfo class is used to define various academic information
@@ -13,6 +12,11 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  * @author alfdozen
  * @version 1.0.0
  */
+
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
+import java.util.Objects;
+
 final class AcademicInfo {
 
 	static final String NEGATIVE_EXCEPTION = "The number of students enrolled can't be negative";
@@ -276,4 +280,41 @@ final class AcademicInfo {
 		}
 		return str + " Enrolled Students";
 	}
+
+	/**
+	 * Computes a hash code for this object based on its course, degree, class
+	 * group, shift, and number of students enrolled.
+	 * 
+	 * @return a hash code value for this object
+	 */
+	@Override
+	public int hashCode() {
+		return Objects.hash(classGroup, course, degree, shift, studentsEnrolled);
+	}
+
+	/**
+	 * Indicates whether some other object is "equal to" this one. Two AcademicInfo
+	 * objects are considered equal if they have the same course code, degree, class
+	 * group, shift, and number of students enrolled.
+	 * 
+	 * @param obj the object to compare to
+	 * @return true if this object is the same as the obj argument; false otherwise
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		AcademicInfo other = (AcademicInfo) obj;
+		return Objects.equals(classGroup, other.classGroup) && Objects.equals(course, other.course)
+				&& Objects.equals(degree, other.degree) && Objects.equals(shift, other.shift)
+				&& Objects.equals(studentsEnrolled, other.studentsEnrolled);
+	}
+
 }

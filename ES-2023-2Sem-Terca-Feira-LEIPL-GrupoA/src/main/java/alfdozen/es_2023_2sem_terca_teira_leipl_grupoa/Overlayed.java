@@ -57,15 +57,15 @@ public class Overlayed implements Initializable{
 		overlayedList.getItems().clear();
 		overlappedList.getItems().clear();
 
-		if(!App.getSchedule().hasOverlappingLectures()) {
+		if(!App.schedule.hasOverlappingLectures()) {
 			String noOver = "Não há sobreposições de aulas";
 			overlayedList.getItems().add(noOver);
 		}else {
-			int n = App.getSchedule().getLectures().size();
+			int n = App.schedule.getLectures().size();
 			for (int i = 0; i < n; i++) {
 				for (int j = i + 1; j < n; j++) {
-					Lecture lec1 = App.getSchedule().getLectures().get(i);
-					Lecture lec2 = App.getSchedule().getLectures().get(j);
+					Lecture lec1 = App.schedule.getLectures().get(i);
+					Lecture lec2 = App.schedule.getLectures().get(j);
 					addLectureToOverlayedAndOverlapped(lec1,lec2);
 				}
 			}

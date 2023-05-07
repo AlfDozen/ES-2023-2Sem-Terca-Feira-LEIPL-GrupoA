@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerLoadFileBeforeCreateSchedule">
+   <children>
+      <RadioButton fx:id="optionLocal" layoutX="95.0" layoutY="84.0" mnemonicParsing="false" onAction="#setLocal" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Local">
+         <toggleGroup>
+            <ToggleGroup fx:id="fileChooserTG" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionOnline" layoutX="228.0" layoutY="84.0" mnemonicParsing="false" onAction="#setOnline" prefHeight="18.0" prefWidth="119.0" text="Ficheiro Online" toggleGroup="$fileChooserTG" />
+      <RadioButton fx:id="optionFenix" layoutX="366.0" layoutY="84.0" mnemonicParsing="false" onAction="#setFenix" prefHeight="18.0" prefWidth="119.0" text="Ficheiro do Fénix" toggleGroup="$fileChooserTG" />
+      <RadioButton fx:id="optionPrevious" layoutX="515.0" layoutY="84.0" mnemonicParsing="false" onAction="#setPrevious" prefHeight="18.0" prefWidth="200.0" text="Ficheiro Carregado Previamente" toggleGroup="$fileChooserTG" />
+      
+      <Button fx:id="getFileButton" layoutX="95.0" layoutY="124.0" minHeight="49.0" minWidth="154.0" mnemonicParsing="false" onAction="#getFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar Ficheiro" textAlignment="CENTER" visible="false" wrapText="true" />
+      <Label fx:id="fileChosen" layoutX="255.0" layoutY="123.0" prefHeight="50.0" prefWidth="450.0" text="Nenhum ficheiro importado" visible="false" />
+      <Label fx:id="labelOnline" layoutX="322.0" layoutY="116.0" text="Insira o URL do ficheiro online" visible="false" />
+      <TextField fx:id="urlChosen" layoutX="241.0" layoutY="149.0" minHeight="25.0" minWidth="330.0" onKeyTyped="#dealWithText" prefHeight="25.0" prefWidth="330.0" visible="false" />
+      <Label fx:id="labelFenix" layoutX="243.0" layoutY="116.0" text="Insira o link do seu calendário pessoal da plataforma do Fénix" visible="false" />
+      <TextField fx:id="webcalChosen" layoutX="241.0" layoutY="149.0" minHeight="25.0" minWidth="330.0" onKeyTyped="#dealWithText" prefHeight="25.0" prefWidth="330.0" visible="false" />
+      <Label fx:id="labelPreviousLoad" alignment="BASELINE_CENTER" layoutX="322.0" layoutY="116.0" text="Já existe um ficheiro já carregado" visible="false" />
+      
+            
+      <Button fx:id="importFileButton" layoutX="340.0" layoutY="263.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#importFile" prefHeight="60.0" prefWidth="130.0" text="Importar Ficheiro" visible="false" />
+      <Button fx:id="createScheduleButton" layoutX="340.0" layoutY="365.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#createSchedule" prefHeight="60.0" prefWidth="130.0" text="Criar Novo Horário" visible="false" />
+      <Button fx:id="backButton" layoutX="340.0" layoutY="560.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="60.0" prefWidth="130.0" text="Cancelar" />
+      <Label fx:id="labelPreviousNotLoad" alignment="BASELINE_CENTER" layoutX="236.0" layoutY="116.0" text="Não existe nenhum ficheiro carregado. Seleccione outra opção" visible="false" />
+      <RadioButton fx:id="optionCSVRadioButton" layoutX="339.0" layoutY="213.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="50.0" text=".csv" visible="false">
+         <toggleGroup>
+            <ToggleGroup fx:id="extensionChooser" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="optionJSONRadioButton" layoutX="425.0" layoutY="213.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="57.0" text=".json" toggleGroup="$extensionChooser" visible="false" />
+      <Label fx:id="extensionInstructionLabel" alignment="CENTER" layoutX="286.0" layoutY="186.0" prefHeight="17.0" prefWidth="242.0" text="Selecione a extensão do ficheiro" textAlignment="CENTER" visible="false" />
+   </children>
+</AnchorPane>

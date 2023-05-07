@@ -1,4 +1,3 @@
-package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
 
 /**
  * The Lecture class is used to manage all the information regarding a lecture.
@@ -13,6 +12,9 @@ package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
  * @author alfdozen
  * @version 1.0.0
  */
+
+package alfdozen.es_2023_2sem_terca_teira_leipl_grupoa;
+
 final class Lecture implements Comparable<Lecture> {
 
 	static final String FOR_NULL = "Unknown";
@@ -102,22 +104,19 @@ final class Lecture implements Comparable<Lecture> {
 		}
 		return academicInfo.isComplete() && timeSlot.isComplete() && room.isComplete();
 	}
-	
-	
+
 	/**
 	 * Verify if the enrollment of a classroom exceeds its capacity.
 	 * 
 	 * @return true if the enrollment exceeds the capacity, false otherwise.
-	 * */
+	 */
 	boolean isOvercrowded() {
-		if (academicInfo == null || academicInfo.getStudentsEnrolled() == null || room == null || room.getCapacity() == null) {
+		if (academicInfo == null || academicInfo.getStudentsEnrolled() == null || room == null
+				|| room.getCapacity() == null) {
 			return false;
 		}
-		return (academicInfo.getStudentsEnrolled()> room.getCapacity());				
+		return (academicInfo.getStudentsEnrolled() > room.getCapacity());
 	}
-
-	
-	
 
 	/**
 	 * Compares this lecture with the specified lecture for order. Return -1, 0, or
