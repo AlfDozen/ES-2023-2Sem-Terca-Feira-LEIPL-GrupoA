@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="window" minHeight="768.0" minWidth="813.0" prefHeight="768.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alfdozen.es_2023_2sem_terca_teira_leipl_grupoa.ControllerConvertFile">
    <children>
-      <Button fx:id="cancelButton" layoutX="294.0" layoutY="483.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="67.0" prefWidth="158.0" text="Cancelar" />
-      <Button fx:id="chooseFileButton" layoutX="137.0" layoutY="242.0" minHeight="40.0" minWidth="150.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="40.0" prefWidth="150.0" text="Seleccionar ficheiro" textAlignment="CENTER" wrapText="true">
+      <Button fx:id="cancelButton" layoutX="340.0" layoutY="560.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#returnHome" prefHeight="60.0" prefWidth="130.0" text="Cancelar" />
+      <Button fx:id="chooseFileButton" layoutX="95.0" layoutY="124.0" minHeight="49.0" minWidth="154.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="49.0" prefWidth="154.0" text="Seleccionar Ficheiro" textAlignment="CENTER" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <Button fx:id="convertFileButton" layoutX="294.0" layoutY="350.0" minHeight="49.0" minWidth="131.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="67.0" prefWidth="158.0" text="Converter" textAlignment="CENTER" visible="false" wrapText="true">
+      <Button fx:id="convertFileButton" layoutX="340.0" layoutY="263.0" minHeight="60.0" minWidth="130.0" mnemonicParsing="false" onAction="#convertFile" prefHeight="60.0" prefWidth="130.0" text="Converter" textAlignment="CENTER" visible="false" wrapText="true">
          <tooltip>
             <Tooltip text="São válidos apenas os formatos .JSON e .CSV" />
          </tooltip>
       </Button>
-      <TextField fx:id="filePathTF" editable="false" layoutX="294.0" layoutY="242.0" maxWidth="900.0" prefHeight="40.0" prefWidth="418.0" text="Nenhum ficheiro selecionado" />
+      <Label fx:id="fileChosenPathLabel" layoutX="255.0" layoutY="123.0" prefHeight="50.0" prefWidth="450.0" text="Nenhum ficheiro importado" />
    </children>
 </AnchorPane>

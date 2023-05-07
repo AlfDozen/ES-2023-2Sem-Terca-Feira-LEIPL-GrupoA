@@ -693,7 +693,7 @@ final class Schedule {
 	 *                                  connecting to the internet
 	 */
 	static Schedule downloadFileFromURL(String url, String extension) throws IllegalArgumentException, IOException {
-		if (url == null || extension == null) {
+		if (url == null) {
 			throw new IllegalArgumentException(NULL_URL_EXCEPTION_MESSAGE);
 		}
 		URL fileURL = new URL(url);
@@ -1047,36 +1047,6 @@ final class Schedule {
 	}
 
 	/**
-	 * Returns a string representation of the schedule, including the student's name
-	 * and number, and the list of lectures.
-	 * 
-	 * @return A string representing the schedule.
-	 */
-	@Override
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		if (studentName == null) {
-			str.append("Unknown Student Name\n");
-		} else {
-			str.append("Student Name: " + studentName + "\n");
-		}
-		if (studentNumber == null) {
-			str.append("Unknown Student Number\n");
-		} else {
-			str.append("Student Number: " + studentNumber + "\n");
-		}
-		if (lectures.isEmpty()) {
-			str.append("Schedule is empty");
-		} else {
-			str.append("Schedule:\n");
-			for (Lecture lecture : lectures) {
-				str.append(lecture + "\n");
-			}
-		}
-		return str.toString();
-	}
-
-	/**
 	 * Returns a list of lectures where each string is composed of weekday, hour and
 	 * the course name when each lecture usually occurs. The returned list about the
 	 * lectures may concern partially or to the entire list of lectures belonging to
@@ -1230,5 +1200,65 @@ final class Schedule {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Auxiliary method to check if the lectures inside the received schedule are
+	 * all null. It returns true if all lectures are null and false otherwise.
+	 * 
+	 * @param schedule the schedule whose lectures are checked.
+	 * @return true if all lectures are null. Otherwise, return false.
+	 */
+	static boolean lecturesInScheduleAllNull(Schedule schedule) {
+		List<Lecture> lectures = schedule.getLectures();
+		Lecture emptyLecture = new Lecture(null, null, null);
+		boolean isNull = true;
+		for (Lecture l : lectures) {
+			if (!l.toString().equals(emptyLecture.toString())) {
+				isNull = false;
+			}
+		}
+		return isNull;
+	}
+
+	/**
+	 * Auxiliary method to check if there is a schedule load in the application.
+	 * 
+	 * @param schedule the schedule to check if is empty.
+	 * @return true if there is no schedule load, or false otherwise.
+	 */
+	static boolean scheduleIsEmpty(Schedule schedule) {
+		String empty = "Unknown Student Name\nUnknown Student Number\nSchedule is empty";
+		return empty.equals(schedule.toString());
+	}
+
+	/**
+	 * Returns a string representation of the schedule, including the student's name
+	 * and number, and the list of lectures.
+	 * 
+	 * @return A string representing the schedule.
+	 */
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		if (studentName == null) {
+			str.append("Unknown Student Name\n");
+		} else {
+			str.append("Student Name: " + studentName + "\n");
+		}
+		if (studentNumber == null) {
+			str.append("Unknown Student Number\n");
+		} else {
+			str.append("Student Number: " + studentNumber + "\n");
+		}
+		if (lectures.isEmpty()) {
+			str.append("Schedule is empty");
+		} else {
+			str.append("Schedule:\n");
+			for (Lecture lecture : lectures) {
+				str.append(lecture + "\n");
+			}
+		}
+		return str.toString();
 	}
 }
